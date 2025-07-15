@@ -1,0 +1,127 @@
+/* SizeGuide.css */
+.size-guide-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.size-guide-content {
+  background: var(--white);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+}
+
+.size-guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--gray);
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  z-index: 1;
+}
+
+.size-guide-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--dark-gray);
+  transition: var(--transition);
+}
+
+.close-btn:hover {
+  background: var(--light);
+  color: var(--primary);
+}
+
+.size-table-container {
+  padding: 1.5rem;
+}
+
+.size-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.size-table th, .size-table td {
+  padding: 1rem;
+  text-align: center;
+  border: 1px solid var(--gray);
+}
+
+.size-table th {
+  background: var(--light);
+  font-weight: 600;
+}
+
+.size-table tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.measurement-guide {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.measurement-guide h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.measurement-guide ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.measurement-guide li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.foot-measurement-image {
+  width: 100%;
+  height: 200px;
+  background: var(--light);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.measurement-diagram {
+  width: 80%;
+  height: 80%;
+  border: 1px dashed var(--dark-gray);
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .size-table th, .size-table td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}

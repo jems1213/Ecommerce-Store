@@ -1,0 +1,269 @@
+.glass-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-title {
+  color: white;
+  font-size: 28px;
+  margin-top: 45px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.glass-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+.name-fields {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.name-fields .glass-input-group {
+  flex: 1;
+}
+
+.glass-input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.glass-input-group.error input {
+  border-color: #ff6b6b !important;
+}
+
+.glass-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 18px;
+}
+
+.glass-input-group input {
+  width: 83%;
+  padding: 15px 15px 15px 45px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: white;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.glass-input-group input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.glass-input-group input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.error-text {
+  display: block;
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 5px;
+  padding-left: 45px;
+  text-align: left;
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.terms-checkbox input {
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  accent-color: #667eea;
+}
+
+.inline-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.inline-link:hover {
+  text-decoration: underline;
+}
+
+.glass-button {
+  width: 100%;
+  padding: 15px;
+  background: white;
+  color: #667eea;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+.glass-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.arrow-icon {
+  transition: transform 0.3s;
+}
+
+.glass-button:hover .arrow-icon {
+  transform: translateX(3px);
+}
+
+.glass-footer {
+  margin-top: 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.glass-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.glass-link:hover {
+  text-decoration: underline;
+}
+
+/* Date input customization */
+input[type="date"] {
+  appearance: none;
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.7;
+  cursor: pointer;
+  position: absolute;
+  right: 15px;
+  width: 20px;
+  height: 20px;
+}
+/* Add these styles to your existing Register.css */
+
+.server-error {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff6b6b;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+.button-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.custom-checkbox {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+/* Make date picker icon visible in dark mode */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .name-fields {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .glass-card {
+    padding: 25px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .glass-card {
+    padding: 30px 25px;
+  }
+  
+  .name-fields {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .glass-title {
+    font-size: 24px;
+  }
+  
+  .glass-subtitle {
+    font-size: 14px;
+  }
+}
