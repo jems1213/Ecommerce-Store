@@ -17,7 +17,7 @@ const ShoeCard = ({ shoe }) => {
     name = 'Unknown Shoe',
     brand = 'Unknown Brand',
     price = 0,
-    images = ['/default-shoe.jpg'],
+    images = [defaultShoe],
     colors = ['#000000'],
     rating = 0,
     discount = 0,
