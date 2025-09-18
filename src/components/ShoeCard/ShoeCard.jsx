@@ -118,10 +118,10 @@ const ShoeCard = ({ shoe }) => {
 
         <div className="shoe-image-container">
           <img
-            src={images[currentImageIndex] || '/default-shoe.jpg'}
+            src={images[currentImageIndex] || defaultShoe}
             alt={`${brand} ${name}`}
             className="shoe-image"
-            onError={(e) => e.target.src = '/default-shoe.jpg'}
+            onError={(e) => e.target.src = defaultShoe}
           />
           {images.length > 1 && (
             <div className="image-nav">
@@ -197,10 +197,10 @@ const ShoeCard = ({ shoe }) => {
               <div className="popup-image-section">
                 <div className="main-image-container">
                   <img
-                    src={images[currentImageIndex] || '/default-shoe.jpg'}
+                    src={images[currentImageIndex] || defaultShoe}
                     alt={`${brand} ${name}`}
                     className="popup-main-image"
-                    onError={(e) => e.target.src = '/default-shoe.jpg'}
+                    onError={(e) => e.target.src = defaultShoe}
                   />
                   {images.length > 1 && (
                     <div className="popup-image-nav">
