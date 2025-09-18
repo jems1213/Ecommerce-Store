@@ -1,0 +1,13 @@
+.sample-shoes { padding: 2rem 1rem; max-width: 1200px; margin: 0 auto; }
+.sample-inner { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; align-items: center; }
+.sample-item { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius: 12px; padding: 1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(7,26,47,0.06); }
+.sample-item img { width: 100%; height: auto; max-width: 160px; object-fit: contain; transform: rotate(-6deg); }
+
+/* variant: hero-style */
+.sample-shoes-hero { position: relative; margin-top: -6rem; margin-bottom: 2rem; }
+.sample-shoes-hero .sample-item { background: transparent; box-shadow: none; }
+
+@media (max-width: 768px) {
+  .sample-inner { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 0.75rem; }
+  .sample-item img { max-width: 120px; }
+}
