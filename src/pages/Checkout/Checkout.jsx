@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE } from '../../utils/apiClient';
 import { 
   FiCheck, 
   FiArrowRight, 
@@ -113,7 +114,7 @@ const CheckoutForm = ({ cart = [], total = 0, onSuccess }) => {
         paymentStatus
       };
 
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const response = await fetch(`${API_BASE}/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -172,7 +173,7 @@ const CheckoutForm = ({ cart = [], total = 0, onSuccess }) => {
         throw new Error('Authentication token not found. Please log in.');
       }
 
-      const response = await fetch(`http://localhost:5000/api/orders/${orderDetails._id}/verify-payment`, {
+      const response = await fetch(`${API_BASE}/api/orders/${orderDetails._id}/verify-payment`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

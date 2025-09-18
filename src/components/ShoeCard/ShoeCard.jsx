@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { FaStar, FaShoppingCart, FaTimes, FaChevronLeft, FaChevronRight, FaHeart } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import './ShoeCard.css';
+import defaultShoe from '../../assets/default-shoe.svg';
+import shoe2 from '../../assets/hero-shoe2.svg';
 
 const ShoeCard = ({ shoe }) => {
   const { addToCart, cartItems } = useCart();
@@ -16,7 +18,7 @@ const ShoeCard = ({ shoe }) => {
     name = 'Unknown Shoe',
     brand = 'Unknown Brand',
     price = 0,
-    images = ['/default-shoe.jpg'],
+    images = [defaultShoe],
     colors = ['#000000'],
     rating = 0,
     discount = 0,
@@ -117,11 +119,14 @@ const ShoeCard = ({ shoe }) => {
 
         <div className="shoe-image-container">
           <img
-            src={images[currentImageIndex] || '/default-shoe.jpg'}
+            src={images[currentImageIndex] || defaultShoe}
             alt={`${brand} ${name}`}
             className="shoe-image"
-            onError={(e) => e.target.src = '/default-shoe.jpg'}
+            onError={(e) => e.target.src = defaultShoe}
           />
+          {(!images || images.length === 0 || (images[0] === defaultShoe)) && (
+            <img src={shoe2} alt="decor" className="card-deco" aria-hidden />
+          )}
           {images.length > 1 && (
             <div className="image-nav">
               <button className="nav-button prev" onClick={(e) => { e.stopPropagation(); setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length); }}>
@@ -196,10 +201,10 @@ const ShoeCard = ({ shoe }) => {
               <div className="popup-image-section">
                 <div className="main-image-container">
                   <img
-                    src={images[currentImageIndex] || '/default-shoe.jpg'}
+                    src={images[currentImageIndex] || defaultShoe}
                     alt={`${brand} ${name}`}
                     className="popup-main-image"
-                    onError={(e) => e.target.src = '/default-shoe.jpg'}
+                    onError={(e) => e.target.src = defaultShoe}
                   />
                   {images.length > 1 && (
                     <div className="popup-image-nav">

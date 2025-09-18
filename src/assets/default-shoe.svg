@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <rect width="100%" height="100%" fill="#f3f4f6" rx="12"/>
+  <g transform="translate(40,80)">
+    <rect x="0" y="160" width="320" height="80" rx="40" fill="#111827" opacity="0.1"/>
+    <path d="M40 140c30-50 180-80 260-20 80 60 60 60 60 60v20H40z" fill="#9ca3af"/>
+  </g>
+  <text x="24" y="32" fill="#6b7280" font-family="sans-serif" font-size="16">Default Shoe</text>
+</svg>

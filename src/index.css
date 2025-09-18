@@ -1,4 +1,13 @@
 :root {
+:root {
+  --accent-color: #F2702F;
+  --accent-2: #FF9F1C;
+  --primary-bg: #071A2F;
+  --text-on-dark: rgba(230,238,247,1);
+  --muted-on-dark: rgba(169,192,217,1);
+  --card-bg: #ffffff;
+}
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;

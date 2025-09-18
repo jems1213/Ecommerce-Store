@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import ShoeCard from '../../components/ShoeCard/ShoeCard';
 import './Collection.css';
-import axios from 'axios';
+import api, { API_BASE } from '../../utils/apiClient';
 
 const Collection = () => {
   const [filter, setFilter] = useState('all');
@@ -26,7 +26,7 @@ const Collection = () => {
           search: searchQuery
         };
 
-        const response = await axios.get('http://localhost:5000/api/shoes', { params });
+        const response = await api.get('/api/shoes', { params });
         setShoes(response.data.data.shoes || []);
       } catch (error) {
         console.error('Error fetching shoes:', error);

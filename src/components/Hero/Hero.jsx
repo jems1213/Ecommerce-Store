@@ -1,13 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { FiArrowRight, FiPlay, FiPause } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import shoe1 from './shoe1.png'; // ✅ Local image import
-import shoe2 from './shoe2.png'; // ✅ Local image import
-import shoe3 from './shoe3.png'; // ✅ Local image import
-
-
-
 import './Hero.css';
 
 const Hero = () => {
@@ -21,7 +15,7 @@ const Hero = () => {
       subtitle: "NEW COLLECTION 2025",
       description: "Discover the latest trends in premium footwear",
       cta: "Shop Now",
-      image: shoe2,
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
       bgColor: "#f5f5f5",
       textColor: "#000"
     },
@@ -30,8 +24,8 @@ const Hero = () => {
       subtitle: "BUSINESS ELEGANCE",
       description: "Professional footwear for the modern executive",
       cta: "Explore",
-      image: shoe1,
-      bgColor: "#000",
+      image: "https://wallpapercave.com/wp/wp2896922.jpg",
+      bgColor: "#071A2F",
       textColor: "#fff"
     },
     {
@@ -39,7 +33,7 @@ const Hero = () => {
       subtitle: "ATHLETIC INNOVATION",
       description: "Cutting-edge technology for peak performance",
       cta: "View Tech",
-      image: shoe3,
+      image: "https://www.freepnglogos.com/uploads/shoes-png/download-nike-shoes-transparent-png-for-designing-projects-16.png",
       bgColor: "#e74c3c",
       textColor: "#fff"
     }
@@ -189,6 +183,7 @@ const Hero = () => {
               ease: "easeInOut"
             }}
           />
+
         </motion.div>
       </div>
 

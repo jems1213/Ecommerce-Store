@@ -1,10 +1,12 @@
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
 import ShoeCard from '../../components/ShoeCard/ShoeCard';
 import Hero from '../../components/Hero/Hero';
+import SampleShoes from '../../components/SampleShoes/SampleShoes';
 import Newsletter from '../../components/Newsletter/Newsletter';
 import './Home.css';
-import axios from 'axios';
+import api, { API_BASE } from '../../utils/apiClient';
+import defaultShoe from '../../assets/default-shoe.svg';
 
 const Home = () => {
   const [filter, setFilter] = useState('all');
@@ -14,6 +16,11 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [shoes, setShoes] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
+
+  // Frontend-only local shoes (persisted in localStorage)
+  const [localShoes, setLocalShoes] = useState([]);
+  const [showAddShoeModal, setShowAddShoeModal] = useState(false);
+  const [newShoe, setNewShoe] = useState({ name: '', brand: '', price: '', images: '', colors: '', sizes: '', discount: '', isNew: false, description: '' });
 
   // Fetch shoes from backend
   useEffect(() => {
@@ -29,8 +36,11 @@ const Home = () => {
           featured: true
         };
 
-        const response = await axios.get('http://localhost:5000/api/shoes', { params });
-        setShoes(response.data.data.shoes || []);
+        const response = await api.get('/api/shoes', { params });
+        const fetched = response.data.data.shoes || [];
+        const storedLocal = JSON.parse(localStorage.getItem('localShoes') || '[]');
+        setLocalShoes(storedLocal);
+        setShoes([...(storedLocal || []), ...fetched]);
       } catch (error) {
         console.error('Error fetching shoes:', error);
         setShoes([]);
@@ -42,6 +52,17 @@ const Home = () => {
     const debounceTimer = setTimeout(() => {
       fetchShoes();
     }, 500);
+
+    // load local shoes immediately so UI shows them without waiting for API
+    try {
+      const stored = JSON.parse(localStorage.getItem('localShoes') || '[]');
+      if (stored && stored.length) {
+        setLocalShoes(stored);
+        setShoes(prev => ([...stored, ...prev]));
+      }
+    } catch (e) {
+      // ignore
+    }
 
     return () => clearTimeout(debounceTimer);
   }, [filter, priceRange, sortOption, searchQuery]);
@@ -55,6 +76,8 @@ const Home = () => {
       className="home-page"
     >
       <Hero />
+
+      <SampleShoes variant="hero" />
 
       <div className="shop-section">
         <motion.div 
@@ -81,7 +104,17 @@ const Home = () => {
             </svg>
           </motion.div>
 
-          <motion.button 
+          <motion.button
+            className="add-shoe-button"
+            onClick={() => setShowAddShoeModal(true)}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            style={{ marginLeft: '12px' }}
+          >
+            + Add Shoe
+          </motion.button>
+
+          <motion.button
             className="mobile-filter-toggle"
             onClick={() => setShowFilters(!showFilters)}
             whileHover={{ scale: 1.05 }}
@@ -217,6 +250,66 @@ const Home = () => {
           </motion.div>
         )}
       </div>
+
+      {/* Add Shoe Modal (frontend-only) */}
+      <AnimatePresence>
+        {showAddShoeModal && (
+          <motion.div className="add-shoe-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowAddShoeModal(false)}>
+            <motion.div className="add-shoe-modal" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} onClick={(e) => e.stopPropagation()}>
+              <h3>Add Shoe (local only)</h3>
+              <div className="add-shoe-form">
+                <label>Name</label>
+                <input value={newShoe.name} onChange={(e) => setNewShoe(prev => ({ ...prev, name: e.target.value }))} />
+                <label>Brand</label>
+                <input value={newShoe.brand} onChange={(e) => setNewShoe(prev => ({ ...prev, brand: e.target.value }))} />
+                <label>Price</label>
+                <input type="number" value={newShoe.price} onChange={(e) => setNewShoe(prev => ({ ...prev, price: parseFloat(e.target.value) || '' }))} />
+                <label>Images (comma separated URLs)</label>
+                <input value={newShoe.images} onChange={(e) => setNewShoe(prev => ({ ...prev, images: e.target.value }))} placeholder="https://... , https://..." />
+                <label>Colors (comma, hex or names)</label>
+                <input value={newShoe.colors} onChange={(e) => setNewShoe(prev => ({ ...prev, colors: e.target.value }))} placeholder="#000, #fff" />
+                <label>Sizes (comma separated e.g. 6,7,8)</label>
+                <input value={newShoe.sizes} onChange={(e) => setNewShoe(prev => ({ ...prev, sizes: e.target.value }))} />
+                <label>Discount (%)</label>
+                <input type="number" value={newShoe.discount} onChange={(e) => setNewShoe(prev => ({ ...prev, discount: parseInt(e.target.value) || 0 }))} />
+                <label>Description</label>
+                <textarea value={newShoe.description} onChange={(e) => setNewShoe(prev => ({ ...prev, description: e.target.value }))} />
+                <label><input type="checkbox" checked={newShoe.isNew} onChange={(e) => setNewShoe(prev => ({ ...prev, isNew: e.target.checked }))} /> Mark as NEW</label>
+
+                <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                  <button onClick={() => setShowAddShoeModal(false)}>Cancel</button>
+                  <button onClick={() => {
+                    const id = `local-${Date.now()}`;
+                    const imgs = newShoe.images ? newShoe.images.split(',').map(s => s.trim()).filter(Boolean) : [defaultShoe];
+                    const cols = newShoe.colors ? newShoe.colors.split(',').map(s => s.trim()).filter(Boolean) : ['#000'];
+                    const sz = newShoe.sizes ? newShoe.sizes.split(',').map(s => parseFloat(s.trim())).filter(Boolean) : [];
+                    const shoeObj = {
+                      _id: id,
+                      name: newShoe.name || 'New Shoe',
+                      brand: newShoe.brand || 'brand',
+                      price: Number(newShoe.price) || 0,
+                      images: imgs,
+                      colors: cols,
+                      sizes: sz,
+                      rating: 0,
+                      discount: Number(newShoe.discount) || 0,
+                      isNew: !!newShoe.isNew,
+                      stock: 50,
+                      description: newShoe.description || ''
+                    };
+                    const updated = [shoeObj, ...localShoes];
+                    setLocalShoes(updated);
+                    localStorage.setItem('localShoes', JSON.stringify(updated));
+                    setShoes(prev => [shoeObj, ...prev]);
+                    setNewShoe({ name: '', brand: '', price: '', images: '', colors: '', sizes: '', discount: '', isNew: false, description: '' });
+                    setShowAddShoeModal(false);
+                  }}>Add Shoe</button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="new-arrivals-section">
         <motion.h2

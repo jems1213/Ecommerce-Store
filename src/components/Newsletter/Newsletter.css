@@ -1,7 +1,7 @@
 .newsletter {
   padding: 5rem 0;
-  background: #2c3e50;
-  color: var(--white);
+  background: linear-gradient(180deg, #071A2F 0%, #092436 100%);
+  color: #fff;
   text-align: center;
   position: relative;
   overflow: hidden;

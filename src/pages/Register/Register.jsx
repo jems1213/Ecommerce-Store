@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { API_BASE } from '../../utils/apiClient';
 import { FiUser, FiMail, FiLock, FiCalendar, FiArrowRight, FiAlertCircle } from 'react-icons/fi';
 import './Register.css';
 
@@ -73,7 +74,7 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +94,7 @@ const Register = () => {
       }
 
       // If registration is successful, automatically log the user in
-      const loginResponse = await fetch('http://localhost:5000/api/auth/login', {
+      const loginResponse = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
