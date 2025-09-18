@@ -190,6 +190,19 @@ const Hero = () => {
               ease: "easeInOut"
             }}
           />
+
+          {/* Decorative floating shoe SVGs */}
+          {decorations.map((d, i) => (
+            <motion.img
+              key={i}
+              src={d}
+              alt={`deco-${i}`}
+              className={`hero-deco deco-${i}`}
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: [0, 1, 1], scale: [0.85, 1, 0.95], y: [0, -8, 0] }}
+              transition={{ duration: 5 + i, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut', delay: i * 0.2 }}
+            />
+          ))}
         </motion.div>
       </div>
 
