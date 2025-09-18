@@ -53,6 +53,17 @@ const Home = () => {
       fetchShoes();
     }, 500);
 
+    // load local shoes immediately so UI shows them without waiting for API
+    try {
+      const stored = JSON.parse(localStorage.getItem('localShoes') || '[]');
+      if (stored && stored.length) {
+        setLocalShoes(stored);
+        setShoes(prev => ([...stored, ...prev]));
+      }
+    } catch (e) {
+      // ignore
+    }
+
     return () => clearTimeout(debounceTimer);
   }, [filter, priceRange, sortOption, searchQuery]);
 
