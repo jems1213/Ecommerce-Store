@@ -1,5 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
+import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
+import { API_BASE } from '../utils/apiClient';
+
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -14,7 +17,7 @@ export const UserProvider = ({ children }) => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/auth/me', {
+      const response = await fetch(`${API_BASE}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
