@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE } from '../../utils/apiClient';
 import { FiUser, FiShoppingBag, FiSettings, FiHeart, FiMapPin, FiCreditCard, FiLogOut } from 'react-icons/fi';
 import './Account.css';
 
@@ -24,7 +26,7 @@ const Account = () => {
         }
 
         // Verify token with backend
-        const response = await fetch('http://localhost:5000/api/auth/me', {
+        const response = await fetch(`${API_BASE}/api/auth/me`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
