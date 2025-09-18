@@ -190,18 +190,21 @@ const Hero = () => {
             }}
           />
 
-          {/* Decorative floating shoe SVGs - only when there are multiple slides */}
-          {decorations.length > 0 && slides.length > 1 && decorations.map((d, i) => (
-            <motion.img
-              key={i}
-              src={d}
-              alt={`deco-${i}`}
-              className={`hero-deco deco-${i}`}
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: [0, 1, 1], scale: [0.85, 1, 0.95], y: [0, -8, 0] }}
-              transition={{ duration: 5 + i, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut', delay: i * 0.2 }}
-            />
-          ))}
+          {/* Decorative floating shoe SVGs - only when there are multiple slides and not duplicating the main image */}
+          {decorations.length > 0 && slides.length > 1 && decorations.map((d, i) => {
+            if (d === slides[currentSlide].image) return null;
+            return (
+              <motion.img
+                key={`deco-${i}`}
+                src={d}
+                alt={`deco-${i}`}
+                className={`hero-deco deco-${i}`}
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: [0, 1, 1], scale: [0.85, 1, 0.95], y: [0, -8, 0] }}
+                transition={{ duration: 5 + i, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut', delay: i * 0.2 }}
+              />
+            );
+          })}
         </motion.div>
       </div>
 
