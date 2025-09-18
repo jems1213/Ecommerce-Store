@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import React, { useState, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { FiArrowRight, FiPlay, FiPause } from 'react-icons/fi';
