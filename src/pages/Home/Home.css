@@ -275,20 +275,85 @@
   .shop-header h1 {
     font-size: 1.8rem;
   }
-  
+
   .new-arrivals-section h2 {
     font-size: 1.6rem;
   }
-  
+
   .shoe-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .search-bar {
     padding: 0.6rem 1rem;
   }
-  
+
   .shop-controls {
     padding: 1rem;
   }
 }
+
+/* Add Shoe button */
+.add-shoe-button {
+  background-color: transparent;
+  border: 1px dashed #2c3e50;
+  color: #2c3e50;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.add-shoe-button:hover {
+  background-color: rgba(44, 62, 80, 0.04);
+}
+
+/* Modal styles */
+.add-shoe-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.add-shoe-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 720px;
+  max-width: calc(100% - 32px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.add-shoe-modal h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #2c3e50;
+}
+
+.add-shoe-form label {
+  display: block;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  margin-top: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.add-shoe-form input,
+.add-shoe-form textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.add-shoe-form textarea { min-height: 80px; resize: vertical; }
+
+.add-shoe-form button { padding: 0.6rem 1rem; border-radius: 6px; border: none; cursor: pointer; }
+
+.add-shoe-form button:first-of-type { background: #eee; color: #2c3e50; }
+.add-shoe-form button:last-of-type { background: #2c3e50; color: white; }
