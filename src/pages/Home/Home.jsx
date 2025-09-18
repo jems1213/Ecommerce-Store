@@ -17,6 +17,11 @@ const Home = () => {
   const [shoes, setShoes] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
+  // Frontend-only local shoes (persisted in localStorage)
+  const [localShoes, setLocalShoes] = useState([]);
+  const [showAddShoeModal, setShowAddShoeModal] = useState(false);
+  const [newShoe, setNewShoe] = useState({ name: '', brand: '', price: '', images: '', colors: '', sizes: '', discount: '', isNew: false, description: '' });
+
   // Fetch shoes from backend
   useEffect(() => {
     const fetchShoes = async () => {
