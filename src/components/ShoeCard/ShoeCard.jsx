@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { FaStar, FaShoppingCart, FaTimes, FaChevronLeft, FaChevronRight, FaHeart } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import './ShoeCard.css';
+import defaultShoe from '../../assets/default-shoe.svg';
 
 const ShoeCard = ({ shoe }) => {
   const { addToCart, cartItems } = useCart();
