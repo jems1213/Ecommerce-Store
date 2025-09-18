@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { FiArrowRight, FiPlay, FiPause } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
@@ -6,14 +7,14 @@ import shoe1 from '../../assets/hero-shoe1.svg';
 import shoe2 from '../../assets/hero-shoe2.svg';
 import shoe3 from '../../assets/hero-shoe3.svg';
 
-
-
 import './Hero.css';
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
   const controls = useAnimation();
+
+  const decorations = [shoe1, shoe2, shoe3];
 
   const slides = [
     {
