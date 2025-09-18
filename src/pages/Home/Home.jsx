@@ -77,6 +77,8 @@ const Home = () => {
     >
       <Hero />
 
+      <SampleShoes variant="hero" />
+
       <div className="shop-section">
         <motion.div 
           className="shop-header"
