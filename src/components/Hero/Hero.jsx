@@ -21,7 +21,7 @@ const Hero = () => {
       subtitle: "NEW COLLECTION 2025",
       description: "Discover the latest trends in premium footwear",
       cta: "Shop Now",
-      image: shoe2,
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
       bgColor: "#f5f5f5",
       textColor: "#000"
     },
@@ -30,8 +30,8 @@ const Hero = () => {
       subtitle: "BUSINESS ELEGANCE",
       description: "Professional footwear for the modern executive",
       cta: "Explore",
-      image: shoe1,
-      bgColor: "#000",
+      image: "https://wallpapercave.com/wp/wp2896922.jpg",
+      bgColor: "#071A2F",
       textColor: "#fff"
     },
     {
@@ -39,6 +39,7 @@ const Hero = () => {
       subtitle: "ATHLETIC INNOVATION",
       description: "Cutting-edge technology for peak performance",
       cta: "View Tech",
+      image: "https://www.freepnglogos.com/uploads/shoes-png/download-nike-shoes-transparent-png-for-designing-projects-16.png",
       image: shoe3,
       bgColor: "#e74c3c",
       textColor: "#fff"
