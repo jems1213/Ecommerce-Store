@@ -102,7 +102,17 @@ const Home = () => {
             </svg>
           </motion.div>
 
-          <motion.button 
+          <motion.button
+            className="add-shoe-button"
+            onClick={() => setShowAddShoeModal(true)}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            style={{ marginLeft: '12px' }}
+          >
+            + Add Shoe
+          </motion.button>
+
+          <motion.button
             className="mobile-filter-toggle"
             onClick={() => setShowFilters(!showFilters)}
             whileHover={{ scale: 1.05 }}
