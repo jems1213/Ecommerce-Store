@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { FiArrowRight, FiPlay, FiPause } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import shoe1 from './shoe1.png'; // ✅ Local image import
-import shoe2 from './shoe2.png'; // ✅ Local image import
-import shoe3 from './shoe3.png'; // ✅ Local image import
+import shoe1 from '../../assets/hero-shoe1.svg';
+import shoe2 from '../../assets/hero-shoe2.svg';
+import shoe3 from '../../assets/hero-shoe3.svg';
 
 
 
