@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="100%" height="100%" fill="#f5f5f5" rx="24"/>
+  <g transform="translate(60,100)">
+    <rect x="0" y="220" width="680" height="120" rx="60" fill="#e6e7e8"/>
+    <path d="M100 220c40-60 220-140 340-60s120 80 120 80v40H100z" fill="#111827" opacity="0.08"/>
+    <ellipse cx="300" cy="260" rx="90" ry="40" fill="#3b82f6" />
+  </g>
+  <text x="40" y="40" fill="#111827" font-family="sans-serif" font-size="22">Hero Shoe 2</text>
+</svg>
