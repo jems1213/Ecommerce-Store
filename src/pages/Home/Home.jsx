@@ -4,7 +4,7 @@ import ShoeCard from '../../components/ShoeCard/ShoeCard';
 import Hero from '../../components/Hero/Hero';
 import Newsletter from '../../components/Newsletter/Newsletter';
 import './Home.css';
-import axios from 'axios';
+import api, { API_BASE } from '../../utils/apiClient';
 
 const Home = () => {
   const [filter, setFilter] = useState('all');
@@ -29,7 +29,7 @@ const Home = () => {
           featured: true
         };
 
-        const response = await axios.get('http://localhost:5000/api/shoes', { params });
+        const response = await api.get('/api/shoes', { params });
         setShoes(response.data.data.shoes || []);
       } catch (error) {
         console.error('Error fetching shoes:', error);
