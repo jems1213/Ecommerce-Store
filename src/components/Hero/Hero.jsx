@@ -41,7 +41,6 @@ const Hero = () => {
       description: "Cutting-edge technology for peak performance",
       cta: "View Tech",
       image: "https://www.freepnglogos.com/uploads/shoes-png/download-nike-shoes-transparent-png-for-designing-projects-16.png",
-      image: shoe3,
       bgColor: "#e74c3c",
       textColor: "#fff"
     }
