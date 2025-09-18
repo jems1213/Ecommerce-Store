@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE } from '../../utils/apiClient';
 import { FiUser, FiMail, FiLock, FiCalendar, FiArrowRight, FiAlertCircle } from 'react-icons/fi';
