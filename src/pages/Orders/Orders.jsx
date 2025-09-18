@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api, { API_BASE } from '../../utils/apiClient';
 import axios from 'axios';
 import {
   Box,
@@ -171,7 +173,7 @@ const Order = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:5000/api/orders', {
+        const response = await api.get('/api/orders', {
           headers: {
             Authorization: `Bearer ${token}`
           }
