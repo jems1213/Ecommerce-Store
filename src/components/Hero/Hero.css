@@ -106,7 +106,7 @@
   position: relative;
 }
 
-.hero-image { max-height: 85%; max-width: 85%; transform: rotate(-7deg); box-shadow: 0 30px 60px rgba(7,26,47,0.6); border-radius: 12px; }
+.hero-image { max-height: 85%; max-width: 85%; transform: rotate(-7deg); box-shadow: 0 30px 60px rgba(7,26,47,0.6); border-radius: 12px; z-index: 3; position: relative; }
 
 .hero-image {
   max-height: 100%;
