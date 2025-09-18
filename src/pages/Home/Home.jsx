@@ -37,7 +37,10 @@ const Home = () => {
         };
 
         const response = await api.get('/api/shoes', { params });
-        setShoes(response.data.data.shoes || []);
+        const fetched = response.data.data.shoes || [];
+        const storedLocal = JSON.parse(localStorage.getItem('localShoes') || '[]');
+        setLocalShoes(storedLocal);
+        setShoes([...(storedLocal || []), ...fetched]);
       } catch (error) {
         console.error('Error fetching shoes:', error);
         setShoes([]);
