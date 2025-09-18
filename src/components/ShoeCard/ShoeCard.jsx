@@ -5,6 +5,7 @@ import { FaStar, FaShoppingCart, FaTimes, FaChevronLeft, FaChevronRight, FaHeart
 import { useCart } from '../../context/CartContext';
 import './ShoeCard.css';
 import defaultShoe from '../../assets/default-shoe.svg';
+import shoe2 from '../../assets/hero-shoe2.svg';
 
 const ShoeCard = ({ shoe }) => {
   const { addToCart, cartItems } = useCart();
