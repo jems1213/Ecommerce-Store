@@ -190,8 +190,8 @@ const Hero = () => {
             }}
           />
 
-          {/* Decorative floating shoe SVGs */}
-          {decorations.map((d, i) => (
+          {/* Decorative floating shoe SVGs - only when there are multiple slides */}
+          {decorations.length > 0 && slides.length > 1 && decorations.map((d, i) => (
             <motion.img
               key={i}
               src={d}
