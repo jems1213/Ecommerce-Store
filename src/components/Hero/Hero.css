@@ -115,6 +115,20 @@
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
 }
 
+/* Decorative floating shoes */
+.hero-deco {
+  position: absolute;
+  width: 160px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.95;
+  filter: drop-shadow(0 20px 40px rgba(7,26,47,0.35));
+}
+
+.hero-deco.deco-0 { left: 6%; top: 20%; transform: rotate(-10deg); }
+.hero-deco.deco-1 { right: 8%; top: 8%; width: 220px; transform: rotate(6deg); }
+.hero-deco.deco-2 { right: 22%; top: 42%; width: 180px; transform: rotate(-6deg); }
+
 /* Controls */
 .hero-controls {
   position: absolute;
