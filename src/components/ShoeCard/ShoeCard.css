@@ -112,16 +112,6 @@
   z-index: 2;
 }
 
-.card-deco {
-  position: absolute;
-  right: -14px;
-  bottom: -12px;
-  width: 72px;
-  opacity: 0.9;
-  transform: rotate(10deg);
-  filter: drop-shadow(0 14px 30px rgba(7,26,47,0.12));
-  z-index: 1;
-}
 
 .image-nav {
   position: absolute;
