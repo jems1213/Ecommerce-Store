@@ -4,10 +4,17 @@
 .sample-item img { width: 100%; height: auto; max-width: 160px; object-fit: contain; transform: rotate(-6deg); }
 
 /* variant: hero-style */
-.sample-shoes-hero { position: relative; margin-top: -6rem; margin-bottom: 2rem; }
+.sample-shoes-hero { position: relative; margin-top: -6rem; margin-bottom: 2rem; display:flex; justify-content:center; }
 .sample-shoes-hero .sample-item { background: transparent; box-shadow: none; }
+.sample-hero-wrap { width: 100%; display:flex; justify-content:center; }
+.sample-hero-image { width: 90%; max-width: 980px; border-radius: 12px; box-shadow: 0 18px 60px rgba(7,26,47,0.25); object-fit:cover; display:block; }
+
+@media (max-width: 1024px) {
+  .sample-hero-image { width: 95%; max-width: 700px; }
+}
 
 @media (max-width: 768px) {
   .sample-inner { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 0.75rem; }
   .sample-item img { max-width: 120px; }
+  .sample-hero-image { width: 100%; border-radius: 8px; box-shadow: 0 12px 40px rgba(7,26,47,0.18); }
 }
