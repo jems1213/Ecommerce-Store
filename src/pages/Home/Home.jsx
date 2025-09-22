@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ShoeCard from '../../components/ShoeCard/ShoeCard';
 import Hero from '../../components/Hero/Hero';
-import SampleShoes from '../../components/SampleShoes/SampleShoes';
 import Newsletter from '../../components/Newsletter/Newsletter';
 import './Home.css';
 import api, { API_BASE } from '../../utils/apiClient';
