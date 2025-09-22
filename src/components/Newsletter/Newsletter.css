@@ -10,12 +10,12 @@
 .newsletter::before {
   content: '';
   position: absolute;
-  top: -50px;
+  top: -30px;
   left: 0;
   width: 100%;
-  height: 100px;
-  background: var(--white);
-  transform: skewY(-3deg);
+  height: 60px;
+  background: var(--primary-bg, #071A2F);
+  transform: skewY(-2deg);
   z-index: 1;
 }
 
