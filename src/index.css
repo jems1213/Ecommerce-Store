@@ -1,8 +1,8 @@
 /* Centralized theme variables and base styles */
 :root {
   /* Palette - compatible combinations */
-  --primary-bg: #071A2F; /* deep navy */
-  --surface-bg: #071A2F;
+  --primary-bg: #2C3E50; /* updated primary */
+  --surface-bg: #2C3E50;
   --card-bg: #ffffff;
 
   --accent-color: #ff6b35; /* vivid orange */
