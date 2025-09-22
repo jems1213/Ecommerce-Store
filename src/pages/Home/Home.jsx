@@ -37,7 +37,19 @@ const Home = () => {
         };
 
         const response = await api.get('/api/shoes', { params });
-        const fetched = response.data.data.shoes || [];
+        const res = response?.data;
+        let fetched = [];
+        if (Array.isArray(res)) {
+          fetched = res;
+        } else if (Array.isArray(res?.data)) {
+          fetched = res.data;
+        } else if (Array.isArray(res?.data?.shoes)) {
+          fetched = res.data.shoes;
+        } else if (Array.isArray(res?.shoes)) {
+          fetched = res.shoes;
+        } else {
+          fetched = [];
+        }
         const storedLocal = JSON.parse(localStorage.getItem('localShoes') || '[]');
         setLocalShoes(storedLocal);
         setShoes([...(storedLocal || []), ...fetched]);
