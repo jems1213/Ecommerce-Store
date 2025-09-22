@@ -64,6 +64,9 @@ function App() {
                   <Route path="/wishlist" element={<WishlistPage />} />
                 </Routes>
               </AnimatePresence>
+
+              <Footer />
+
             </CartProvider>
           </UserProvider>
         </AuthProvider>
