@@ -89,7 +89,7 @@ const Home = () => {
     >
       <Hero />
 
-      <SampleShoes variant="hero" />
+      <SampleShoes variant="hero" heroImage="https://cdn.builder.io/api/v1/image/assets%2Fd7feb1a142b342fbacaee745f4047570%2Fcb13fca5050d48e7bc72884210134178?format=webp&width=800" />
 
       <div className="shop-section">
         <motion.div 
