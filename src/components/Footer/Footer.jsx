@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
-import Newsletter from '../Newsletter/Newsletter';
 import './Footer.css';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -56,11 +58,19 @@ const Footer = () => {
           </div>
 
           <div className="footer-col footer-newsletter">
-            <Newsletter />
+            <div className="newsletter-compact">
+              <h4>Stay Updated</h4>
+              <p>Subscribe for latest releases & exclusive offers</p>
+              <form className="newsletter-compact-form" onSubmit={(e)=>e.preventDefault()}>
+                <input type="email" placeholder="Your email address" aria-label="Email" required />
+                <button type="submit">Subscribe</button>
+              </form>
+            </div>
+
             <div className="payment-logos" aria-hidden>
-              <img src="/public/vite.svg" alt="payment" />
-              <img src="/public/vite.svg" alt="payment" />
-              <img src="/public/vite.svg" alt="payment" />
+              <img src="/vite.svg" alt="payment" />
+              <img src="/vite.svg" alt="payment" />
+              <img src="/vite.svg" alt="payment" />
             </div>
           </div>
         </div>
