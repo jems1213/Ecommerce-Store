@@ -25,7 +25,7 @@ const Hero = () => {
       description: "Professional footwear for the modern executive",
       cta: "Explore",
       image: "https://wallpapercave.com/wp/wp2896922.jpg",
-      bgColor: "#071A2F",
+      bgColor: "#2C3E50",
       textColor: "#fff"
     },
     {

@@ -124,9 +124,6 @@ const ShoeCard = ({ shoe }) => {
             className="shoe-image"
             onError={(e) => e.target.src = defaultShoe}
           />
-          {(!images || images.length === 0 || (images[0] === defaultShoe)) && (
-            <img src={shoe2} alt="decor" className="card-deco" aria-hidden />
-          )}
           {images.length > 1 && (
             <div className="image-nav">
               <button className="nav-button prev" onClick={(e) => { e.stopPropagation(); setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length); }}>

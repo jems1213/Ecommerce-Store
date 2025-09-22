@@ -27,7 +27,14 @@ const Collection = () => {
         };
 
         const response = await api.get('/api/shoes', { params });
-        setShoes(response.data.data.shoes || []);
+        const res = response?.data;
+        let fetched = [];
+        if (Array.isArray(res)) fetched = res;
+        else if (Array.isArray(res?.data)) fetched = res.data;
+        else if (Array.isArray(res?.data?.shoes)) fetched = res.data.shoes;
+        else if (Array.isArray(res?.shoes)) fetched = res.shoes;
+        else fetched = [];
+        setShoes(fetched);
       } catch (error) {
         console.error('Error fetching shoes:', error);
         setShoes([]);

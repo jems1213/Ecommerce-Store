@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ShoeCard from '../../components/ShoeCard/ShoeCard';
 import Hero from '../../components/Hero/Hero';
-import SampleShoes from '../../components/SampleShoes/SampleShoes';
 import Newsletter from '../../components/Newsletter/Newsletter';
 import './Home.css';
 import api, { API_BASE } from '../../utils/apiClient';
@@ -37,7 +36,19 @@ const Home = () => {
         };
 
         const response = await api.get('/api/shoes', { params });
-        const fetched = response.data.data.shoes || [];
+        const res = response?.data;
+        let fetched = [];
+        if (Array.isArray(res)) {
+          fetched = res;
+        } else if (Array.isArray(res?.data)) {
+          fetched = res.data;
+        } else if (Array.isArray(res?.data?.shoes)) {
+          fetched = res.data.shoes;
+        } else if (Array.isArray(res?.shoes)) {
+          fetched = res.shoes;
+        } else {
+          fetched = [];
+        }
         const storedLocal = JSON.parse(localStorage.getItem('localShoes') || '[]');
         setLocalShoes(storedLocal);
         setShoes([...(storedLocal || []), ...fetched]);
@@ -76,8 +87,6 @@ const Home = () => {
       className="home-page"
     >
       <Hero />
-
-      <SampleShoes variant="hero" />
 
       <div className="shop-section">
         <motion.div 
