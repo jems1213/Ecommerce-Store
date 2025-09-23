@@ -187,6 +187,7 @@ const Hero = () => {
               className="hero-3d"
               src={slides[currentSlide].modelUrl}
               alt={slides[currentSlide].title}
+              rotationPerSecond={'-20deg'}
             />
           ) : (
             <motion.img
