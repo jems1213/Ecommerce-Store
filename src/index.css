@@ -1,7 +1,7 @@
 /* Centralized theme variables and base styles */
 :root {
   /* Palette - compatible combinations */
-  --primary-bg: #1D4ED8; /* updated primary */
+  --primary-bg: var(--primary); /* updated primary */
   --surface-bg: #1D4ED8;
   --card-bg: #ffffff;
 
