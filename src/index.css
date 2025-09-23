@@ -8,6 +8,7 @@
   --accent-color: #ff6b35; /* vivid orange */
   --accent-2: #ff9f1c; /* warm yellow */
   --accent-3: #1fb6ff; /* bright cyan for highlights */
+  --message-icon-color: #1D4ED8; /* message/chat icon blue */
 
   --text-on-dark: rgba(230,238,247,1);
   --text-on-light: #0f1723;
