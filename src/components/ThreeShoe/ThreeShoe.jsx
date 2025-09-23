@@ -117,7 +117,7 @@ const ThreeShoeCanvas = ({ className, color = '#ff6b35', accent = '#222', modelU
 
   return (
     <div className={`three-shoe-wrapper ${className || ''}`}>
-      <Canvas camera={{ position: [0, 1.25, 3.6], fov: 36 }} shadows dpr={[1, 2]} {...canvasProps}>
+      <Canvas camera={{ position: [0, 1.25, 3.6], fov: 36 }} shadows dpr={[1, 2]} {...canvasProps} gl={{ alpha: true }} style={{ background: 'transparent' }}>
         {/* tweak lights per slide via lighting props */}
         <ambientLight intensity={lighting.ambient ?? 0.6} />
         <directionalLight intensity={lighting.key ?? 0.9} position={lighting.keyPos ?? [5, 10, 5]} castShadow />
