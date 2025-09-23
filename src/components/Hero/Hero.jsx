@@ -23,7 +23,7 @@ const Hero = () => {
       threeD: true,
       color: '#ff6b35',
       accent: '#1b1b1b',
-      modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/MaterialsVariantsShoe/glTF-Binary/MaterialsVariantsShoe.glb',
+      modelUrl: 'https://cdn.builder.io/o/assets%2Fad449939a7dd4bddae2e1ca210d150b7%2F71c1fad73ac548e49cde1c0999a6da01?alt=media&token=cd0c873a-dfa6-4b7f-8805-876a7a8c80be&apiKey=ad449939a7dd4bddae2e1ca210d150b7',
       lighting: { ambient: 0.55, key: 0.9, keyPos: [4, 8, 4], fill: 0.25 }
     },
     {
@@ -37,7 +37,7 @@ const Hero = () => {
       threeD: true,
       color: '#ffffff',
       accent: '#e74c3c',
-      modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/MaterialsVariantsShoe/glTF-Binary/MaterialsVariantsShoe.glb',
+      modelUrl: 'https://cdn.builder.io/o/assets%2Fad449939a7dd4bddae2e1ca210d150b7%2F71c1fad73ac548e49cde1c0999a6da01?alt=media&token=cd0c873a-dfa6-4b7f-8805-876a7a8c80be&apiKey=ad449939a7dd4bddae2e1ca210d150b7',
       lighting: { ambient: 0.45, key: 1.1, keyPos: [6, 12, 6], fill: 0.35 }
     },
     {
@@ -51,7 +51,7 @@ const Hero = () => {
       threeD: true,
       color: '#0d6efd',
       accent: '#0b2545',
-      modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/MaterialsVariantsShoe/glTF-Binary/MaterialsVariantsShoe.glb',
+      modelUrl: 'https://cdn.builder.io/o/assets%2Fad449939a7dd4bddae2e1ca210d150b7%2F71c1fad73ac548e49cde1c0999a6da01?alt=media&token=cd0c873a-dfa6-4b7f-8805-876a7a8c80be&apiKey=ad449939a7dd4bddae2e1ca210d150b7',
       lighting: { ambient: 0.6, key: 0.9, keyPos: [5, 9, 5], fill: 0.3 }
     }
   ];
