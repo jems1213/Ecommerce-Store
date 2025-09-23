@@ -297,4 +297,15 @@
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
   }
+
+  /* Smaller 3D canvas on phones to preserve viewport space */
+  .hero-3d {
+    max-height: 40vh;
+    max-width: 100%;
+    transform: rotate(0deg);
+  }
+
+  .hero-3d canvas {
+    transform: rotate(0deg) !important;
+  }
 }
