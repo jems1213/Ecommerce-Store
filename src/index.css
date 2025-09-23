@@ -21,7 +21,7 @@
 
   /* legacy aliases for compatibility */
   --primary: var(--accent-color);
-  --primary-color: var(--primary-bg);
+  --primary-color: var(--accent-color);
   --accent: var(--accent-color);
   --white: #ffffff;
   --black: #000000;
