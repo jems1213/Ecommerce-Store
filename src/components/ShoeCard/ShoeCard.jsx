@@ -31,6 +31,9 @@ const ShoeCard = ({ shoe }) => {
   const [showQuickView, setShowQuickView] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const hoverInterval = useRef(null);
+  const quickviewPanelRef = useRef(null);
+  const closeButtonRef = useRef(null);
+  const lastActiveElRef = useRef(null);
 
   useEffect(() => {
     // Rotate images while hovered (carousel preview)
@@ -52,15 +55,52 @@ const ShoeCard = ({ shoe }) => {
     }
   }, [id]);
 
-  // Prevent background scroll when quick view is open
+  // Prevent background scroll and trap focus when quick view is open
   useEffect(() => {
-    const prev = document.body.style.overflow;
+    const prevOverflow = document.body.style.overflow;
+
+    const handleKeydown = (e) => {
+      if (e.key === 'Escape') {
+        setShowQuickView(false);
+      }
+      if (e.key === 'Tab' && quickviewPanelRef.current) {
+        // basic focus trap
+        const focusable = quickviewPanelRef.current.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+        if (!focusable || focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    };
+
     if (showQuickView) {
+      lastActiveElRef.current = document.activeElement;
       document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeydown);
+      // focus close button after render
+      setTimeout(() => {
+        if (closeButtonRef.current) closeButtonRef.current.focus();
+      }, 0);
     } else {
-      document.body.style.overflow = prev || '';
+      document.body.style.overflow = prevOverflow || '';
     }
-    return () => { document.body.style.overflow = prev || ''; };
+
+    return () => {
+      document.body.style.overflow = prevOverflow || '';
+      window.removeEventListener('keydown', handleKeydown);
+      // restore focus
+      try { lastActiveElRef.current && lastActiveElRef.current.focus(); } catch (e) {}
+    };
   }, [showQuickView]);
 
   const finalPrice = discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : price.toFixed(2);
