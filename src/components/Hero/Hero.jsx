@@ -61,7 +61,7 @@ const Hero = () => {
     if (autoPlay) {
       interval = setInterval(() => {
         nextSlide();
-      }, 5000);
+      }, 8000);
     }
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -187,6 +187,7 @@ const Hero = () => {
               className="hero-3d"
               src={slides[currentSlide].modelUrl}
               alt={slides[currentSlide].title}
+              rotationPerSecond={'100deg'}
             />
           ) : (
             <motion.img

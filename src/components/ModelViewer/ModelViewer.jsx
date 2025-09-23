@@ -3,7 +3,7 @@ import './ModelViewer.css';
 
 const MODEL_VIEWER_SRC = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
 
-const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) => {
+const ModelViewer = ({ src, alt = '3D model', className = '', poster = null, autoRotate = true, rotationPerSecond = '30deg' }) => {
   const mvRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
@@ -78,8 +78,8 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
     if (poster) el.setAttribute('poster', poster);
 
     el.setAttribute('ar', '');
-    el.setAttribute('auto-rotate', '');
-    el.setAttribute('rotation-per-second', '100deg');
+    if (autoRotate) el.setAttribute('auto-rotate', '');
+    if (rotationPerSecond) el.setAttribute('rotation-per-second', rotationPerSecond);
     el.setAttribute('camera-controls', '');
     el.setAttribute('exposure', '1');
     el.setAttribute('shadow-intensity', '1');
