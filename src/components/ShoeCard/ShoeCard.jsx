@@ -52,6 +52,17 @@ const ShoeCard = ({ shoe }) => {
     }
   }, [id]);
 
+  // Prevent background scroll when quick view is open
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    if (showQuickView) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = prev || '';
+    }
+    return () => { document.body.style.overflow = prev || ''; };
+  }, [showQuickView]);
+
   const finalPrice = discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : price.toFixed(2);
 
   const handleAddToCart = (e) => {
