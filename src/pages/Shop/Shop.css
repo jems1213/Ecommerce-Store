@@ -91,7 +91,7 @@
   font-weight: 600;
 }
 .filter-toggle {
-  background-color: #1D4ED8;
+  background-color: var(--primary);
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
