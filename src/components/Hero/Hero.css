@@ -232,17 +232,27 @@
 
 /* Responsive */
 @media (max-width: 992px) {
+  /* Allow hero to shrink on smaller screens so 3D canvas is visible */
+  .hero {
+    min-height: 0;
+    height: auto;
+    padding-bottom: 2rem;
+  }
+
   .hero-container {
     flex-direction: column;
     justify-content: center;
     text-align: center;
     padding-top: 5rem;
+    height: auto;
   }
 
   .hero-content {
     padding-right: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     max-width: 100%;
+    order: 1;
+    z-index: 5;
   }
 
   .hero-title {
@@ -255,14 +265,41 @@
   }
 
   .hero-image {
-    max-height: 50vh;
+    max-height: 40vh;
+  }
+
+  /* Ensure 3D canvas scales nicely on tablet and mobile */
+  .hero-3d {
+    max-height: 45vh;
+    max-width: 100%;
+    transform: rotate(0deg);
+    order: 2;
+    z-index: 4;
+  }
+
+  .hero-3d canvas {
+    transform: rotate(0deg) !important;
+    border-radius: 12px;
+  }
+
+  .hero-image-container {
+    padding: 0 1rem;
+    height: 45vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 @media (max-width: 576px) {
   .hero {
+    min-height: 0;
     height: auto;
-    padding: 5rem 0;
+    padding: 4rem 0;
+  }
+
+  .hero-container {
+    height: auto;
   }
 
   .hero-title {
@@ -280,5 +317,27 @@
   .hero-button {
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
+  }
+
+  /* Ensure the model is visible but compact on phones */
+  .hero-image-container {
+    height: 40vh;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-3d {
+    max-height: 40vh;
+    max-width: 100%;
+    transform: rotate(0deg);
+    z-index: 4;
+  }
+
+  .hero-3d canvas {
+    transform: rotate(0deg) !important;
+    width: auto !important;
+    height: 100% !important;
   }
 }

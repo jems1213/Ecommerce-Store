@@ -36,7 +36,7 @@ const Hero = () => {
       threeD: true,
       color: '#ffffff',
       accent: '#e74c3c',
-      modelUrl: 'https://cdn.builder.io/o/assets%2Fad449939a7dd4bddae2e1ca210d150b7%2F46e23d39ee9a412ba423c502db72469a?alt=media&token=f333f103-13c5-421d-bde6-75a53f118aea&apiKey=ad449939a7dd4bddae2e1ca210d150b7',
+      modelUrl: 'https://cdn.builder.io/o/assets%2F6a0d17144ec44352910fe93bc426f48e%2Fdce3d7b51e7345a9a4e2cd678522cc44?alt=media&token=b3c718c7-e14f-4882-bcca-13bb55672655&apiKey=6a0d17144ec44352910fe93bc426f48e',
       lighting: { ambient: 0.45, key: 1.1, keyPos: [6, 12, 6], fill: 0.35 }
     },
     {
@@ -50,7 +50,7 @@ const Hero = () => {
       threeD: true,
       color: '#0d6efd',
       accent: '#0b2545',
-      modelUrl: 'https://cdn.builder.io/o/assets%2Fad449939a7dd4bddae2e1ca210d150b7%2F46e23d39ee9a412ba423c502db72469a?alt=media&token=f333f103-13c5-421d-bde6-75a53f118aea&apiKey=ad449939a7dd4bddae2e1ca210d150b7',
+      modelUrl: 'https://cdn.builder.io/o/assets%2F6a0d17144ec44352910fe93bc426f48e%2F315fc71e2cbd4700837d80ef82e5f778?alt=media&token=d0cad0e5-f48b-4fd3-96bc-ca71114c2b7d&apiKey=6a0d17144ec44352910fe93bc426f48e',
       lighting: { ambient: 0.6, key: 0.9, keyPos: [5, 9, 5], fill: 0.3 }
     }
   ];
@@ -186,6 +186,7 @@ const Hero = () => {
               key={`mv-${currentSlide}-${slides[currentSlide].modelUrl}`}
               className="hero-3d"
               src={slides[currentSlide].modelUrl}
+              poster={slides[currentSlide].image}
               alt={slides[currentSlide].title}
               rotationPerSecond={'100deg'}
             />
