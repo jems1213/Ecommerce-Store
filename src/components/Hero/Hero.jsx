@@ -3,6 +3,7 @@ import { motion, useAnimation } from 'framer-motion';
 import { FiArrowRight, FiPlay, FiPause } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import './Hero.css';
+import ThreeShoe from '../ThreeShoe/ThreeShoe';
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -163,19 +164,8 @@ const Hero = () => {
           animate={controls}
           key={`image-${currentSlide}`}
         >
-          <motion.img
-            src={slides[currentSlide].image}
-            alt={slides[currentSlide].title}
-            className="hero-image"
-            animate={{
-              y: [0, -15, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
+          {/* Replaced static hero image with an interactive 3D shoe canvas */}
+          <ThreeShoe className="hero-3d" />
 
         </motion.div>
       </div>
