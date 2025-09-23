@@ -35,7 +35,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary);
+  color: var(--message-icon-color);
 }
 
 .newsletter h2 {
