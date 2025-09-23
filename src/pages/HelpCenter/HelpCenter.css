@@ -172,6 +172,10 @@
   color: white;
 }
 
+.chat-button svg {
+  color: var(--message-icon-color);
+}
+
 .chat-button:hover {
   background-color: #333;
 }
