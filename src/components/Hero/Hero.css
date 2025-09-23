@@ -293,8 +293,13 @@
 
 @media (max-width: 576px) {
   .hero {
+    min-height: 0;
     height: auto;
-    padding: 5rem 0;
+    padding: 4rem 0;
+  }
+
+  .hero-container {
+    height: auto;
   }
 
   .hero-title {
@@ -314,14 +319,25 @@
     font-size: 0.9rem;
   }
 
-  /* Smaller 3D canvas on phones to preserve viewport space */
+  /* Ensure the model is visible but compact on phones */
+  .hero-image-container {
+    height: 40vh;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .hero-3d {
     max-height: 40vh;
     max-width: 100%;
     transform: rotate(0deg);
+    z-index: 4;
   }
 
   .hero-3d canvas {
     transform: rotate(0deg) !important;
+    width: auto !important;
+    height: 100% !important;
   }
 }
