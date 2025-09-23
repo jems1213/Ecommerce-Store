@@ -55,7 +55,8 @@ const Footer = () => {
               <h4>Support</h4>
               <ul>
                 <li><Link to="/help">Help Center</Link></li>
-                <li><Link to="/shipping">Shipping & Returns</Link></li>
+                <li><Link to="/shipping">Shipping</Link></li>
+                <li><Link to="/returns">Returns</Link></li>
                 <li><Link to="/size-guide">Size Guide</Link></li>
                 <li><Link to="/contact">Contact Us</Link></li>
               </ul>
