@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PresentationControls, ContactShadows, Float, useGLTF, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import './ThreeShoe.css';
+import ModelErrorBoundary from './ModelErrorBoundary';
 
 const ShoeMesh = ({ color = '#ff6b35', accent = '#222' }) => {
   const ref = useRef();
