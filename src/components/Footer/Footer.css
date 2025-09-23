@@ -53,28 +53,30 @@
 .contact-item{display:flex;align-items:center;gap:0.6rem}
 .contact-icon{min-width:18px}
 
-.socials a{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.08);color:var(--white);text-decoration:none;margin-right:0.5rem;transition:all 0.2s}
-.socials a:hover{background:var(--white);color:var(--accent);transform:translateY(-3px)}
+.socials a{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.08);color:var(--white);text-decoration:none;margin-right:0.5rem;transition:transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms ease, background 220ms ease, color 220ms ease}
+.socials a:hover{transform:translateY(-6px) scale(1.06);box-shadow:0 10px 22px rgba(0,0,0,0.18);background:var(--white);color:var(--accent)}
 
 .footer-links{display:flex;gap:1rem;grid-column:span 5}
 .footer-column h4{color:var(--white);margin-bottom:0.6rem;font-size:1.15rem;font-weight:700}
 .footer-column ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem}
-.footer-column a{color:rgba(255,255,255,0.9);text-decoration:none}
-.footer-column a:hover{color:var(--footer-bg);background:rgba(255,255,255,0.06);padding:0.2rem 0.5rem;border-radius:6px}
+.footer-column a{color:rgba(255,255,255,0.9);text-decoration:none;position:relative;display:inline-block;transition:color 220ms ease, transform 220ms ease}
+.footer-column a:hover{color:var(--white);transform:translateX(6px)}
+.footer-column a::after,.footer-links-inline a::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:var(--white);transition:width 220ms ease}
+.footer-column a:hover::after,.footer-links-inline a:hover::after{width:100%}
 
 .newsletter-desc{margin:0 0 0.7rem;color:rgba(255,255,255,0.9);font-size:1rem}
 .newsletter-form{display:flex;gap:0.5rem}
 .newsletter-form input{flex:1;padding:0.9rem 1rem;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--white);outline:none;font-size:1rem;min-width:180px}
 .newsletter-form input::placeholder{color:rgba(255,255,255,0.7)}
 .btn-subscribe{padding:0.9rem 1.1rem;border-radius:999px;border:none;background:var(--accent);color:var(--white);font-weight:700;cursor:pointer;transition:all 0.18s;font-size:1rem}
-.btn-subscribe:hover{background:var(--accent-2);transform:translateY(-2px)}
+.btn-subscribe:hover{background:var(--accent-2);transform:translateY(-4px);box-shadow:0 8px 18px rgba(0,0,0,0.18)}
 
 .newsletter-status{margin-top:0.6rem;color:var(--white);font-weight:600}
 
 .footer-bottom{background:var(--footer-contrast);padding:1rem 0}
 .footer-bottom-row{max-width:1400px;margin:0 auto;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
 .footer-links-inline{display:flex;gap:1rem}
-.footer-links-inline a{color:var(--muted);text-decoration:none;font-size:1rem}
+.footer-links-inline a{color:var(--muted);text-decoration:none;font-size:1rem;position:relative;display:inline-block;transition:color 220ms ease, transform 220ms ease}
 .footer-links-inline a:hover{color:var(--white)}
 
 /* Small helper for screen reader only labels */
