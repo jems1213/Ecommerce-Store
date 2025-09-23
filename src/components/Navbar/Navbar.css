@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #1D4ED8; /* deep navy */
+  --primary-color: var(--primary); /* primary from root */
   --accent-color: #ff6b35; /* vivid orange */
   --accent-2: #ff9f1c;
   --text-color: #e6eef7; /* pale text on dark */
