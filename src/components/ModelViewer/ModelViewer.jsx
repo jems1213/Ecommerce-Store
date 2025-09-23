@@ -71,23 +71,40 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null, aut
     const el = document.createElement('model-viewer');
     el.style.width = '100%';
     el.style.height = '100%';
+    el.style.minHeight = '180px';
     el.style.background = 'transparent';
 
     if (src) el.setAttribute('src', src);
     if (alt) el.setAttribute('alt', alt);
     if (poster) el.setAttribute('poster', poster);
 
+    // Improve mobile visibility and reduce interaction overlays
     el.setAttribute('ar', '');
     if (autoRotate) el.setAttribute('auto-rotate', '');
     if (rotationPerSecond) el.setAttribute('rotation-per-second', rotationPerSecond);
     el.setAttribute('camera-controls', '');
+    el.setAttribute('interaction-prompt', 'none');
+    el.setAttribute('reveal', 'auto');
     el.setAttribute('exposure', '1');
     el.setAttribute('shadow-intensity', '1');
     el.setAttribute('crossorigin', 'anonymous');
 
+    // Listen for model load to ensure it becomes visible; if it fails, fall back to poster
+    const onModelLoad = () => {
+      // nothing for now, but could toggle a state if needed
+    };
+    const onModelError = () => {
+      setScriptError(true);
+    };
+
+    el.addEventListener('load', onModelLoad);
+    el.addEventListener('error', onModelError);
+
     container.appendChild(el);
 
     return () => {
+      el.removeEventListener('load', onModelLoad);
+      el.removeEventListener('error', onModelError);
       if (container.contains(el)) container.removeChild(el);
     };
   }, [src, poster, alt, loaded]);
