@@ -1,6 +1,6 @@
 /* Account.css */
 :root {
-    --primary-color: #1D4ED8;
+    --primary-color: var(--primary);
     --secondary-color: #3498db;
     --accent-color: #e74c3c;
     --text-color: #333;
