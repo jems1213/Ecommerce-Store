@@ -110,9 +110,12 @@ const ShoeCard = ({ shoe }) => {
             {discount > 0 && <span className="badge discount">-{discount}%</span>}
           </div>
           <button
+            type="button"
             className={`favorite-btn ${isWishlisted ? 'wishlisted' : ''}`}
             onClick={toggleWishlist}
             aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            aria-pressed={isWishlisted}
+            title={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
           >
             <FaHeart />
           </button>
@@ -152,10 +155,13 @@ const ShoeCard = ({ shoe }) => {
             {colors.map((color) => (
               <button
                 key={`${id}-${color}`}
+                type="button"
                 className={`color-option ${selectedColor === color ? 'selected' : ''}`}
                 style={{ backgroundColor: color }}
                 onClick={(e) => { e.stopPropagation(); setSelectedColor(color); }}
                 aria-label={`Select color ${color}`}
+                aria-pressed={selectedColor === color}
+                title={`Select color ${color}`}
               />
             ))}
           </div>
@@ -166,12 +172,14 @@ const ShoeCard = ({ shoe }) => {
           </div>
 
           <motion.button
+            type="button"
             className="add-to-cart-btn1"
             onClick={(e) => { e.stopPropagation(); handleAddToCart(); }}
             whileTap={{ scale: 0.95 }}
+            aria-label={`Add ${name} to cart`}
           >
             <FaShoppingCart className="cart-icon" />
-            Add to Cart
+            <span className="add-text">Add to Cart</span>
           </motion.button>
         </div>
       </motion.div>
@@ -255,10 +263,12 @@ const ShoeCard = ({ shoe }) => {
                       {colors.map((color) => (
                         <button
                           key={`popup-${id}-${color}`}
+                          type="button"
                           className={`color-option ${selectedColor === color ? 'selected' : ''}`}
                           style={{ backgroundColor: color }}
                           onClick={() => setSelectedColor(color)}
                           aria-label={`Select color ${color}`}
+                          aria-pressed={selectedColor === color}
                         />
                       ))}
                     </div>
@@ -271,8 +281,11 @@ const ShoeCard = ({ shoe }) => {
                         {sizes.map((size) => (
                           <button
                             key={`popup-${id}-${size}`}
+                            type="button"
                             className={`size-option ${selectedSize === size ? 'selected' : ''}`}
                             onClick={() => setSelectedSize(size)}
+                            aria-pressed={selectedSize === size}
+                            aria-label={`Select size ${size}`}
                           >
                             {size}
                           </button>
