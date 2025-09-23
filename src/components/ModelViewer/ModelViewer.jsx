@@ -80,20 +80,6 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
     );
   }
 
-  // ensure the custom element uses crossorigin for model fetching
-  useEffect(() => {
-    try {
-      const el = mvRef.current && mvRef.current.querySelector('model-viewer');
-      if (el) {
-        el.setAttribute('crossorigin', 'anonymous');
-        // ensure poster is set as fallback source if provided
-        if (poster) el.setAttribute('poster', poster);
-      }
-    } catch (e) {
-      // ignore
-    }
-  }, [loaded, poster]);
-
   return (
     <div className={`modelviewer-wrapper ${className}`} ref={mvRef}>
       {/* Render model-viewer when script is loaded. The element is a custom element and will be upgraded once the script loads. */}
