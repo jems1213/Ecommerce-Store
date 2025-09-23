@@ -7,6 +7,19 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null, aut
   const mvRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia && window.matchMedia('(max-width: 576px)');
+    const setMatch = () => setIsSmallScreen(!!(mq && mq.matches));
+    setMatch();
+    if (mq && mq.addEventListener) mq.addEventListener('change', setMatch);
+    else if (mq && mq.addListener) mq.addListener(setMatch);
+    return () => {
+      if (mq && mq.removeEventListener) mq.removeEventListener('change', setMatch);
+      else if (mq && mq.removeListener) mq.removeListener(setMatch);
+    };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -62,7 +75,7 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null, aut
 
   // Create/replace the model-viewer element whenever src/poster/alt/loaded changes
   useEffect(() => {
-    if (!loaded || !mvRef.current) return;
+    if (!loaded || !mvRef.current || isSmallScreen) return;
     const container = mvRef.current;
 
     // remove existing children to ensure a fresh element
@@ -107,13 +120,22 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null, aut
       el.removeEventListener('error', onModelError);
       if (container.contains(el)) container.removeChild(el);
     };
-  }, [src, poster, alt, loaded]);
+  }, [src, poster, alt, loaded, isSmallScreen]);
 
   // if script failed or not supported, show poster or empty area
   if (scriptError) {
     return (
       <div className={`modelviewer-fallback ${className}`}>
         {poster ? <img src={poster} alt={alt} /> : <div className="modelviewer-placeholder">3D preview unavailable</div>}
+      </div>
+    );
+  }
+
+  // On small screens prefer the poster image to ensure visibility
+  if (isSmallScreen) {
+    return (
+      <div className={`modelviewer-fallback ${className}`}>
+        {poster ? <img src={poster} alt={alt} /> : <div className="modelviewer-placeholder">3D preview unavailable on mobile</div>}
       </div>
     );
   }
