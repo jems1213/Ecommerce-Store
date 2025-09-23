@@ -103,9 +103,21 @@ const ThreeShoeCanvas = ({ className, color = '#ff6b35', accent = '#222', modelU
 
   // if the HEAD is blocked by CORS, we still try to render the model via Suspense; the check simply helps avoid immediate errors.
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // use 'demand' frameloop on mobile to save CPU, otherwise default continuous rendering
+  const canvasProps = isMobile ? { frameloop: 'demand' } : {};
+
   return (
     <div className={`three-shoe-wrapper ${className || ''}`}>
-      <Canvas camera={{ position: [0, 1.25, 3.6], fov: 36 }} shadows dpr={[1, 2]}>
+      <Canvas camera={{ position: [0, 1.25, 3.6], fov: 36 }} shadows dpr={[1, 2]} {...canvasProps}>
         {/* tweak lights per slide via lighting props */}
         <ambientLight intensity={lighting.ambient ?? 0.6} />
         <directionalLight intensity={lighting.key ?? 0.9} position={lighting.keyPos ?? [5, 10, 5]} castShadow />
@@ -113,13 +125,15 @@ const ThreeShoeCanvas = ({ className, color = '#ff6b35', accent = '#222', modelU
 
         <PresentationControls global zoom={0.9} polar={[-0.2, Math.PI / 2]} azimuth={[-Math.PI / 4, Math.PI / 4]}>
           <Float speed={1} rotationIntensity={0.6} floatIntensity={0.6}>
-            <Suspense fallback={<ShoeMesh color={color} accent={accent} />}>
-              {modelUrl && checked && canLoadModel ? (
-                <Model modelUrl={modelUrl} scale={1} color={color} accent={accent} />
-              ) : (
-                <ShoeMesh color={color} accent={accent} />
-              )}
-            </Suspense>
+            <ModelErrorBoundary fallback={<ShoeMesh color={color} accent={accent} />}>
+              <Suspense fallback={<ShoeMesh color={color} accent={accent} />}>
+                {modelUrl && checked && canLoadModel ? (
+                  <Model modelUrl={modelUrl} scale={1} color={color} accent={accent} />
+                ) : (
+                  <ShoeMesh color={color} accent={accent} />
+                )}
+              </Suspense>
+            </ModelErrorBoundary>
           </Float>
         </PresentationControls>
 
