@@ -10,7 +10,7 @@
   --primary: var(--c1);
   --primary-dark: var(--c2);
   --secondary: var(--c3);
-  --light: #f8f8f8;
+  --light: var(--c5);
   --gray: #e0e0e0;
   --dark-gray: #777;
   --white: #ffffff;
