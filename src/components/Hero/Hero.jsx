@@ -203,12 +203,11 @@ const Hero = () => {
         >
           {/* Render a 3D shoe for slides that enable it, otherwise fallback to image */}
           {slides[currentSlide].threeD ? (
-            <ThreeShoe
+            <ModelViewer
               className="hero-3d"
-              color={slides[currentSlide].color}
-              accent={slides[currentSlide].accent}
-              modelUrl={slides[currentSlide].modelUrl}
-              lighting={slides[currentSlide].lighting}
+              src={slides[currentSlide].modelUrl}
+              alt={slides[currentSlide].title}
+              poster={slides[currentSlide].image}
             />
           ) : (
             <motion.img
