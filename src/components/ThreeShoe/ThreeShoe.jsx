@@ -128,9 +128,9 @@ const ThreeShoeCanvas = ({ className, color = '#ff6b35', accent = '#222', modelU
             <ModelErrorBoundary fallback={<ShoeMesh color={color} accent={accent} />}>
               <Suspense fallback={<ShoeMesh color={color} accent={accent} />}>
                 {modelUrl && checked && canLoadModel ? (
-                  <Model modelUrl={modelUrl} scale={1} color={color} accent={accent} />
+                  <Model key={modelUrl} modelUrl={modelUrl} scale={1} color={color} accent={accent} />
                 ) : (
-                  <ShoeMesh color={color} accent={accent} />
+                  <ShoeMesh key="fallback" color={color} accent={accent} />
                 )}
               </Suspense>
             </ModelErrorBoundary>
