@@ -3,6 +3,7 @@ import { motion, useAnimation } from 'framer-motion';
 import { FiArrowRight, FiPlay, FiPause } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import './Hero.css';
+import ModelViewer from '../ModelViewer/ModelViewer';
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -17,7 +18,12 @@ const Hero = () => {
       cta: "Shop Now",
       image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
       bgColor: "#f5f5f5",
-      textColor: "#000"
+      textColor: "#000",
+      threeD: true,
+      color: '#ff6b35',
+      accent: '#1b1b1b',
+      modelUrl: 'https://cdn.builder.io/o/assets%2Fad449939a7dd4bddae2e1ca210d150b7%2F46e23d39ee9a412ba423c502db72469a?alt=media&token=f333f103-13c5-421d-bde6-75a53f118aea&apiKey=ad449939a7dd4bddae2e1ca210d150b7',
+      lighting: { ambient: 0.55, key: 0.9, keyPos: [4, 8, 4], fill: 0.25 }
     },
     {
       title: "Executive Collection",
@@ -26,7 +32,12 @@ const Hero = () => {
       cta: "Explore",
       image: "https://wallpapercave.com/wp/wp2896922.jpg",
       bgColor: "#000000",
-      textColor: "#fff"
+      textColor: "#fff",
+      threeD: true,
+      color: '#ffffff',
+      accent: '#e74c3c',
+      modelUrl: 'https://cdn.builder.io/o/assets%2Fad449939a7dd4bddae2e1ca210d150b7%2F46e23d39ee9a412ba423c502db72469a?alt=media&token=f333f103-13c5-421d-bde6-75a53f118aea&apiKey=ad449939a7dd4bddae2e1ca210d150b7',
+      lighting: { ambient: 0.45, key: 1.1, keyPos: [6, 12, 6], fill: 0.35 }
     },
     {
       title: "Performance Engineered",
@@ -35,7 +46,12 @@ const Hero = () => {
       cta: "View Tech",
       image: "https://www.freepnglogos.com/uploads/shoes-png/download-nike-shoes-transparent-png-for-designing-projects-16.png",
       bgColor: "#e74c3c",
-      textColor: "#fff"
+      textColor: "#fff",
+      threeD: true,
+      color: '#0d6efd',
+      accent: '#0b2545',
+      modelUrl: 'https://cdn.builder.io/o/assets%2Fad449939a7dd4bddae2e1ca210d150b7%2F46e23d39ee9a412ba423c502db72469a?alt=media&token=f333f103-13c5-421d-bde6-75a53f118aea&apiKey=ad449939a7dd4bddae2e1ca210d150b7',
+      lighting: { ambient: 0.6, key: 0.9, keyPos: [5, 9, 5], fill: 0.3 }
     }
   ];
 
@@ -50,6 +66,7 @@ const Hero = () => {
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSlide, autoPlay]);
+
 
   const nextSlide = () => {
     controls.start({
@@ -157,25 +174,28 @@ const Hero = () => {
           </motion.div>
         </motion.div>
 
-        {/* Image */}
-        <motion.div 
+        {/* Image / 3D canvas */}
+        <motion.div
           className="hero-image-container"
           animate={controls}
           key={`image-${currentSlide}`}
         >
-          <motion.img
-            src={slides[currentSlide].image}
-            alt={slides[currentSlide].title}
-            className="hero-image"
-            animate={{
-              y: [0, -15, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
+          {/* Render a 3D shoe for slides that enable it, otherwise fallback to image */}
+          {slides[currentSlide].threeD ? (
+            <ModelViewer
+              className="hero-3d"
+              src={slides[currentSlide].modelUrl}
+              alt={slides[currentSlide].title}
+            />
+          ) : (
+            <motion.img
+              src={slides[currentSlide].image}
+              alt={slides[currentSlide].title}
+              className="hero-image"
+              animate={{ y: [0, -15, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          )}
 
         </motion.div>
       </div>

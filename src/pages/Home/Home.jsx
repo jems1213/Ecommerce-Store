@@ -114,11 +114,10 @@ const Home = () => {
           </motion.div>
 
           <motion.button
-            className="add-shoe-button"
+            className="add-shoe-button add-shoe-button--ml"
             onClick={() => setShowAddShoeModal(true)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            style={{ marginLeft: '12px' }}
           >
             + Add Shoe
           </motion.button>

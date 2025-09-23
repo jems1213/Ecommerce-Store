@@ -69,24 +69,36 @@ button {
   border-radius: 30px;
   font-weight: 600;
   transition: var(--transition);
+  cursor: pointer;
+  border: none;
 }
 
-.btn-primary {
-  background: var(--primary);
+/* Primary buttons use the hero gradient */
+.btn-primary,
+.btn.primary,
+button.btn.primary {
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-2));
   color: var(--white);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
 }
 
-.btn-primary:hover {
-  background: var(--primary-dark);
+.btn-primary:hover,
+.btn.primary:hover,
+button.btn.primary:hover {
   transform: translateY(-3px);
+  filter: brightness(1.02);
 }
 
-.btn-outline {
-  border: 2px solid var(--secondary);
-  color: var(--secondary);
+/* Outline / ghost variant keeps border but uses accent color on hover */
+.btn-outline,
+.btn.ghost {
+  border: 2px solid rgba(0,0,0,0.06);
+  color: var(--accent-color);
+  background: transparent;
 }
 
-.btn-outline:hover {
-  background: var(--secondary);
+.btn-outline:hover,
+.btn.ghost:hover {
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-2));
   color: var(--white);
 }

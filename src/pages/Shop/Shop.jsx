@@ -1,8 +1,12 @@
-import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import ShoeCard from '../../components/ShoeCard/ShoeCard';
 import './Shop.css';
 import api, { API_BASE } from '../../utils/apiClient';
+import defaultShoe from '../../assets/default-shoe.svg';
+import shoe1 from '../../assets/hero-shoe1.svg';
+import shoe2 from '../../assets/hero-shoe2.svg';
+import shoe3 from '../../assets/hero-shoe3.svg';
 
 const Shop = () => {
   const [filter, setFilter] = useState('all');
@@ -34,6 +38,31 @@ const Shop = () => {
         else if (Array.isArray(res?.data?.shoes)) fetched = res.data.shoes;
         else if (Array.isArray(res?.shoes)) fetched = res.shoes;
         else fetched = [];
+
+        // If backend returns no shoes, populate with 10 dummy shoes for development/demo
+        if (!Array.isArray(fetched) || fetched.length === 0) {
+          const colors = ['#111827', '#ef4444', '#3b82f6', '#10b981', '#f59e0b'];
+          const demoImages = [shoe1, shoe2, shoe3, defaultShoe];
+          const randomHex24 = () => Array.from({length:24}).map(() => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
+          fetched = Array.from({ length: 10 }).map((_, i) => ({
+            _id: randomHex24(),
+            name: `Demo Runner ${i + 1}`,
+            brand: ['Puma', 'Nike', 'Adidas', 'Reebok', 'NewBalance'][i % 5],
+            price: parseFloat((50 + i * 5 + (i % 3) * 7).toFixed(2)),
+            images: [
+              demoImages[i % demoImages.length],
+              demoImages[(i + 1) % demoImages.length]
+            ],
+            colors: [colors[i % colors.length]],
+            rating: parseFloat((3.8 + (i % 5) * 0.2).toFixed(1)),
+            discount: i % 4 === 0 ? 10 : 0,
+            isNew: i % 3 === 0,
+            sizes: [6,7,8,9,10],
+            stock: 10 + i,
+            description: 'A versatile demo shoe used for showcasing the storefront.'
+          }));
+        }
+
         setShoes(fetched);
       } catch (error) {
         console.error('Error fetching shoes:', error);
