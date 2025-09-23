@@ -195,7 +195,7 @@ const Hero = () => {
               alt={slides[currentSlide].title}
               className="hero-image"
               animate={{ y: [0, -15, 0] }}
-              transition={{ duration: 40, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             />
           )}
 
