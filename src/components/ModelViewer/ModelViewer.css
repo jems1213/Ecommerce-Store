@@ -7,6 +7,15 @@
   justify-content: center;
 }
 
+@media (max-width: 992px) {
+  .modelviewer-wrapper { max-height: 45vh; }
+}
+
+@media (max-width: 576px) {
+  .modelviewer-wrapper { max-height: 40vh; }
+  .modelviewer-wrapper img { max-height: 40vh; }
+}
+
 .modelviewer-wrapper model-viewer {
   width: 100%;
   height: 100%;
