@@ -43,8 +43,9 @@ const Shop = () => {
         if (!Array.isArray(fetched) || fetched.length === 0) {
           const colors = ['#111827', '#ef4444', '#3b82f6', '#10b981', '#f59e0b'];
           const demoImages = [shoe1, shoe2, shoe3, defaultShoe];
+          const randomHex24 = () => Array.from({length:24}).map(() => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
           fetched = Array.from({ length: 10 }).map((_, i) => ({
-            _id: `dummy-${i + 1}`,
+            _id: randomHex24(),
             name: `Demo Runner ${i + 1}`,
             brand: ['Puma', 'Nike', 'Adidas', 'Reebok', 'NewBalance'][i % 5],
             price: parseFloat((50 + i * 5 + (i % 3) * 7).toFixed(2)),
