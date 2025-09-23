@@ -100,17 +100,18 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
       {/* Render model-viewer when script is loaded. The element is a custom element and will be upgraded once the script loads. */}
       {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
       <model-viewer
-        style={{ width: '100%', height: '100%', background: 'transparent' }}
-        src={src}
-        alt={alt}
-        poster={poster || ''}
-        ar
-        auto-rotate
-        rotation-per-second="100deg"
-        camera-controls
-        exposure="1"
-        shadow-intensity="1"
-      />
+   	    key={src}
+   	    style={{ width: '100%', height: '100%', background: 'transparent' }}
+   	    src={src}
+   	    alt={alt}
+   	    poster={poster || ''}
+   	    ar
+   	    auto-rotate
+   	    rotation-per-second="100deg"
+   	    camera-controls
+   	    exposure="1"
+   	    shadow-intensity="1"
+   	  />
     </div>
   );
 };
