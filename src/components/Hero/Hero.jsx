@@ -183,6 +183,7 @@ const Hero = () => {
           {/* Render a 3D shoe for slides that enable it, otherwise fallback to image */}
           {slides[currentSlide].threeD ? (
             <ModelViewer
+              key={`mv-${currentSlide}-${slides[currentSlide].modelUrl}`}
               className="hero-3d"
               src={slides[currentSlide].modelUrl}
               alt={slides[currentSlide].title}

@@ -8,20 +8,6 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
   const [loaded, setLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
 
-  // ensure the custom element uses crossorigin for model fetching (always run to keep hooks stable)
-  useEffect(() => {
-    try {
-      const el = mvRef.current && mvRef.current.querySelector('model-viewer');
-      if (el) {
-        el.setAttribute('crossorigin', 'anonymous');
-        // ensure poster is set as fallback source if provided
-        if (poster) el.setAttribute('poster', poster);
-      }
-    } catch (e) {
-      // ignore
-    }
-  }, [poster]);
-
   useEffect(() => {
     let mounted = true;
     // If model-viewer already exists, mark loaded
@@ -33,13 +19,11 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
     // inject script
     const existing = document.querySelector(`script[data-src="${MODEL_VIEWER_SRC}"]`);
     if (existing) {
-      // wait for it to load
       existing.addEventListener('load', () => mounted && setLoaded(true));
       existing.addEventListener('error', () => mounted && setScriptError(true));
       return () => { mounted = false; };
     }
 
-    // inject module and legacy scripts for broader compatibility
     const moduleSrc = MODEL_VIEWER_SRC;
     const legacySrc = 'https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js';
 
@@ -52,7 +36,6 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
 
     const legacyScript = document.createElement('script');
     legacyScript.src = legacySrc;
-    // legacy script should run in browsers that don't support modules (no type, noModule attribute)
     legacyScript.noModule = true;
     legacyScript.async = true;
     legacyScript.crossOrigin = 'anonymous';
@@ -77,6 +60,38 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
     return () => { mounted = false; };
   }, []);
 
+  // Create/replace the model-viewer element whenever src/poster/alt/loaded changes
+  useEffect(() => {
+    if (!loaded || !mvRef.current) return;
+    const container = mvRef.current;
+
+    // remove existing children to ensure a fresh element
+    while (container.firstChild) container.removeChild(container.firstChild);
+
+    const el = document.createElement('model-viewer');
+    el.style.width = '100%';
+    el.style.height = '100%';
+    el.style.background = 'transparent';
+
+    if (src) el.setAttribute('src', src);
+    if (alt) el.setAttribute('alt', alt);
+    if (poster) el.setAttribute('poster', poster);
+
+    el.setAttribute('ar', '');
+    el.setAttribute('auto-rotate', '');
+    el.setAttribute('rotation-per-second', '100deg');
+    el.setAttribute('camera-controls', '');
+    el.setAttribute('exposure', '1');
+    el.setAttribute('shadow-intensity', '1');
+    el.setAttribute('crossorigin', 'anonymous');
+
+    container.appendChild(el);
+
+    return () => {
+      if (container.contains(el)) container.removeChild(el);
+    };
+  }, [src, poster, alt, loaded]);
+
   // if script failed or not supported, show poster or empty area
   if (scriptError) {
     return (
@@ -95,23 +110,7 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
     );
   }
 
-  return (
-    <div className={`modelviewer-wrapper ${className}`} ref={mvRef}>
-      {/* Render model-viewer when script is loaded. The element is a custom element and will be upgraded once the script loads. */}
-      {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
-      <model-viewer
-        style={{ width: '100%', height: '100%', background: 'transparent' }}
-        src={src}
-        alt={alt}
-        poster={poster || ''}
-        ar
-        auto-rotate
-        camera-controls
-        exposure="1"
-        shadow-intensity="1"
-      />
-    </div>
-  );
+  return <div className={`modelviewer-wrapper ${className}`} ref={mvRef} />;
 };
 
 export default ModelViewer;

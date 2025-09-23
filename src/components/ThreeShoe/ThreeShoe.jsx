@@ -25,10 +25,10 @@ const ShoeMesh = ({ color = '#ff6b35', accent = '#222' }) => {
     return pts;
   }, []);
 
-  // subtle float/rotation
+  // subtle float/rotation (reversed direction)
   useFrame((state, delta) => {
     if (ref.current) {
-      ref.current.rotation.y += delta * 0.4;
+      ref.current.rotation.y -= delta * 0.4;
     }
   });
 
@@ -62,7 +62,7 @@ function Model({ modelUrl, castShadow = true, receiveShadow = true, scale = 1, c
   const ref = useRef();
 
   useFrame((state, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * 0.3;
+    if (ref.current) ref.current.rotation.y -= delta * 0.3;
   });
 
   return (
@@ -128,9 +128,9 @@ const ThreeShoeCanvas = ({ className, color = '#ff6b35', accent = '#222', modelU
             <ModelErrorBoundary fallback={<ShoeMesh color={color} accent={accent} />}>
               <Suspense fallback={<ShoeMesh color={color} accent={accent} />}>
                 {modelUrl && checked && canLoadModel ? (
-                  <Model modelUrl={modelUrl} scale={1} color={color} accent={accent} />
+                  <Model key={modelUrl} modelUrl={modelUrl} scale={1} color={color} accent={accent} />
                 ) : (
-                  <ShoeMesh color={color} accent={accent} />
+                  <ShoeMesh key="fallback" color={color} accent={accent} />
                 )}
               </Suspense>
             </ModelErrorBoundary>
