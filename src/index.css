@@ -20,7 +20,7 @@
   --glass: rgba(255,255,255,0.04);
 
   /* legacy aliases for compatibility */
-  --primary: var(--primary-bg);
+  --primary: var(--accent-color);
   --primary-color: var(--primary-bg);
   --accent: var(--accent-color);
   --white: #ffffff;
