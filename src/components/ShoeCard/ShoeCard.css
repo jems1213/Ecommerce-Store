@@ -77,6 +77,34 @@
   color: var(--wishlist-color);
 }
 
-/* rest of file unchanged */
+.brand-rating .brand{font-size:0.75rem;font-weight:700;color:#6b7280;letter-spacing:0.6px}
+.brand-rating .rating{display:flex;align-items:center;gap:6px;color:var(--star-color);font-size:0.85rem;background:rgba(241,196,15,0.06);padding:0.18rem 0.5rem;border-radius:999px}
+
+.shoe-name{margin:0.35rem 0;font-size:1rem;font-weight:700;color:#0f172a}
+
+.price-container{display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem}
+.original-price{color:#6b7280;text-decoration:line-through;font-size:0.95rem;margin-right:0.4rem}
+.current-price{color:#0f172a;font-weight:800;font-size:1.05rem}
+
+.add-to-cart-btn1{margin-top:12px;align-self:flex-start;background:var(--primary-color,#111827);color:var(--white);padding:0.6rem 0.9rem;border-radius:10px;border:none;display:inline-flex;gap:8px;align-items:center;transition:transform 0.18s,box-shadow 0.18s;cursor:pointer}
+.add-to-cart-btn1:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(17,24,39,0.08)}
+
+.card-header{pointer-events:none}
+.card-header .favorite-btn{pointer-events:auto}
+
+.color-options{display:flex;gap:8px;margin-top:8px}
+.color-option{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.6);box-shadow:0 1px 2px rgba(0,0,0,0.06);cursor:pointer}
+.color-option.selected{outline:3px solid rgba(14,165,233,0.12);transform:scale(1.06)}
+
+/* Ensure popup layout buttons visible and consistent */
+.popup-actions .popup-btn{padding:0.65rem 0.9rem;border-radius:10px;border:none}
+
+/* Responsive tweaks */
+@media (max-width:900px){
+  .shoe-card{border-radius:12px}
+  .brand-rating .brand{font-size:0.75rem}
+  .shoe-name{font-size:0.98rem}
+  .current-price{font-size:1rem}
+}
 
 /* -- Note: remaining rules unchanged from previous version to preserve layout and behavior -- */
