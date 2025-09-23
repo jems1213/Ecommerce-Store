@@ -22,7 +22,8 @@ const Hero = () => {
       threeD: true,
       color: '#ff6b35',
       accent: '#1b1b1b',
-      modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Shoe/glTF-Binary/Shoe.glb'
+      modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Shoe/glTF-Binary/Shoe.glb',
+      lighting: { ambient: 0.55, key: 0.9, keyPos: [4, 8, 4], fill: 0.25 }
     },
     {
       title: "Executive Collection",
