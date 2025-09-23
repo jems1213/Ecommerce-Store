@@ -42,12 +42,16 @@ const Shop = () => {
         // If backend returns no shoes, populate with 10 dummy shoes for development/demo
         if (!Array.isArray(fetched) || fetched.length === 0) {
           const colors = ['#111827', '#ef4444', '#3b82f6', '#10b981', '#f59e0b'];
+          const demoImages = [shoe1, shoe2, shoe3, defaultShoe];
           fetched = Array.from({ length: 10 }).map((_, i) => ({
             _id: `dummy-${i + 1}`,
             name: `Demo Runner ${i + 1}`,
             brand: ['Puma', 'Nike', 'Adidas', 'Reebok', 'NewBalance'][i % 5],
             price: parseFloat((50 + i * 5 + (i % 3) * 7).toFixed(2)),
-            images: [defaultShoe],
+            images: [
+              demoImages[i % demoImages.length],
+              demoImages[(i + 1) % demoImages.length]
+            ],
             colors: [colors[i % colors.length]],
             rating: parseFloat((3.8 + (i % 5) * 0.2).toFixed(1)),
             discount: i % 4 === 0 ? 10 : 0,
