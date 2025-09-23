@@ -106,6 +106,7 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
         poster={poster || ''}
         ar
         auto-rotate
+        rotation-per-second="-30deg"
         camera-controls
         exposure="1"
         shadow-intensity="1"
