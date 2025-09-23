@@ -232,17 +232,27 @@
 
 /* Responsive */
 @media (max-width: 992px) {
+  /* Allow hero to shrink on smaller screens so 3D canvas is visible */
+  .hero {
+    min-height: 0;
+    height: auto;
+    padding-bottom: 2rem;
+  }
+
   .hero-container {
     flex-direction: column;
     justify-content: center;
     text-align: center;
     padding-top: 5rem;
+    height: auto;
   }
 
   .hero-content {
     padding-right: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     max-width: 100%;
+    order: 1;
+    z-index: 5;
   }
 
   .hero-title {
@@ -255,14 +265,16 @@
   }
 
   .hero-image {
-    max-height: 50vh;
+    max-height: 40vh;
   }
 
   /* Ensure 3D canvas scales nicely on tablet and mobile */
   .hero-3d {
-    max-height: 50vh;
+    max-height: 45vh;
     max-width: 100%;
     transform: rotate(0deg);
+    order: 2;
+    z-index: 4;
   }
 
   .hero-3d canvas {
@@ -272,6 +284,10 @@
 
   .hero-image-container {
     padding: 0 1rem;
+    height: 45vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
