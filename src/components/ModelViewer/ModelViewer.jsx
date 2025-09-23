@@ -8,6 +8,20 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
   const [loaded, setLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
 
+  // ensure the custom element uses crossorigin for model fetching (always run to keep hooks stable)
+  useEffect(() => {
+    try {
+      const el = mvRef.current && mvRef.current.querySelector('model-viewer');
+      if (el) {
+        el.setAttribute('crossorigin', 'anonymous');
+        // ensure poster is set as fallback source if provided
+        if (poster) el.setAttribute('poster', poster);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [poster]);
+
   useEffect(() => {
     let mounted = true;
     // If model-viewer already exists, mark loaded
@@ -27,6 +41,7 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
 
     const script = document.createElement('script');
     script.src = MODEL_VIEWER_SRC;
+    script.type = 'module';
     script.async = true;
     script.crossOrigin = 'anonymous';
     script.setAttribute('data-src', MODEL_VIEWER_SRC);
