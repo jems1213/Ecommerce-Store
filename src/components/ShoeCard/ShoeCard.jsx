@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { FaStar, FaShoppingCart, FaTimes, FaChevronLeft, FaChevronRight, FaHeart } from 'react-icons/fa';
