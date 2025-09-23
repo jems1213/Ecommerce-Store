@@ -12,8 +12,8 @@
 .site-footer{
   background: var(--footer-bg);
   color: var(--muted);
-  font-size:14px;
-  line-height:1.6;
+  font-size:16px;
+  line-height:1.75;
 }
 
 .footer-top{
@@ -41,7 +41,7 @@
 .brand-link{
   color:var(--white);
   font-weight:800;
-  font-size:1.35rem;
+  font-size:1.6rem;
   text-decoration:none;
   display:inline-block;
   margin-bottom:0.6rem;
@@ -57,16 +57,16 @@
 .socials a:hover{background:var(--white);color:var(--accent);transform:translateY(-3px)}
 
 .footer-links{display:flex;gap:1rem;grid-column:span 5}
-.footer-column h4{color:var(--white);margin-bottom:0.75rem;font-size:1.05rem}
+.footer-column h4{color:var(--white);margin-bottom:0.75rem;font-size:1.2rem;font-weight:700}
 .footer-column ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem}
 .footer-column a{color:rgba(255,255,255,0.9);text-decoration:none}
 .footer-column a:hover{color:var(--footer-bg);background:rgba(255,255,255,0.06);padding:0.2rem 0.5rem;border-radius:6px}
 
 .newsletter-desc{margin:0 0 0.7rem;color:rgba(255,255,255,0.9)}
 .newsletter-form{display:flex;gap:0.5rem}
-.newsletter-form input{flex:1;padding:0.75rem 1rem;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--white);outline:none}
+.newsletter-form input{flex:1;padding:0.9rem 1rem;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--white);outline:none;font-size:1rem}
 .newsletter-form input::placeholder{color:rgba(255,255,255,0.7)}
-.btn-subscribe{padding:0.75rem 1rem;border-radius:999px;border:none;background:var(--accent);color:var(--white);font-weight:600;cursor:pointer;transition:all 0.18s}
+.btn-subscribe{padding:0.9rem 1.1rem;border-radius:999px;border:none;background:var(--accent);color:var(--white);font-weight:700;cursor:pointer;transition:all 0.18s;font-size:1rem}
 .btn-subscribe:hover{background:var(--accent-2);transform:translateY(-2px)}
 
 .newsletter-status{margin-top:0.6rem;color:var(--white);font-weight:600}
@@ -74,7 +74,7 @@
 .footer-bottom{background:var(--footer-contrast);padding:1rem 0}
 .footer-bottom-row{max-width:1400px;margin:0 auto;padding:0 6rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
 .footer-links-inline{display:flex;gap:1rem}
-.footer-links-inline a{color:var(--muted);text-decoration:none}
+.footer-links-inline a{color:var(--muted);text-decoration:none;font-size:0.98rem}
 .footer-links-inline a:hover{color:var(--white)}
 
 /* Small helper for screen reader only labels */
