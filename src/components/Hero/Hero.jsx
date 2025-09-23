@@ -36,7 +36,8 @@ const Hero = () => {
       threeD: true,
       color: '#ffffff',
       accent: '#e74c3c',
-      modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Shoe/glTF-Binary/Shoe.glb'
+      modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Shoe/glTF-Binary/Shoe.glb',
+      lighting: { ambient: 0.45, key: 1.1, keyPos: [6, 12, 6], fill: 0.35 }
     },
     {
       title: "Performance Engineered",
