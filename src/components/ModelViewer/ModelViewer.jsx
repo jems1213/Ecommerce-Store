@@ -39,25 +39,40 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
       return () => { mounted = false; };
     }
 
-    const script = document.createElement('script');
-    script.src = MODEL_VIEWER_SRC;
-    script.type = 'module';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    script.setAttribute('data-src', MODEL_VIEWER_SRC);
+    // inject module and legacy scripts for broader compatibility
+    const moduleSrc = MODEL_VIEWER_SRC;
+    const legacySrc = 'https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js';
 
-    script.onload = () => {
+    const moduleScript = document.createElement('script');
+    moduleScript.src = moduleSrc;
+    moduleScript.type = 'module';
+    moduleScript.async = true;
+    moduleScript.crossOrigin = 'anonymous';
+    moduleScript.setAttribute('data-src', moduleSrc);
+
+    const legacyScript = document.createElement('script');
+    legacyScript.src = legacySrc;
+    // legacy script should run in browsers that don't support modules (no type, noModule attribute)
+    legacyScript.noModule = true;
+    legacyScript.async = true;
+    legacyScript.crossOrigin = 'anonymous';
+    legacyScript.setAttribute('data-src', legacySrc);
+
+    const onLoad = () => {
       try {
         if (mounted) setLoaded(true);
       } catch (e) {
         if (mounted) setScriptError(true);
       }
     };
-    script.onerror = () => {
-      if (mounted) setScriptError(true);
-    };
 
-    document.head.appendChild(script);
+    moduleScript.addEventListener('load', onLoad);
+    moduleScript.addEventListener('error', () => { if (mounted) setScriptError(true); });
+    legacyScript.addEventListener('load', onLoad);
+    legacyScript.addEventListener('error', () => { if (mounted) setScriptError(true); });
+
+    document.head.appendChild(moduleScript);
+    document.head.appendChild(legacyScript);
 
     return () => { mounted = false; };
   }, []);
