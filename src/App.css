@@ -9,7 +9,7 @@
 :root {
   --primary: var(--c1);
   --primary-dark: var(--c2);
-  --secondary: #333;
+  --secondary: var(--c3);
   --light: #f8f8f8;
   --gray: #e0e0e0;
   --dark-gray: #777;
