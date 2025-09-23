@@ -9,7 +9,7 @@
 
 /* Hero Section */
 .arrivals-hero {
-  background: #1D4ED8;
+  background: var(--primary);
   background-size: cover;
   background-position: center;  
   height: 300px;
