@@ -21,7 +21,8 @@ const Hero = () => {
       textColor: "#000",
       threeD: true,
       color: '#ff6b35',
-      accent: '#1b1b1b'
+      accent: '#1b1b1b',
+      modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Shoe/glTF-Binary/Shoe.glb'
     },
     {
       title: "Executive Collection",
