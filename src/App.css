@@ -11,7 +11,7 @@
   --primary-dark: var(--c2);
   --secondary: var(--c3);
   --light: var(--c5);
-  --gray: #e0e0e0;
+  --gray: var(--c4);
   --dark-gray: #777;
   --white: #ffffff;
   --black: #000000;
