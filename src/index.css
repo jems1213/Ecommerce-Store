@@ -2,7 +2,7 @@
 :root {
   /* Palette - compatible combinations */
   --primary-bg: #1D4ED8; /* updated primary */
-  --surface-bg: #2C3E50;
+  --surface-bg: #1D4ED8;
   --card-bg: #ffffff;
 
   --accent-color: #ff6b35; /* vivid orange */
