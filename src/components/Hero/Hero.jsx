@@ -18,7 +18,10 @@ const Hero = () => {
       cta: "Shop Now",
       image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
       bgColor: "#f5f5f5",
-      textColor: "#000"
+      textColor: "#000",
+      threeD: true,
+      color: '#ff6b35',
+      accent: '#1b1b1b'
     },
     {
       title: "Executive Collection",
@@ -27,7 +30,10 @@ const Hero = () => {
       cta: "Explore",
       image: "https://wallpapercave.com/wp/wp2896922.jpg",
       bgColor: "#000000",
-      textColor: "#fff"
+      textColor: "#fff",
+      threeD: true,
+      color: '#ffffff',
+      accent: '#e74c3c'
     },
     {
       title: "Performance Engineered",
@@ -36,7 +42,10 @@ const Hero = () => {
       cta: "View Tech",
       image: "https://www.freepnglogos.com/uploads/shoes-png/download-nike-shoes-transparent-png-for-designing-projects-16.png",
       bgColor: "#e74c3c",
-      textColor: "#fff"
+      textColor: "#fff",
+      threeD: true,
+      color: '#0d6efd',
+      accent: '#0b2545'
     }
   ];
 
@@ -158,14 +167,24 @@ const Hero = () => {
           </motion.div>
         </motion.div>
 
-        {/* Image */}
-        <motion.div 
+        {/* Image / 3D canvas */}
+        <motion.div
           className="hero-image-container"
           animate={controls}
           key={`image-${currentSlide}`}
         >
-          {/* Replaced static hero image with an interactive 3D shoe canvas */}
-          <ThreeShoe className="hero-3d" />
+          {/* Render a 3D shoe for slides that enable it, otherwise fallback to image */}
+          {slides[currentSlide].threeD ? (
+            <ThreeShoe className="hero-3d" color={slides[currentSlide].color} accent={slides[currentSlide].accent} />
+          ) : (
+            <motion.img
+              src={slides[currentSlide].image}
+              alt={slides[currentSlide].title}
+              className="hero-image"
+              animate={{ y: [0, -15, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          )}
 
         </motion.div>
       </div>
