@@ -72,7 +72,7 @@
 .payment-logos img{width:50px;height:auto;opacity:0.9;filter:grayscale(30%)}
 
 .footer-bottom{background:var(--footer-contrast);padding:1rem 0}
-.footer-bottom-row{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.footer-bottom-row{max-width:1400px;margin:0 auto;padding:0 6rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
 .footer-links-inline{display:flex;gap:1rem}
 .footer-links-inline a{color:var(--muted);text-decoration:none}
 .footer-links-inline a:hover{color:var(--white)}
