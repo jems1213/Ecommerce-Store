@@ -67,26 +67,6 @@ const Hero = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSlide, autoPlay]);
 
-  // Preload next/prev 3D models to make slide transitions snappier
-  useEffect(() => {
-    try {
-      const next = (currentSlide + 1) % slides.length;
-      const prev = (currentSlide - 1 + slides.length) % slides.length;
-      [next, prev].forEach((i) => {
-        const url = slides[i]?.modelUrl;
-        if (url) {
-          try {
-            useGLTF.preload(url);
-          } catch (e) {
-            // ignore preload errors
-            // some environments may not allow cross-origin HEAD requests
-          }
-        }
-      });
-    } catch (e) {
-      // noop
-    }
-  }, [currentSlide]);
 
   const nextSlide = () => {
     controls.start({
