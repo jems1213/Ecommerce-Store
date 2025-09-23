@@ -308,6 +308,11 @@
   background-color: rgba(44, 62, 80, 0.04);
 }
 
+/* utility class to replace inline margin-left usage */
+.add-shoe-button--ml {
+  margin-left: 12px;
+}
+
 /* Modal styles */
 .add-shoe-overlay {
   position: fixed;
