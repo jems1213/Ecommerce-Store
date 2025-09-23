@@ -7,7 +7,7 @@
 }
 
 :root {
-  --primary: #ff6b35;
+  --primary: var(--c1);
   --primary-dark: #cc5a2b;
   --secondary: #333;
   --light: #f8f8f8;
