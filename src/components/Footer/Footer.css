@@ -1,10 +1,9 @@
-/* Redesigned footer using primary color variables */
-:root{
-  --footer-bg:#071022; /* deep background */
-  --footer-contrast:#081526; /* subtle contrast */
-  --muted:#9aa4b2;
-  --accent: var(--primary); /* site primary */
-  --accent-2: var(--primary-dark);
+::root{
+  --footer-bg:#E15039; /* footer primary color */
+  --footer-contrast:#BF4430; /* darker footer contrast */
+  --muted:#f3dcd8; /* adjusted muted for readability */
+  --accent: #E15039; /* site accent overridden for footer */
+  --accent-2: #BF4430;
   --white:#ffffff;
   --radius:12px;
   --footer-padding:3rem 2rem;
