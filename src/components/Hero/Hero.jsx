@@ -25,7 +25,7 @@ const Hero = () => {
       description: "Professional footwear for the modern executive",
       cta: "Explore",
       image: "https://wallpapercave.com/wp/wp2896922.jpg",
-      bgColor: "#2C3E50",
+      bgColor: "#000000",
       textColor: "#fff"
     },
     {
@@ -48,6 +48,7 @@ const Hero = () => {
       }, 5000);
     }
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSlide, autoPlay]);
 
   const nextSlide = () => {
@@ -91,8 +92,7 @@ const Hero = () => {
 
   return (
     <motion.section 
-      className="hero"
-      style={{ backgroundColor: slides[currentSlide].bgColor }}
+      className={`hero hero-variant-${currentSlide}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
@@ -109,7 +109,6 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className="hero-subtitle"
-            style={{ color: slides[currentSlide].textColor }}
           >
             {slides[currentSlide].subtitle}
           </motion.h2>
@@ -119,7 +118,6 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
             className="hero-title"
-            style={{ color: slides[currentSlide].textColor }}
           >
             {slides[currentSlide].title.split(' ').map((word, i) => (
               <motion.span 
@@ -138,7 +136,6 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.6 }}
             className="hero-text"
-            style={{ color: slides[currentSlide].textColor }}
           >
             {slides[currentSlide].description}
           </motion.p>
@@ -153,10 +150,6 @@ const Hero = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="hero-button"
-                style={{ 
-                  backgroundColor: slides[currentSlide].textColor,
-                  color: slides[currentSlide].bgColor
-                }}
               >
                 {slides[currentSlide].cta} <FiArrowRight className="button-icon" />
               </motion.button>

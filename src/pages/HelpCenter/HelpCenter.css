@@ -172,6 +172,10 @@
   color: white;
 }
 
+.chat-button svg {
+  color: var(--message-icon-color);
+}
+
 .chat-button:hover {
   background-color: #333;
 }
@@ -204,6 +208,11 @@
   font-size: 1.5rem;
   color: #000;
   margin-bottom: 1rem;
+}
+
+/* Make the message/chat icon blue */
+.contact-icon.message {
+  color: var(--message-icon-color);
 }
 
 .contact-card h3 {
@@ -520,6 +529,10 @@
   cursor: pointer;
   z-index: 999;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.chat-trigger svg {
+  color: var(--message-icon-color);
 }
 
 .chat-trigger span {

@@ -1,6 +1,6 @@
 .newsletter {
   padding: 5rem 0;
-  background: linear-gradient(180deg, #2C3E50 0%, #092436 100%);
+  background: linear-gradient(180deg, var(--primary) 0%, #092436 100%);
   color: #fff;
   text-align: center;
   position: relative;
@@ -14,7 +14,7 @@
   left: 0;
   width: 100%;
   height: 60px;
-  background: var(--primary-bg, #2C3E50);
+  background: var(--primary-bg, var(--primary));
   transform: skewY(-2deg);
   z-index: 1;
 }
@@ -35,7 +35,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary);
+  color: var(--message-icon-color);
 }
 
 .newsletter h2 {

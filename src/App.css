@@ -7,11 +7,11 @@
 }
 
 :root {
-  --primary: #2C3E50;
-  --primary-dark: #253443;
-  --secondary: #333;
-  --light: #f8f8f8;
-  --gray: #e0e0e0;
+  --primary: var(--c1);
+  --primary-dark: var(--c2);
+  --secondary: var(--c3);
+  --light: var(--c5);
+  --gray: var(--c4);
   --dark-gray: #777;
   --white: #ffffff;
   --black: #000000;

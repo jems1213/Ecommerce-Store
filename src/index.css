@@ -1,13 +1,27 @@
 /* Centralized theme variables and base styles */
 :root {
-  /* Palette - compatible combinations */
-  --primary-bg: #2C3E50; /* updated primary */
-  --surface-bg: #2C3E50;
-  --card-bg: #ffffff;
+  /* Palette - user provided colors */
+  --c1: #F8BBD0;
+  --c2: #E1BEE7;
+  --c3: #D1C4E9;
+  --c4: #BBDEFB;
+  --c5: #B2EBF2;
 
-  --accent-color: #ff6b35; /* vivid orange */
-  --accent-2: #ff9f1c; /* warm yellow */
-  --accent-3: #1fb6ff; /* bright cyan for highlights */
+  /* Map site tokens to the provided palette */
+  --primary: var(--c1);
+  --primary-2: var(--c2);
+  --primary-3: var(--c3);
+  --primary-4: var(--c4);
+  --primary-5: var(--c5);
+
+  --primary-bg: var(--primary-5);
+  --surface-bg: var(--primary-5);
+  --card-bg: var(--primary-4);
+
+  --accent-color: var(--primary-2);
+  --accent-2: var(--primary-3);
+  --accent-3: var(--primary-4);
+  --message-icon-color: #1D4ED8; /* message/chat icon blue */
 
   --text-on-dark: rgba(230,238,247,1);
   --text-on-light: #0f1723;
@@ -20,8 +34,8 @@
   --glass: rgba(255,255,255,0.04);
 
   /* legacy aliases for compatibility */
-  --primary: var(--primary-bg);
-  --primary-color: var(--primary-bg);
+  --primary: var(--accent-color);
+  --primary-color: var(--accent-color);
   --accent: var(--accent-color);
   --white: #ffffff;
   --black: #000000;
