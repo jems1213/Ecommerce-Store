@@ -257,6 +257,22 @@
   .hero-image {
     max-height: 50vh;
   }
+
+  /* Ensure 3D canvas scales nicely on tablet and mobile */
+  .hero-3d {
+    max-height: 50vh;
+    max-width: 100%;
+    transform: rotate(0deg);
+  }
+
+  .hero-3d canvas {
+    transform: rotate(0deg) !important;
+    border-radius: 12px;
+  }
+
+  .hero-image-container {
+    padding: 0 1rem;
+  }
 }
 
 @media (max-width: 576px) {
