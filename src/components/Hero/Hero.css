@@ -7,21 +7,13 @@
   display: flex;
   align-items: center;
   transition: background-color 0.5s ease;
-  background: radial-gradient(1200px 600px at 10% 20%, rgba(255,99,44,0.06), transparent 10%), var(--background-color, var(--primary));
+  background: transparent;
   color: #fff;
 }
 
+/* remove decorative pseudo-element behind hero shoe */
 .hero::after {
-  content: '';
-  position: absolute;
-  right: -120px;
-  bottom: -60px;
-  width: 520px;
-  height: 520px;
-  background: radial-gradient(circle at 30% 30%, rgba(255,99,44,0.12), rgba(255,99,44,0.04) 40%, transparent 60%);
-  border-radius: 50%;
-  filter: blur(24px);
-  z-index: 1;
+  display: none;
 }
 
 /* Per-slide variants */
