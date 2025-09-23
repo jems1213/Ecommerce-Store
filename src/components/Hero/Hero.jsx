@@ -186,6 +186,7 @@ const Hero = () => {
               key={`mv-${currentSlide}-${slides[currentSlide].modelUrl}`}
               className="hero-3d"
               src={slides[currentSlide].modelUrl}
+              poster={slides[currentSlide].image}
               alt={slides[currentSlide].title}
               rotationPerSecond={'100deg'}
             />
