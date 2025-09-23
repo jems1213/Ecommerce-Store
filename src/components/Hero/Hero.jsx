@@ -187,7 +187,7 @@ const Hero = () => {
               className="hero-3d"
               src={slides[currentSlide].modelUrl}
               alt={slides[currentSlide].title}
-              rotationPerSecond={'800deg'}
+              rotationPerSecond={'100deg'}
             />
           ) : (
             <motion.img
@@ -195,7 +195,7 @@ const Hero = () => {
               alt={slides[currentSlide].title}
               className="hero-image"
               animate={{ y: [0, -15, 0] }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{ duration: 40, repeat: Infinity, ease: 'easeInOut' }}
             />
           )}
 
