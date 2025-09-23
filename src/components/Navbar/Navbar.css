@@ -280,7 +280,7 @@
   position: absolute;
   top: -8px;
   right: -8px;
-  background-color: #1D4ED8;
+  background-color: var(--primary);
   color: white;
   border-radius: 50%;
   width: 18px;
@@ -681,7 +681,7 @@
 
 /* Featured Badge */
 .featured-badge {
-  background-color: #1D4ED8;
+  background-color: var(--primary);
   color: white;
   font-size: 0.7rem;
   padding: 0.2rem 0.5rem;
