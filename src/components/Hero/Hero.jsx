@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
+import { useGLTF } from '@react-three/drei';
 import { FiArrowRight, FiPlay, FiPause } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import './Hero.css';
