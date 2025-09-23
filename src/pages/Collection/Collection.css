@@ -11,14 +11,14 @@
 }
 
 .collection-header h1 {
-  color: #1D4ED8;
+  color: var(--primary);
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
   font-weight: 700;
 }
 
 .collection-subtitle {
-  color: #1D4ED8;
+  color: var(--primary);
   opacity: 0.8;
   margin-bottom: 2rem;
   font-size: 1.1rem;
@@ -27,7 +27,7 @@
 .search-bar {
   display: flex;
   align-items: center;
-  border: 1px solid #1D4ED8;
+  border: 1px solid var(--primary);
   border-radius: 25px;
   padding: 0.8rem 1.2rem;
   background-color: white;
@@ -40,13 +40,13 @@
   flex: 1;
   border: none;
   outline: none;
-  color: #1D4ED8;
+  color: var(--primary);
   background: transparent;
   font-size: 1rem;
 }
 
 .search-bar input::placeholder {
-  color: #1D4ED8;
+  color: var(--primary);
   opacity: 0.6;
 }
 
@@ -57,11 +57,11 @@
 }
 
 .search-icon path {
-  fill: #1D4ED8;
+  fill: var(--primary);
 }
 
 .mobile-filter-toggle {
-  background-color: #1D4ED8;
+  background-color: var(--primary);
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
@@ -84,7 +84,7 @@
 }
 
 .sort-filter h3 {
-  color: #1D4ED8;
+  color: var(--primary);
   text-align: center;
   margin-bottom: 1.5rem;
   font-size: 1.2rem;
@@ -92,7 +92,7 @@
 }
 
 .price-filter h3 {
-  color: #1D4ED8;
+  color: var(--primary);
   text-align: center;
   margin-bottom: 1rem;
   font-size: 1.1rem;
@@ -106,7 +106,7 @@
 .range-slider input[type="range"] {
   width: 100%;
   height: 6px;
-  accent-color: #1D4ED8;
+  accent-color: var(--primary);
   margin: 12px 0;
   cursor: pointer;
 }
@@ -114,9 +114,9 @@
 .sort-select {
   width: 100%;
   padding: 0.8rem;
-  border: 1px solid #1D4ED8;
+  border: 1px solid var(--primary);
   border-radius: 8px;
-  color: #1D4ED8;
+  color: var(--primary);
   background-color: white;
   font-size: 0.9rem;
   cursor: pointer;
@@ -132,7 +132,7 @@
 }
 
 .loading-indicator p {
-  color: #1D4ED8;
+  color: var(--primary);
   margin-top: 1.5rem;
   font-size: 1.1rem;
 }
@@ -141,7 +141,7 @@
   width: 50px;
   height: 50px;
   border: 4px solid rgba(44, 62, 80, 0.1);
-  border-top: 4px solid #1D4ED8;
+  border-top: 4px solid var(--primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -170,20 +170,20 @@
 }
 
 .no-results h3 {
-  color: #1D4ED8;
+  color: var(--primary);
   margin-bottom: 0.8rem;
   font-size: 1.3rem;
 }
 
 .no-results p {
-  color: #1D4ED8;
+  color: var(--primary);
   opacity: 0.8;
   margin-bottom: 1.5rem;
   font-size: 1rem;
 }
 
 .reset-btn {
-  background-color: #1D4ED8;
+  background-color: var(--primary);
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
