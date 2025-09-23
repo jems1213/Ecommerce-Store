@@ -47,7 +47,7 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
     return () => { mounted = false; };
   }, []);
 
-  // fallback: if script failed or not supported, show poster or empty area
+  // if script failed or not supported, show poster or empty area
   if (scriptError) {
     return (
       <div className={`modelviewer-fallback ${className}`}>
@@ -56,9 +56,19 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
     );
   }
 
+  // While loading the model-viewer script, show the poster or placeholder
+  if (!loaded) {
+    return (
+      <div className={`modelviewer-fallback ${className}`}>
+        {poster ? <img src={poster} alt={alt} /> : <div className="modelviewer-placeholder">Loading 3D preview...</div>}
+      </div>
+    );
+  }
+
   return (
     <div className={`modelviewer-wrapper ${className}`} ref={mvRef}>
       {/* Render model-viewer when script is loaded. The element is a custom element and will be upgraded once the script loads. */}
+      {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
       <model-viewer
         style={{ width: '100%', height: '100%', background: 'transparent' }}
         src={src}
