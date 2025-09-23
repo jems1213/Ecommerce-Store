@@ -105,6 +105,7 @@ const ShoeCard = ({ shoe }) => {
       tabIndex={0}
       aria-labelledby={`shoe-${id}-name`}
       role="group"
+      aria-hidden={showQuickView}
     >
       <div className="card-media">
         {isNew && <span className="badge badge-new">NEW</span>}
