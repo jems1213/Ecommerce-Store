@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   transition: background-color 0.5s ease;
-  background: radial-gradient(1200px 600px at 10% 20%, rgba(255,99,44,0.06), transparent 10%), var(--background-color, #2C3E50);
+  background: radial-gradient(1200px 600px at 10% 20%, rgba(255,99,44,0.06), transparent 10%), var(--background-color, #1D4ED8);
   color: #fff;
 }
 
