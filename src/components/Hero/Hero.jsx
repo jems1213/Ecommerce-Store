@@ -4,7 +4,7 @@ import { useGLTF } from '@react-three/drei';
 import { FiArrowRight, FiPlay, FiPause } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import './Hero.css';
-import ThreeShoe from '../ThreeShoe/ThreeShoe';
+import ModelViewer from '../ModelViewer/ModelViewer';
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
