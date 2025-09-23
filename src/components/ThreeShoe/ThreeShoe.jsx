@@ -56,7 +56,7 @@ const ShoeMesh = ({ color = '#ff6b35', accent = '#222' }) => {
   );
 };
 
-const ThreeShoeCanvas = ({ className }) => {
+const ThreeShoeCanvas = ({ className, color = '#ff6b35', accent = '#222' }) => {
   return (
     <div className={`three-shoe-wrapper ${className || ''}`}>
       <Canvas camera={{ position: [0, 1.25, 3.6], fov: 36 }} shadows dpr={[1, 2]}>
@@ -66,7 +66,7 @@ const ThreeShoeCanvas = ({ className }) => {
 
         <PresentationControls global zoom={0.9} polar={[-0.2, Math.PI / 2]} azimuth={[-Math.PI / 4, Math.PI / 4]}>
           <Float speed={1} rotationIntensity={0.6} floatIntensity={0.6}>
-            <ShoeMesh />
+            <ShoeMesh color={color} accent={accent} />
           </Float>
         </PresentationControls>
 
