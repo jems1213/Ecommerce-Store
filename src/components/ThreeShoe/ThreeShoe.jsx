@@ -1,6 +1,6 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PresentationControls, ContactShadows, Float } from '@react-three/drei';
+import { OrbitControls, PresentationControls, ContactShadows, Float, useGLTF, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import './ThreeShoe.css';
 
@@ -56,17 +56,69 @@ const ShoeMesh = ({ color = '#ff6b35', accent = '#222' }) => {
   );
 };
 
-const ThreeShoeCanvas = ({ className, color = '#ff6b35', accent = '#222' }) => {
+function Model({ modelUrl, castShadow = true, receiveShadow = true, scale = 1, color, accent }) {
+  const gltf = useGLTF(modelUrl, true);
+  const ref = useRef();
+
+  useFrame((state, delta) => {
+    if (ref.current) ref.current.rotation.y += delta * 0.3;
+  });
+
+  return (
+    <group ref={ref} dispose={null} scale={[scale, scale, scale]}>
+      <primitive object={gltf.scene} castShadow={castShadow} receiveShadow={receiveShadow} />
+    </group>
+  );
+}
+
+const ThreeShoeCanvas = ({ className, color = '#ff6b35', accent = '#222', modelUrl = null, lighting = {} }) => {
+  const [canLoadModel, setCanLoadModel] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    if (!modelUrl) {
+      setCanLoadModel(false);
+      setChecked(true);
+      return;
+    }
+    // quick availability check
+    fetch(modelUrl, { method: 'HEAD' })
+      .then((res) => {
+        if (mounted) {
+          setCanLoadModel(res && res.ok);
+          setChecked(true);
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setCanLoadModel(false);
+          setChecked(true);
+        }
+      });
+
+    return () => (mounted = false);
+  }, [modelUrl]);
+
+  // if the HEAD is blocked by CORS, we still try to render the model via Suspense; the check simply helps avoid immediate errors.
+
   return (
     <div className={`three-shoe-wrapper ${className || ''}`}>
       <Canvas camera={{ position: [0, 1.25, 3.6], fov: 36 }} shadows dpr={[1, 2]}>
-        <ambientLight intensity={0.6} />
-        <directionalLight intensity={0.8} position={[5, 10, 5]} castShadow />
-        <directionalLight intensity={0.25} position={[-5, -5, -5]} />
+        {/* tweak lights per slide via lighting props */}
+        <ambientLight intensity={lighting.ambient ?? 0.6} />
+        <directionalLight intensity={lighting.key ?? 0.9} position={lighting.keyPos ?? [5, 10, 5]} castShadow />
+        <directionalLight intensity={lighting.fill ?? 0.25} position={lighting.fillPos ?? [-5, -5, -5]} />
 
         <PresentationControls global zoom={0.9} polar={[-0.2, Math.PI / 2]} azimuth={[-Math.PI / 4, Math.PI / 4]}>
           <Float speed={1} rotationIntensity={0.6} floatIntensity={0.6}>
-            <ShoeMesh color={color} accent={accent} />
+            <Suspense fallback={<ShoeMesh color={color} accent={accent} />}>
+              {modelUrl && checked && canLoadModel ? (
+                <Model modelUrl={modelUrl} scale={1} color={color} accent={accent} />
+              ) : (
+                <ShoeMesh color={color} accent={accent} />
+              )}
+            </Suspense>
           </Float>
         </PresentationControls>
 
