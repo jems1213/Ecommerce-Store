@@ -28,10 +28,15 @@ const ModelViewer = ({ src, alt = '3D model', className = '', poster = null }) =
     const script = document.createElement('script');
     script.src = MODEL_VIEWER_SRC;
     script.async = true;
+    script.crossOrigin = 'anonymous';
     script.setAttribute('data-src', MODEL_VIEWER_SRC);
 
     script.onload = () => {
-      if (mounted) setLoaded(true);
+      try {
+        if (mounted) setLoaded(true);
+      } catch (e) {
+        if (mounted) setScriptError(true);
+      }
     };
     script.onerror = () => {
       if (mounted) setScriptError(true);
