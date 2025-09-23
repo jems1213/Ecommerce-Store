@@ -4,7 +4,7 @@
   --accent-2: #ff9f1c;
   --text-color: #e6eef7; /* pale text on dark */
   --muted-text: #a9c0d9;
-  --background-color: linear-gradient(180deg,#1D4ED8 0%, #092436 100%);
+  --background-color: linear-gradient(180deg,var(--primary) 0%, #092436 100%);
   --hover-color: rgba(255,255,255,0.04);
   --border-color: rgba(255,255,255,0.06);
   --shadow: 0 8px 30px rgba(7,26,47,0.5);
