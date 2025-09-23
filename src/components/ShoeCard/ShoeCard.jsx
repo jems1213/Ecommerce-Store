@@ -282,11 +282,11 @@ const ShoeCard = ({ shoe }) => {
               exit={{ scale: 0.95 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="close-quickview" onClick={() => setShowQuickView(false)} aria-label="Close quick view">
+              <button ref={closeButtonRef} className="close-quickview" onClick={() => setShowQuickView(false)} aria-label="Close quick view">
                 <FaTimes />
               </button>
 
-              <div className="quickview-content">
+              <div ref={quickviewPanelRef} className="quickview-content">
                 <div className="quickview-media">
                   <img src={images[currentImageIndex] ?? defaultShoe} alt={`${brand} ${name}`} />
                 </div>
