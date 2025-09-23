@@ -47,7 +47,8 @@ const Hero = () => {
       textColor: "#fff",
       threeD: true,
       color: '#0d6efd',
-      accent: '#0b2545'
+      accent: '#0b2545',
+      modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Shoe/glTF-Binary/Shoe.glb'
     }
   ];
 
