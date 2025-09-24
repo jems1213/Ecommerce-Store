@@ -103,6 +103,11 @@
 .swatch-dot{width:20px;height:20px;border-radius:50%;border:1px solid rgb(204,204,204);background:var(--swatch-color);display:inline-block;cursor:pointer;transition:transform .213s ease-in-out}
 .swatch-dot.selected{transform:scale(1.05)}
 
+.shoe-card--classic{border:1px solid var(--danger)}
+.shoe-card--classic .product-title{color:var(--danger)}
+.shoe-card--classic .btn.primary{background:var(--danger);border-color:var(--danger)}
+.shoe-card--classic .swatch-dot.selected{outline:3px solid rgba(239,68,68,0.12);transform:scale(1.06)}
+
 /* Accessibility focus states */
 .icon-btn:focus,.dot:focus,.color-swatch:focus,.size-btn:focus,.btn:focus{outline:3px solid rgba(59,130,246,0.18);outline-offset:3px}
 
