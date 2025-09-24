@@ -6,7 +6,7 @@ import { useCart } from '../../context/CartContext';
 import './ShoeCard.css';
 import defaultShoe from '../../assets/default-shoe.svg';
 
-const ShoeCard = ({ shoe }) => {
+const ShoeCard = ({ shoe, variant = 'modern' }) => {
   const { addToCart } = useCart();
 
   const {
@@ -86,15 +86,10 @@ const ShoeCard = ({ shoe }) => {
     }
   };
 
-  return (
-    <article
-      className="shoe-card"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      tabIndex={0}
-      aria-labelledby={`shoe-${id}-name`}
-      role="group"
-    >
+  const tagText = (shoe?.tagline || shoe?.category || 'Unisex Low Top Shoe').toString().toUpperCase();
+
+  const renderModern = () => (
+    <>
       <div className="card-media">
         {isNew && <span className="badge badge-new">NEW</span>}
         {discount > 0 && <span className="badge badge-discount">-{discount}%</span>}
@@ -116,7 +111,6 @@ const ShoeCard = ({ shoe }) => {
           className="shoe-image"
           onError={(e) => { e.target.src = defaultShoe; }}
         />
-
 
         {images.length > 1 && (
           <div className="image-dots" aria-hidden>
@@ -150,7 +144,7 @@ const ShoeCard = ({ shoe }) => {
                 key={`${id}-${c}`}
                 type="button"
                 className={`color-swatch ${selectedColor === c ? 'selected' : ''}`}
-                style={{ backgroundColor: c }}
+                style={{ '--swatch-color': c }}
                 onClick={(e) => { e.stopPropagation(); setSelectedColor(c); }}
                 aria-pressed={selectedColor === c}
                 title={`Select color ${c}`}
@@ -189,10 +183,93 @@ const ShoeCard = ({ shoe }) => {
           >
             <FaShoppingCart /> Add to Cart
           </motion.button>
-
         </div>
       </div>
+    </>
+  );
 
+  const renderClassic = () => (
+    <>
+      <div className="card-media classic-media">
+        {isNew && <span className="badge badge-new">NEW</span>}
+        {discount > 0 && <span className="badge badge-discount">-{discount}%</span>}
+
+        <button
+          type="button"
+          className={`icon-btn wishlist left ${isWishlisted ? 'active' : ''}`}
+          onClick={toggleWishlist}
+          aria-pressed={isWishlisted}
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+          title={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <FaHeart />
+        </button>
+
+        <div className="image-stack">
+          <img
+            src={images[0] ?? defaultShoe}
+            alt={`${brand} ${name}`}
+            className="shoe-image base"
+            onError={(e) => { e.target.src = defaultShoe; }}
+          />
+          <img
+            src={images[1] ?? images[0] ?? defaultShoe}
+            alt={`${brand} ${name} alt view`}
+            className="shoe-image hover"
+            onError={(e) => { e.target.src = defaultShoe; }}
+          />
+        </div>
+
+        <button
+          type="button"
+          className="quickview-inline"
+          onClick={handleAddToCart}
+          aria-label={`Open quick view and add ${name} to cart`}
+        >
+          <span>Add to Cart</span>
+          <FaShoppingCart />
+        </button>
+      </div>
+
+      <div className="classic-body">
+        <a className="product-link" href="#" aria-label={name} onClick={(e)=>e.preventDefault()}>
+          <span className="product-title" id={`shoe-${id}-name`}>{name}</span>
+        </a>
+
+        <div className="classic-price-row">
+          <span className="price-current">₹{finalPrice}</span>
+          {discount > 0 && <span className="price-original">₹{price.toFixed(2)}</span>}
+        </div>
+
+        <div className="product-tagline">{tagText}</div>
+
+        <div className="classic-swatches">
+          {colors.slice(0, 5).map((c) => (
+            <button
+              key={`${id}-classic-${c}`}
+              type="button"
+              className={`swatch-dot ${selectedColor === c ? 'selected' : ''}`}
+              style={{ '--swatch-color': c }}
+              onClick={(e) => { e.stopPropagation(); setSelectedColor(c); }}
+              aria-pressed={selectedColor === c}
+              title={`Select color ${c}`}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  );
+
+  return (
+    <article
+      className={`shoe-card ${variant === 'classic' ? 'shoe-card--classic' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      tabIndex={0}
+      aria-labelledby={`shoe-${id}-name`}
+      role="group"
+    >
+      {variant === 'classic' ? renderClassic() : renderModern()}
     </article>
   );
 };
@@ -210,8 +287,11 @@ ShoeCard.propTypes = {
     discount: PropTypes.number,
     isNew: PropTypes.bool,
     stock: PropTypes.number,
-    description: PropTypes.string
-  }).isRequired
+    description: PropTypes.string,
+    tagline: PropTypes.string,
+    category: PropTypes.string
+  }).isRequired,
+  variant: PropTypes.oneOf(['modern', 'classic'])
 };
 
 export default ShoeCard;

@@ -227,7 +227,7 @@ const Home = () => {
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <ShoeCard shoe={shoe} />
+                  <ShoeCard shoe={shoe} variant="classic" />
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -339,7 +339,7 @@ const Home = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.3 }}
                 >
-                  <ShoeCard shoe={shoe} />
+                  <ShoeCard shoe={shoe} variant="classic" />
                 </motion.div>
               ))}
           </AnimatePresence>

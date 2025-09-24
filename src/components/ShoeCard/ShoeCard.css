@@ -47,7 +47,7 @@
 
 .selectors{display:flex;justify-content:space-between;gap:10px;align-items:center}
 .colors{display:flex;gap:8px}
-.color-swatch{width:20px;height:20px;border-radius:50%;border:2px solid rgba(0,0,0,0.06);cursor:pointer}
+.color-swatch{width:20px;height:20px;border-radius:50%;border:2px solid rgba(0,0,0,0.06);cursor:pointer;background:var(--swatch-color)}
 .color-swatch.selected{outline:3px solid rgba(14,165,233,0.12);transform:scale(1.05)}
 .sizes{display:flex;gap:6px}
 .size-btn{background:transparent;border:1px solid rgba(2,6,23,0.06);padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
@@ -81,6 +81,32 @@
   .quickview-content{flex-direction:column}
   .close-quickview{position:fixed;top:10px;right:10px}
 }
+
+.shoe-card--classic .card-media{background:#fff}
+.classic-media{position:relative}
+.image-stack{position:relative;width:100%;height:220px}
+.image-stack .shoe-image.base{position:relative;z-index:1;opacity:1;transition:opacity .512s ease-out}
+.image-stack .shoe-image.hover{position:absolute;inset:0;z-index:2;opacity:0;transition:opacity .512s ease-out}
+.shoe-card--classic:hover .image-stack .shoe-image.hover,.shoe-card--classic:focus-within .image-stack .shoe-image.hover{opacity:1}
+
+.icon-btn.left{left:12px;right:auto}
+
+.quickview-inline{position:absolute;top:8px;right:10px;display:flex;align-items:center;gap:6px;background:rgb(255,255,255);border:1px solid rgb(201,201,201);padding:6px 10px;border-radius:8px;font-weight:700;text-transform:uppercase;opacity:0;transition:opacity .3s ease}
+.shoe-card--classic:hover .quickview-inline,.shoe-card--classic:focus-within .quickview-inline{opacity:1}
+
+.classic-body{padding:10px 12px 14px}
+.product-link{color:inherit;text-decoration:none}
+.product-title{font-size:14px;line-height:1.2}
+.classic-price-row{display:flex;gap:8px;align-items:center;margin:4px 0 6px}
+.product-tagline{color:rgb(155,155,155);font-size:9px;font-weight:700;text-transform:uppercase;margin:4px 0}
+.classic-swatches{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.swatch-dot{width:20px;height:20px;border-radius:50%;border:1px solid rgb(204,204,204);background:var(--swatch-color);display:inline-block;cursor:pointer;transition:transform .213s ease-in-out}
+.swatch-dot.selected{transform:scale(1.05)}
+
+.shoe-card--classic{border:1px solid var(--danger)}
+.shoe-card--classic .product-title{color:var(--danger)}
+.shoe-card--classic .btn.primary{background:var(--danger);border-color:var(--danger)}
+.shoe-card--classic .swatch-dot.selected{outline:3px solid rgba(239,68,68,0.12);transform:scale(1.06)}
 
 /* Accessibility focus states */
 .icon-btn:focus,.dot:focus,.color-swatch:focus,.size-btn:focus,.btn:focus{outline:3px solid rgba(59,130,246,0.18);outline-offset:3px}
