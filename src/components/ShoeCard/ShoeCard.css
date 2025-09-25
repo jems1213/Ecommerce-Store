@@ -62,7 +62,7 @@
 
 .card-actions{display:flex;gap:10px;margin-top:6px}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;border:1px solid transparent;cursor:pointer}
-.btn.primary{background:linear-gradient(90deg,var(--accent),#0b1220);color:#fff}
+.btn.primary{background:linear-gradient(90deg,var(--accent-color),var(--accent-2));color:#fff}
 .btn.ghost{background:transparent;border-color:rgba(2,6,23,0.06);color:var(--accent)}
 .btn:disabled{opacity:0.5;cursor:not-allowed}
 
