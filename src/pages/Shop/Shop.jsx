@@ -51,7 +51,7 @@ const Shop = () => {
             shoe1,
             shoe2,
             shoe3,
-            defaultShoe
+            'https://tse1.mm.bing.net/th/id/OIP.nrNwU3ChW26n4PCm4J-qPwHaFG?pid=Api&P=0&h=180'
           ];
           const randomHex24 = () => Array.from({length:24}).map(() => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
           fetched = Array.from({ length: 10 }).map((_, i) => ({
