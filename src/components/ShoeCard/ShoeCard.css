@@ -67,6 +67,19 @@
 .btn.ghost{background:transparent;border-color:rgba(2,6,23,0.06);color:var(--accent)}
 .btn:disabled{opacity:0.5;cursor:not-allowed}
 
+/* Slight emphasis on primary buttons inside cards */
+.shoe-card .btn.primary::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(14,165,233,0.06);
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+.shoe-card .btn.primary:hover::after{opacity:1}
+
 /* Quickview panel */
 .quickview-overlay{position:fixed!important;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.8);z-index:9999;overflow:auto;padding:0;margin:0}
 .quickview-panel{position:fixed!important;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;max-width:none;background:#fff;border-radius:0;padding:28px;box-shadow:none;display:flex;gap:24px;align-items:flex-start;margin:0}
