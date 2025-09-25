@@ -1,4 +1,4 @@
-/* ShoeCard redesigned: modern layout, accessible, responsive */
+/* ShoeCard redesigned: modern layout, accessible, responsive, stronger gradient visuals */
 :root{
   --card-bg: #ffffff;
   --muted:#6b7280;
@@ -17,29 +17,32 @@
   overflow:hidden;
   min-height:360px;
   transition:transform .22s ease,box-shadow .22s ease;
+  position:relative;
 }
 .shoe-card:focus-within,.shoe-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(2,6,23,0.08)}
 
-.card-media{position:relative;display:block;background:linear-gradient(180deg,#f8fafc, #ffffff);align-items:center;justify-content:center}
-.shoe-image{display:block;width:100%;height:220px;object-fit:contain}
+.card-media{position:relative;display:block;align-items:center;justify-content:center;min-height:220px}
+.card-gradient{position:absolute;inset:0;background-image:var(--card-gradient, linear-gradient(180deg,#f8fafc,#ffffff));pointer-events:none;mix-blend-mode:normal;opacity:1}
 
-.badge{position:absolute;top:12px;left:12px;padding:6px 8px;border-radius:8px;font-weight:700;font-size:12px;color:#fff}
-.badge-new{background:var(--accent-2)}
-.badge-discount{background:var(--danger);left:auto;right:12px}
+.shoe-image{display:block;width:100%;height:220px;object-fit:contain;position:relative;z-index:2;background:transparent}
 
-.icon-btn{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.96);border:1px solid rgba(0,0,0,0.04);cursor:pointer;transition:transform .18s ease}
+.badge{position:absolute;top:12px;left:12px;padding:6px 8px;border-radius:8px;font-weight:700;font-size:12px;color:#fff;z-index:3}
+.badge-new{background:linear-gradient(90deg,var(--accent-2),#06b6d4)}
+.badge-discount{background:linear-gradient(90deg,var(--danger),#f97316);left:auto;right:12px}
+
+.icon-btn{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.92);border:1px solid rgba(0,0,0,0.04);cursor:pointer;transition:transform .18s ease;z-index:3}
 .icon-btn:hover{transform:scale(1.05)}
 .icon-btn.active{color:var(--danger)}
 
-.card-overlay{position:absolute;inset:auto 0 0 0;height:48px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,transparent,rgba(15,23,42,0.02));opacity:0;transition:opacity .18s ease}
+.card-overlay{position:absolute;inset:auto 0 0 0;height:48px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,transparent,rgba(15,23,42,0.02));opacity:0;transition:opacity .18s ease;z-index:3}
 .shoe-card:hover .card-overlay,.shoe-card:focus-within .card-overlay{opacity:1}
 .quickview-btn{background:rgba(17,24,39,0.92);color:#fff;border:none;padding:8px 12px;border-radius:8px;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
 
-.image-dots{position:absolute;left:12px;bottom:12px;display:flex;gap:6px}
+.image-dots{position:absolute;left:12px;bottom:12px;display:flex;gap:6px;z-index:3}
 .dot{width:8px;height:8px;border-radius:50%;background:rgba(2,6,23,0.08);border:none}
 .dot.active{background:var(--accent)}
 
-.card-body{padding:12px 14px 16px;display:flex;flex-direction:column;gap:8px}
+.card-body{padding:12px 14px 16px;display:flex;flex-direction:column;gap:8px;z-index:3}
 .brand-rating{display:flex;justify-content:space-between;align-items:center}
 .brand{font-size:12px;color:var(--muted);font-weight:700}
 .rating{display:inline-flex;gap:6px;align-items:center;color:var(--accent-2);font-weight:600}
@@ -47,7 +50,7 @@
 
 .selectors{display:flex;justify-content:space-between;gap:10px;align-items:center}
 .colors{display:flex;gap:8px}
-.color-swatch{width:20px;height:20px;border-radius:50%;border:2px solid rgba(0,0,0,0.06);cursor:pointer;background:var(--swatch-color)}
+.color-swatch{width:20px;height:20px;border-radius:50%;border:2px solid rgba(0,0,0,0.06);cursor:pointer;background:var(--swatch-color);box-shadow:0 4px 12px rgba(2,6,23,0.04)}
 .color-swatch.selected{outline:3px solid rgba(14,165,233,0.12);transform:scale(1.05)}
 .sizes{display:flex;gap:6px}
 .size-btn{background:transparent;border:1px solid rgba(2,6,23,0.06);padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
@@ -59,7 +62,7 @@
 
 .card-actions{display:flex;gap:10px;margin-top:6px}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;border:1px solid transparent;cursor:pointer}
-.btn.primary{background:var(--accent);color:#fff}
+.btn.primary{background:linear-gradient(90deg,var(--accent),#0b1220);color:#fff}
 .btn.ghost{background:transparent;border-color:rgba(2,6,23,0.06);color:var(--accent)}
 .btn:disabled{opacity:0.5;cursor:not-allowed}
 
@@ -91,7 +94,7 @@
 
 .icon-btn.left{left:12px;right:auto}
 
-.quickview-inline{position:absolute;top:8px;right:10px;display:flex;align-items:center;gap:6px;background:rgb(255,255,255);border:1px solid rgb(201,201,201);padding:6px 10px;border-radius:8px;font-weight:700;text-transform:uppercase;opacity:0;transition:opacity .3s ease}
+.quickview-inline{position:absolute;top:8px;right:10px;display:flex;align-items:center;gap:6px;background:rgb(255,255,255);border:1px solid rgb(201,201,201);padding:6px 10px;border-radius:8px;font-weight:700;text-transform:uppercase;opacity:0;transition:opacity .3s ease;z-index:3}
 .shoe-card--classic:hover .quickview-inline,.shoe-card--classic:focus-within .quickview-inline{opacity:1}
 
 .classic-body{padding:10px 12px 14px}
@@ -105,7 +108,7 @@
 
 .shoe-card--classic{border:1px solid var(--danger)}
 .shoe-card--classic .product-title{color:var(--danger)}
-.shoe-card--classic .btn.primary{background:var(--danger);border-color:var(--danger)}
+.shoe-card--classic .btn.primary{background:linear-gradient(90deg,var(--danger),#f97316);border-color:var(--danger)}
 .shoe-card--classic .swatch-dot.selected{outline:3px solid rgba(239,68,68,0.12);transform:scale(1.06)}
 
 /* Accessibility focus states */
