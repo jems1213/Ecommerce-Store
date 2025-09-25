@@ -498,6 +498,11 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Server is healthy' });
 });
 
+// Root route for preview/proxy
+app.get('/', (req, res) => {
+  res.send('<!doctype html><html><head><meta charset="utf-8"><title>Backend</title></head><body><h2>Backend API is running</h2><p>Try <a href="/api/health">/api/health</a> or API endpoints under /api</p></body></html>');
+});
+
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
