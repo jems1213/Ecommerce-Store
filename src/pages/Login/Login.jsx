@@ -45,6 +45,22 @@ const Login = () => {
     setIsLoading(true);
     setError('');
 
+    // Quick backend health check to avoid raw Axios Network Error stack
+    try {
+      try {
+        await api.get('/api/health');
+      } catch (healthErr) {
+        // try absolute base if api instance failed
+        const base = API_BASE || window.location.origin;
+        await axios.get(`${base.replace(/\/$/, '')}/api/health`);
+      }
+    } catch (healthFail) {
+      console.error('Backend health check failed:', healthFail);
+      setError('Cannot reach backend. Start the Backend (cd Backend && npm start) or set VITE_API_URL to your deployed backend.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       // Primary attempt: use configured api instance
       let res = null;
