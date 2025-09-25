@@ -56,6 +56,8 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const hoverInterval = useRef(null);
 
+  const safeImages = (Array.isArray(images) && images.length) ? images : FALLBACK_IMAGES;
+
   useEffect(() => {
     if (isHovered && images.length > 1) {
       hoverInterval.current = setInterval(() => {
