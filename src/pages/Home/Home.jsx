@@ -289,12 +289,12 @@ const Home = () => {
             <p>Loading shoes...</p>
           </motion.div>
         ) : shoes.length > 0 ? (
-          <motion.div 
+          <motion.div
             className="shoe-grid"
             layout
           >
             <AnimatePresence>
-              {shoes.map((shoe) => (
+              {Array.from(new Map(shoes.map(s => [s._id, s])).values()).map((shoe) => (
                 <motion.div
                   key={shoe._id}
                   layout
