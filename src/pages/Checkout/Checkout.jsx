@@ -114,7 +114,8 @@ const CheckoutForm = ({ cart = [], total = 0, onSuccess }) => {
         paymentStatus
       };
 
-      const response = await fetch(`${API_BASE}/api/orders`, {
+      // Use relative path so dev proxy (vite) forwards to backend and remote previews use same-origin
+      const response = await fetch(`/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
