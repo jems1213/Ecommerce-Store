@@ -45,42 +45,33 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: credentials.email.trim(),
-          password: credentials.password
-        })
+      const res = await api.post('/api/auth/login', {
+        email: credentials.email.trim(),
+        password: credentials.password
       });
 
-      const data = await response.json();
+      const data = res.data;
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+      if (!data || (!data.token && !data?.data?.token)) {
+        // support both {token,user} and {data:{token,user}}
+        const msg = (data && data.message) || 'Authentication token missing in response';
+        throw new Error(msg);
       }
 
-      // Validate API response
-      if (!data.token) {
-        throw new Error('Authentication token missing in response');
-      }
+      // normalize
+      const token = data.token || data.data?.token;
+      const user = data.user || data.data?.user;
 
-      if (!data.user || !data.user.email) {
-        throw new Error('User data incomplete in response');
-      }
+      if (!user || !user.email) throw new Error('User data incomplete in response');
 
       // Store auth data
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
 
       // Update app state
-      window.dispatchEvent(new Event('storage')); // This will trigger useAuth hook if you're using it
-      
-      // Redirect to home or intended path
+      window.dispatchEvent(new Event('storage'));
       navigate('/', { replace: true });
-      
+
     } catch (err) {
       console.error('Login error:', err);
       
