@@ -85,7 +85,7 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
       name,
       brand,
       price,
-      image: images[0] ?? defaultShoe,
+      image: safeImages[0] ?? FALLBACK_IMAGES[0],
       selectedColor,
       selectedSize,
       quantity: 1,
