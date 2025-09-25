@@ -235,16 +235,16 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
 
         <div className="image-stack">
           <img
-            src={images[0] ?? defaultShoe}
+            src={safeImages[0] ?? FALLBACK_IMAGES[0]}
             alt={`${brand} ${name}`}
             className="shoe-image base"
-            onError={(e) => { e.target.src = defaultShoe; }}
+            onError={(e) => { e.target.src = FALLBACK_IMAGES[0]; }}
           />
           <img
-            src={images[1] ?? images[0] ?? defaultShoe}
+            src={safeImages[1] ?? safeImages[0] ?? FALLBACK_IMAGES[0]}
             alt={`${brand} ${name} alt view`}
             className="shoe-image hover"
-            onError={(e) => { e.target.src = defaultShoe; }}
+            onError={(e) => { e.target.src = FALLBACK_IMAGES[0]; }}
           />
         </div>
 
