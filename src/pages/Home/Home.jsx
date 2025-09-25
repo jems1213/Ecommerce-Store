@@ -405,9 +405,7 @@ const Home = () => {
         </motion.h2>
         <div className="shoe-grid">
           <AnimatePresence>
-            {shoes
-              .filter(shoe => shoe.isNew)
-              .map(shoe => (
+            {Array.from(new Map(shoes.filter(shoe => shoe.isNew).map(s => [s._id, s])).values()).map(shoe => (
                 <motion.div
                   key={shoe._id}
                   initial={{ opacity: 0, y: 20 }}
