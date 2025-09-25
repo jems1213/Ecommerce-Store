@@ -21,7 +21,14 @@ const Home = () => {
   const [showAddShoeModal, setShowAddShoeModal] = useState(false);
   const [newShoe, setNewShoe] = useState({ name: '', brand: '', price: '', images: '', colors: '', sizes: '', discount: '', isNew: false, description: '' });
 
-  // Fetch shoes from backend
+  // Demo images provided by user
+  const DEMO_IMAGES = [
+    'https://tse1.mm.bing.net/th/id/OIP.nrNwU3ChW26n4PCm4J-qPwHaFG?pid=Api&P=0&h=180',
+    'https://tse4.mm.bing.net/th/id/OIP.d-7UFbAaPsT2y3dYpaKm1AHaFb?pid=Api&P=0&h=180',
+    'https://tse4.mm.bing.net/th/id/OIP.0TZK6up-zDy3BDDFEGWUGQHaE8?pid=Api&P=0&h=180'
+  ];
+
+  // Fetch shoes from backend; seed demo shoes when nothing available
   useEffect(() => {
     const fetchShoes = async () => {
       try {
@@ -49,12 +56,78 @@ const Home = () => {
         } else {
           fetched = [];
         }
+
         const storedLocal = JSON.parse(localStorage.getItem('localShoes') || '[]');
-        setLocalShoes(storedLocal);
-        setShoes([...(storedLocal || []), ...fetched]);
+
+        // If there are no backend shoes and no local shoes, seed demo shoes using provided images
+        if ((!storedLocal || storedLocal.length === 0) && fetched.length === 0) {
+          const demoShoes = [
+            {
+              _id: 'local-demo-1',
+              name: 'Aurora Runner',
+              brand: 'SneakerHub',
+              price: 129.99,
+              images: [DEMO_IMAGES[0], DEMO_IMAGES[1]],
+              colors: ['#f97316', '#0ea5e9'],
+              rating: 4.7,
+              discount: 10,
+              isNew: true,
+              sizes: [6, 7, 8, 9, 10],
+              stock: 42,
+              description: 'Lightweight runner with gradient accents',
+              tagline: 'Performance Gradient'
+            },
+            {
+              _id: 'local-demo-2',
+              name: 'Nebula Slip-on',
+              brand: 'SneakerHub',
+              price: 99.99,
+              images: [DEMO_IMAGES[1], DEMO_IMAGES[2]],
+              colors: ['#111827', '#ef4444'],
+              rating: 4.4,
+              discount: 15,
+              isNew: false,
+              sizes: [6, 7, 8, 9, 10, 11],
+              stock: 32,
+              description: 'Comfort-first slip-on with bold hues',
+              tagline: 'Everyday Comfort'
+            },
+            {
+              _id: 'local-demo-3',
+              name: 'Horizon Low',
+              brand: 'SneakerHub',
+              price: 149.99,
+              images: [DEMO_IMAGES[2], DEMO_IMAGES[0]],
+              colors: ['#06b6d4', '#10b981'],
+              rating: 4.9,
+              discount: 5,
+              isNew: true,
+              sizes: [7, 8, 9, 10, 11],
+              stock: 18,
+              description: 'Premium materials, eye-catching gradient',
+              tagline: 'Modern Aesthetic'
+            }
+          ];
+
+          setLocalShoes(demoShoes);
+          localStorage.setItem('localShoes', JSON.stringify(demoShoes));
+          setShoes(demoShoes);
+        } else {
+          setLocalShoes(storedLocal);
+          setShoes([...(storedLocal || []), ...fetched]);
+        }
       } catch (error) {
         console.error('Error fetching shoes:', error);
-        setShoes([]);
+        // fallback: try to load local shoes only
+        try {
+          const stored = JSON.parse(localStorage.getItem('localShoes') || '[]');
+          if (stored && stored.length) {
+            setLocalShoes(stored);
+            setShoes(stored);
+          }
+        } catch (e) {
+          setShoes([]);
+        }
       } finally {
         setIsLoading(false);
       }
