@@ -32,8 +32,10 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 // Middleware
+// Configure CORS to allow the frontend origin. If FRONTEND_URL is not set, allow any origin
+// (use a permissive fallback to support preview URLs and remote previews).
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL : function (origin, callback) { callback(null, true); },
   credentials: true
 }));
 app.use(express.json());
@@ -496,6 +498,11 @@ app.patch('/api/orders/:id/verify-payment', protect, async (req, res) => {
 // Health Check
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Server is healthy' });
+});
+
+// Root route for preview/proxy
+app.get('/', (req, res) => {
+  res.send('<!doctype html><html><head><meta charset="utf-8"><title>Backend</title></head><body><h2>Backend API is running</h2><p>Try <a href="/api/health">/api/health</a> or API endpoints under /api</p></body></html>');
 });
 
 // Global Error Handler

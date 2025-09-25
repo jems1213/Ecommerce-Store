@@ -3,10 +3,6 @@ import { motion } from 'framer-motion';
 import ShoeCard from '../../components/ShoeCard/ShoeCard';
 import './Shop.css';
 import api, { API_BASE } from '../../utils/apiClient';
-import defaultShoe from '../../assets/default-shoe.svg';
-import shoe1 from '../../assets/hero-shoe1.svg';
-import shoe2 from '../../assets/hero-shoe2.svg';
-import shoe3 from '../../assets/hero-shoe3.svg';
 
 const Shop = () => {
   const [filter, setFilter] = useState('all');
@@ -42,7 +38,15 @@ const Shop = () => {
         // If backend returns no shoes, populate with 10 dummy shoes for development/demo
         if (!Array.isArray(fetched) || fetched.length === 0) {
           const colors = ['#111827', '#ef4444', '#3b82f6', '#10b981', '#f59e0b'];
-          const demoImages = [shoe1, shoe2, shoe3, defaultShoe];
+          const demoImages = [
+            'https://tse3.mm.bing.net/th/id/OIP.DjoU8k7FcAlkiRDJWPMYrwHaD7?pid=Api&P=0&h=180',
+            'https://tse1.mm.bing.net/th/id/OIP.nrNwU3ChW26n4PCm4J-qPwHaFG?pid=Api&P=0&h=180',
+            'https://tse4.mm.bing.net/th/id/OIP.d-7UFbAaPsT2y3dYpaKm1AHaFb?pid=Api&P=0&h=180',
+            'https://tse4.mm.bing.net/th/id/OIP.0TZK6up-zDy3BDDFEGWUGQHaE8?pid=Api&P=0&h=180',
+            'https://tse3.mm.bing.net/th/id/OIP.9PDaEcWYxhPbrNEoLd380QHaGR?pid=Api&P=0&h=180',
+            'https://tse1.mm.bing.net/th/id/OIP.ol8ONAu84a2wZE8gAyMnvwHaHa?pid=Api&P=0&h=180',
+            'https://tse2.mm.bing.net/th/id/OIP.hm02wr_Ih4mCog4P0_lsCwHaDx?pid=Api&P=0&h=180'
+          ];
           const randomHex24 = () => Array.from({length:24}).map(() => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
           fetched = Array.from({ length: 10 }).map((_, i) => ({
             _id: randomHex24(),
@@ -63,7 +67,8 @@ const Shop = () => {
           }));
         }
 
-        setShoes(fetched);
+        // dedupe before setting
+        setShoes(Array.from(new Map(fetched.map(s => [(s && (s._id || s.id)) || Math.random(), s])).values()));
       } catch (error) {
         console.error('Error fetching shoes:', error);
         setShoes([]);
@@ -208,9 +213,9 @@ const Shop = () => {
         </div>
       ) : shoes.length > 0 ? (
         <motion.div className="shoe-grid" layout>
-          {shoes.map((shoe) => (
-            <ShoeCard 
-              key={shoe._id} 
+          {Array.from(new Map(shoes.map(s => [s._id, s])).values()).map((shoe) => (
+            <ShoeCard
+              key={shoe._id}
               shoe={shoe}
             />
           ))}

@@ -77,16 +77,63 @@ button {
 .btn-primary,
 .btn.primary,
 button.btn.primary {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
   background: linear-gradient(90deg, var(--accent-color), var(--accent-2));
+  background-size: 200% 100%;
   color: var(--white);
   box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  transition: transform 250ms var(--transition), box-shadow 250ms var(--transition), background-position 450ms ease;
 }
 
+/* Sheen effect using pseudo-element */
+.btn-primary::before,
+.btn.primary::before,
+button.btn.primary::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.06) 100%);
+  transform: rotate(25deg) translateX(-100%);
+  transition: transform 650ms cubic-bezier(.2,.9,.2,1), opacity 250ms;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hover state: lift, gradient shift and sheen sweep */
 .btn-primary:hover,
 .btn.primary:hover,
 button.btn.primary:hover {
-  transform: translateY(-3px);
-  filter: brightness(1.02);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+  background-position: 100% 0;
+}
+
+.btn-primary:hover::before,
+.btn.primary:hover::before,
+button.btn.primary:hover::before {
+  transform: rotate(25deg) translateX(0%);
+  opacity: 1;
+}
+
+/* Active / pressed state */
+.btn-primary:active,
+.btn.primary:active,
+button.btn.primary:active {
+  transform: translateY(-2px) scale(0.995);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* Accessibility focus */
+.btn-primary:focus-visible,
+.btn.primary:focus-visible,
+button.btn.primary:focus-visible {
+  outline: 3px solid rgba(59,130,246,0.18);
+  outline-offset: 4px;
 }
 
 /* Outline / ghost variant keeps border but uses accent color on hover */

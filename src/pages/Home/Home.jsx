@@ -5,7 +5,6 @@ import Hero from '../../components/Hero/Hero';
 import Newsletter from '../../components/Newsletter/Newsletter';
 import './Home.css';
 import api, { API_BASE } from '../../utils/apiClient';
-import defaultShoe from '../../assets/default-shoe.svg';
 
 const Home = () => {
   const [filter, setFilter] = useState('all');
@@ -18,11 +17,22 @@ const Home = () => {
 
   // Frontend-only local shoes (persisted in localStorage)
   const [localShoes, setLocalShoes] = useState([]);
-  const [showAddShoeModal, setShowAddShoeModal] = useState(false);
-  const [newShoe, setNewShoe] = useState({ name: '', brand: '', price: '', images: '', colors: '', sizes: '', discount: '', isNew: false, description: '' });
 
-  // Fetch shoes from backend
+  // Demo images provided by user
+  const DEMO_IMAGES = [
+    'https://tse3.mm.bing.net/th/id/OIP.DjoU8k7FcAlkiRDJWPMYrwHaD7?pid=Api&P=0&h=180',
+    'https://tse1.mm.bing.net/th/id/OIP.nrNwU3ChW26n4PCm4J-qPwHaFG?pid=Api&P=0&h=180',
+    'https://tse4.mm.bing.net/th/id/OIP.d-7UFbAaPsT2y3dYpaKm1AHaFb?pid=Api&P=0&h=180',
+    'https://tse4.mm.bing.net/th/id/OIP.0TZK6up-zDy3BDDFEGWUGQHaE8?pid=Api&P=0&h=180',
+    'https://tse3.mm.bing.net/th/id/OIP.9PDaEcWYxhPbrNEoLd380QHaGR?pid=Api&P=0&h=180',
+    'https://tse1.mm.bing.net/th/id/OIP.ol8ONAu84a2wZE8gAyMnvwHaHa?pid=Api&P=0&h=180',
+    'https://tse2.mm.bing.net/th/id/OIP.hm02wr_Ih4mCog4P0_lsCwHaDx?pid=Api&P=0&h=180'
+  ];
+
+  // Fetch shoes from backend; seed demo shoes when nothing available
   useEffect(() => {
+    const mergeUnique = (arr) => Array.from(new Map(arr.map(s => [(s && (s._id || s.id)) || Math.random(), s])).values());
+
     const fetchShoes = async () => {
       try {
         setIsLoading(true);
@@ -49,12 +59,79 @@ const Home = () => {
         } else {
           fetched = [];
         }
+
         const storedLocal = JSON.parse(localStorage.getItem('localShoes') || '[]');
-        setLocalShoes(storedLocal);
-        setShoes([...(storedLocal || []), ...fetched]);
+
+        // If there are no backend shoes and no local shoes, seed demo shoes using provided images
+        if ((!storedLocal || storedLocal.length === 0) && fetched.length === 0) {
+          const demoShoes = [
+            {
+              _id: 'local-demo-1',
+              name: 'Aurora Runner',
+              brand: 'SneakerHub',
+              price: 129.99,
+              images: [DEMO_IMAGES[0], DEMO_IMAGES[1]],
+              colors: ['#f97316', '#0ea5e9'],
+              rating: 4.7,
+              discount: 10,
+              isNew: true,
+              sizes: [6, 7, 8, 9, 10],
+              stock: 42,
+              description: 'Lightweight runner with gradient accents',
+              tagline: 'Performance Gradient'
+            },
+            {
+              _id: 'local-demo-2',
+              name: 'Nebula Slip-on',
+              brand: 'SneakerHub',
+              price: 99.99,
+              images: [DEMO_IMAGES[1], DEMO_IMAGES[2]],
+              colors: ['#111827', '#ef4444'],
+              rating: 4.4,
+              discount: 15,
+              isNew: false,
+              sizes: [6, 7, 8, 9, 10, 11],
+              stock: 32,
+              description: 'Comfort-first slip-on with bold hues',
+              tagline: 'Everyday Comfort'
+            },
+            {
+              _id: 'local-demo-3',
+              name: 'Horizon Low',
+              brand: 'SneakerHub',
+              price: 149.99,
+              images: [DEMO_IMAGES[2], DEMO_IMAGES[0]],
+              colors: ['#06b6d4', '#10b981'],
+              rating: 4.9,
+              discount: 5,
+              isNew: true,
+              sizes: [7, 8, 9, 10, 11],
+              stock: 18,
+              description: 'Premium materials, eye-catching gradient',
+              tagline: 'Modern Aesthetic'
+            }
+          ];
+
+          setLocalShoes(demoShoes);
+          localStorage.setItem('localShoes', JSON.stringify(demoShoes));
+          setShoes(mergeUnique(demoShoes));
+        } else {
+          setLocalShoes(storedLocal);
+          const combined = mergeUnique([...(storedLocal || []), ...fetched]);
+          setShoes(combined);
+        }
       } catch (error) {
         console.error('Error fetching shoes:', error);
-        setShoes([]);
+        // fallback: try to load local shoes only
+        try {
+          const stored = JSON.parse(localStorage.getItem('localShoes') || '[]');
+          if (stored && stored.length) {
+            setLocalShoes(stored);
+            setShoes(mergeUnique(stored));
+          }
+        } catch (e) {
+          setShoes([]);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -69,7 +146,7 @@ const Home = () => {
       const stored = JSON.parse(localStorage.getItem('localShoes') || '[]');
       if (stored && stored.length) {
         setLocalShoes(stored);
-        setShoes(prev => ([...stored, ...prev]));
+        setShoes(prev => mergeUnique([...stored, ...prev]));
       }
     } catch (e) {
       // ignore
@@ -113,14 +190,6 @@ const Home = () => {
             </svg>
           </motion.div>
 
-          <motion.button
-            className="add-shoe-button add-shoe-button--ml"
-            onClick={() => setShowAddShoeModal(true)}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            + Add Shoe
-          </motion.button>
 
           <motion.button
             className="mobile-filter-toggle"
@@ -213,12 +282,12 @@ const Home = () => {
             <p>Loading shoes...</p>
           </motion.div>
         ) : shoes.length > 0 ? (
-          <motion.div 
+          <motion.div
             className="shoe-grid"
             layout
           >
             <AnimatePresence>
-              {shoes.map((shoe) => (
+              {Array.from(new Map(shoes.map(s => [s._id, s])).values()).map((shoe) => (
                 <motion.div
                   key={shoe._id}
                   layout
@@ -259,65 +328,6 @@ const Home = () => {
         )}
       </div>
 
-      {/* Add Shoe Modal (frontend-only) */}
-      <AnimatePresence>
-        {showAddShoeModal && (
-          <motion.div className="add-shoe-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowAddShoeModal(false)}>
-            <motion.div className="add-shoe-modal" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} onClick={(e) => e.stopPropagation()}>
-              <h3>Add Shoe (local only)</h3>
-              <div className="add-shoe-form">
-                <label>Name</label>
-                <input value={newShoe.name} onChange={(e) => setNewShoe(prev => ({ ...prev, name: e.target.value }))} />
-                <label>Brand</label>
-                <input value={newShoe.brand} onChange={(e) => setNewShoe(prev => ({ ...prev, brand: e.target.value }))} />
-                <label>Price</label>
-                <input type="number" value={newShoe.price} onChange={(e) => setNewShoe(prev => ({ ...prev, price: parseFloat(e.target.value) || '' }))} />
-                <label>Images (comma separated URLs)</label>
-                <input value={newShoe.images} onChange={(e) => setNewShoe(prev => ({ ...prev, images: e.target.value }))} placeholder="https://... , https://..." />
-                <label>Colors (comma, hex or names)</label>
-                <input value={newShoe.colors} onChange={(e) => setNewShoe(prev => ({ ...prev, colors: e.target.value }))} placeholder="#000, #fff" />
-                <label>Sizes (comma separated e.g. 6,7,8)</label>
-                <input value={newShoe.sizes} onChange={(e) => setNewShoe(prev => ({ ...prev, sizes: e.target.value }))} />
-                <label>Discount (%)</label>
-                <input type="number" value={newShoe.discount} onChange={(e) => setNewShoe(prev => ({ ...prev, discount: parseInt(e.target.value) || 0 }))} />
-                <label>Description</label>
-                <textarea value={newShoe.description} onChange={(e) => setNewShoe(prev => ({ ...prev, description: e.target.value }))} />
-                <label><input type="checkbox" checked={newShoe.isNew} onChange={(e) => setNewShoe(prev => ({ ...prev, isNew: e.target.checked }))} /> Mark as NEW</label>
-
-                <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                  <button onClick={() => setShowAddShoeModal(false)}>Cancel</button>
-                  <button onClick={() => {
-                    const id = `local-${Date.now()}`;
-                    const imgs = newShoe.images ? newShoe.images.split(',').map(s => s.trim()).filter(Boolean) : [defaultShoe];
-                    const cols = newShoe.colors ? newShoe.colors.split(',').map(s => s.trim()).filter(Boolean) : ['#000'];
-                    const sz = newShoe.sizes ? newShoe.sizes.split(',').map(s => parseFloat(s.trim())).filter(Boolean) : [];
-                    const shoeObj = {
-                      _id: id,
-                      name: newShoe.name || 'New Shoe',
-                      brand: newShoe.brand || 'brand',
-                      price: Number(newShoe.price) || 0,
-                      images: imgs,
-                      colors: cols,
-                      sizes: sz,
-                      rating: 0,
-                      discount: Number(newShoe.discount) || 0,
-                      isNew: !!newShoe.isNew,
-                      stock: 50,
-                      description: newShoe.description || ''
-                    };
-                    const updated = [shoeObj, ...localShoes];
-                    setLocalShoes(updated);
-                    localStorage.setItem('localShoes', JSON.stringify(updated));
-                    setShoes(prev => [shoeObj, ...prev]);
-                    setNewShoe({ name: '', brand: '', price: '', images: '', colors: '', sizes: '', discount: '', isNew: false, description: '' });
-                    setShowAddShoeModal(false);
-                  }}>Add Shoe</button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <div className="new-arrivals-section">
         <motion.h2
@@ -329,9 +339,7 @@ const Home = () => {
         </motion.h2>
         <div className="shoe-grid">
           <AnimatePresence>
-            {shoes
-              .filter(shoe => shoe.isNew)
-              .map(shoe => (
+            {Array.from(new Map(shoes.filter(shoe => shoe.isNew).map(s => [s._id, s])).values()).map(shoe => (
                 <motion.div
                   key={shoe._id}
                   initial={{ opacity: 0, y: 20 }}

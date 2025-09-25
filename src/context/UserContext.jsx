@@ -15,10 +15,10 @@ export const UserProvider = ({ children }) => {
         return;
       }
 
-      const response = await fetch(`${API_BASE}/api/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await fetch(`/api/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
       });
 
       if (response.ok) {

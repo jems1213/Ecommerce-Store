@@ -2,8 +2,27 @@ import axios from 'axios';
 
 export const API_BASE = import.meta.env.VITE_API_URL || '';
 
+// If VITE_API_URL points to localhost but the app is running on a remote host (preview/deploy),
+// fall back to same-origin so requests go to the frontend host (which may proxy to backend).
+function computeBase() {
+  if (!API_BASE) return window.location.origin;
+  try {
+    const url = new URL(API_BASE);
+    const isLocalhost = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+    const runningLocally = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (isLocalhost && !runningLocally) {
+      // running on a remote preview — avoid calling localhost from the browser
+      return window.location.origin;
+    }
+    return API_BASE;
+  } catch (e) {
+    return API_BASE || window.location.origin;
+  }
+}
+
+const base = computeBase();
 const api = axios.create({
-  baseURL: API_BASE,
+  baseURL: base,
   headers: { 'Content-Type': 'application/json' }
 });
 

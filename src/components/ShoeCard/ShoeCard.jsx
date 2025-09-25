@@ -1,10 +1,36 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { FaStar, FaShoppingCart, FaChevronLeft, FaChevronRight, FaHeart } from 'react-icons/fa';
+import { FaStar, FaShoppingCart, FaHeart } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import './ShoeCard.css';
-import defaultShoe from '../../assets/default-shoe.svg';
+
+// Fallback images provided by user (used when a product has no images)
+const FALLBACK_IMAGES = [
+  'https://tse3.mm.bing.net/th/id/OIP.DjoU8k7FcAlkiRDJWPMYrwHaD7?pid=Api&P=0&h=180',
+  'https://tse1.mm.bing.net/th/id/OIP.nrNwU3ChW26n4PCm4J-qPwHaFG?pid=Api&P=0&h=180',
+  'https://tse4.mm.bing.net/th/id/OIP.d-7UFbAaPsT2y3dYpaKm1AHaFb?pid=Api&P=0&h=180',
+  'https://tse4.mm.bing.net/th/id/OIP.0TZK6up-zDy3BDDFEGWUGQHaE8?pid=Api&P=0&h=180',
+  'https://tse3.mm.bing.net/th/id/OIP.9PDaEcWYxhPbrNEoLd380QHaGR?pid=Api&P=0&h=180',
+  'https://tse1.mm.bing.net/th/id/OIP.ol8ONAu84a2wZE8gAyMnvwHaHa?pid=Api&P=0&h=180',
+  'https://tse2.mm.bing.net/th/id/OIP.hm02wr_Ih4mCog4P0_lsCwHaDx?pid=Api&P=0&h=180'
+];
+
+const hexToRgba = (hex, alpha = 1) => {
+  if (!hex) return `rgba(17,24,39,${alpha})`;
+  const h = hex.replace('#', '');
+  const bigint = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+const makeGradient = (base) => {
+  const mid = hexToRgba(base, 0.06);
+  const light = hexToRgba('#ffffff', 0);
+  return `linear-gradient(135deg, ${hexToRgba(base, 0.18)} 0%, ${mid} 40%, ${light} 75%)`;
+};
 
 const ShoeCard = ({ shoe, variant = 'modern' }) => {
   const { addToCart } = useCart();
@@ -14,7 +40,7 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
     name = 'Unknown Shoe',
     brand = 'Unknown Brand',
     price = 0,
-    images = [defaultShoe],
+    images = [],
     colors = ['#111827'],
     rating = 0,
     discount = 0,
@@ -31,8 +57,9 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const hoverInterval = useRef(null);
 
+  const safeImages = (Array.isArray(images) && images.length) ? images : FALLBACK_IMAGES;
+
   useEffect(() => {
-    // Rotate images while hovered (carousel preview)
     if (isHovered && images.length > 1) {
       hoverInterval.current = setInterval(() => {
         setCurrentImageIndex((i) => (i + 1) % images.length);
@@ -42,7 +69,6 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
   }, [isHovered, images.length]);
 
   useEffect(() => {
-    // load wishlist status from localStorage
     try {
       const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
       setIsWishlisted(wishlist.some((item) => item.id === id));
@@ -50,7 +76,6 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
       setIsWishlisted(false);
     }
   }, [id]);
-
 
   const finalPrice = discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : price.toFixed(2);
 
@@ -61,7 +86,7 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
       name,
       brand,
       price,
-      image: images[0] ?? defaultShoe,
+      image: safeImages[0] ?? FALLBACK_IMAGES[0],
       selectedColor,
       selectedSize,
       quantity: 1,
@@ -88,9 +113,12 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
 
   const tagText = (shoe?.tagline || shoe?.category || 'Unisex Low Top Shoe').toString().toUpperCase();
 
+  const cardGradient = makeGradient(selectedColor || colors[0]);
+
   const renderModern = () => (
     <>
       <div className="card-media">
+        <div className="card-gradient" aria-hidden />
         {isNew && <span className="badge badge-new">NEW</span>}
         {discount > 0 && <span className="badge badge-discount">-{discount}%</span>}
 
@@ -106,10 +134,10 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
         </button>
 
         <img
-          src={images[currentImageIndex] ?? defaultShoe}
+          src={safeImages[currentImageIndex] ?? FALLBACK_IMAGES[0]}
           alt={`${brand} ${name}`}
           className="shoe-image"
-          onError={(e) => { e.target.src = defaultShoe; }}
+          onError={(e) => { e.target.src = FALLBACK_IMAGES[0]; }}
         />
 
         {images.length > 1 && (
@@ -191,6 +219,7 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
   const renderClassic = () => (
     <>
       <div className="card-media classic-media">
+        <div className="card-gradient" aria-hidden />
         {isNew && <span className="badge badge-new">NEW</span>}
         {discount > 0 && <span className="badge badge-discount">-{discount}%</span>}
 
@@ -207,16 +236,16 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
 
         <div className="image-stack">
           <img
-            src={images[0] ?? defaultShoe}
+            src={safeImages[0] ?? FALLBACK_IMAGES[0]}
             alt={`${brand} ${name}`}
             className="shoe-image base"
-            onError={(e) => { e.target.src = defaultShoe; }}
+            onError={(e) => { e.target.src = FALLBACK_IMAGES[0]; }}
           />
           <img
-            src={images[1] ?? images[0] ?? defaultShoe}
+            src={safeImages[1] ?? safeImages[0] ?? FALLBACK_IMAGES[0]}
             alt={`${brand} ${name} alt view`}
             className="shoe-image hover"
-            onError={(e) => { e.target.src = defaultShoe; }}
+            onError={(e) => { e.target.src = FALLBACK_IMAGES[0]; }}
           />
         </div>
 
@@ -232,7 +261,7 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
       </div>
 
       <div className="classic-body">
-        <a className="product-link" href="#" aria-label={name} onClick={(e)=>e.preventDefault()}>
+        <a className="product-link" href="#" aria-label={name} onClick={(e) => e.preventDefault()}>
           <span className="product-title" id={`shoe-${id}-name`}>{name}</span>
         </a>
 
@@ -263,11 +292,28 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
   return (
     <article
       className={`shoe-card ${variant === 'classic' ? 'shoe-card--classic' : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        // immediately show second image on hover if available and start carousel
+        if (images.length > 1) setCurrentImageIndex(1);
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        // restore primary image when hover ends
+        setIsHovered(false);
+        setCurrentImageIndex(0);
+      }}
+      onFocus={() => {
+        if (images.length > 1) setCurrentImageIndex(1);
+        setIsHovered(true);
+      }}
+      onBlur={() => {
+        setIsHovered(false);
+        setCurrentImageIndex(0);
+      }}
       tabIndex={0}
       aria-labelledby={`shoe-${id}-name`}
       role="group"
+      style={{ '--card-gradient': cardGradient }}
     >
       {variant === 'classic' ? renderClassic() : renderModern()}
     </article>

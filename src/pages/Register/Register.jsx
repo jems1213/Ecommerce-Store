@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { API_BASE } from '../../utils/apiClient';
+import api from '../../utils/apiClient';
 import { FiUser, FiMail, FiLock, FiCalendar, FiArrowRight, FiAlertCircle } from 'react-icons/fi';
 import './Register.css';
 
@@ -74,7 +74,7 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE}/api/auth/register`, {
+      const response = await fetch(`/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,27 +94,28 @@ const Register = () => {
       }
 
       // If registration is successful, automatically log the user in
-      const loginResponse = await fetch(`${API_BASE}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
+      const loginRes = await api.post('/api/auth/login', {
+        email: formData.email,
+        password: formData.password
+      }).catch(err => {
+        console.warn('Auto-login after register failed:', err);
+        return null;
       });
 
-      const loginData = await loginResponse.json();
+      const loginData = loginRes?.data;
 
-      if (!loginResponse.ok) {
+      const token = loginData?.token || loginData?.data?.token;
+      const user = loginData?.user || loginData?.data?.user;
+
+      if (!token || !user) {
+        // Registration succeeded but auto-login failed — redirect to login page with a success message
         navigate('/login');
         return;
       }
 
       // Store auth data and redirect
-      localStorage.setItem('token', loginData.token);
-      localStorage.setItem('user', JSON.stringify(loginData.user));
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
       window.dispatchEvent(new Event('storage'));
       navigate('/', { replace: true });
 

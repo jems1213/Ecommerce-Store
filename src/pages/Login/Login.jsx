@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { API_BASE } from '../../utils/apiClient';
+import api from '../../utils/apiClient';
+import axios from 'axios';
 import { FiUser, FiLock, FiArrowRight, FiAlertCircle } from 'react-icons/fi';
 import './Login.css';
 
@@ -45,42 +46,56 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Primary attempt: use configured api instance
+      let res = null;
+      try {
+        res = await api.post('/api/auth/login', {
           email: credentials.email.trim(),
           password: credentials.password
-        })
-      });
+        });
+      } catch (primaryErr) {
+        // If primary attempt returned 404, try absolute origin fallback
+        const status = primaryErr?.response?.status;
+        const cfgUrl = primaryErr?.config?.url || '/api/auth/login';
+        console.warn('Primary login attempt failed', { status, url: cfgUrl, err: primaryErr });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        if (status === 404) {
+          try {
+            const absolute = `${window.location.origin}/api/auth/login`;
+            res = await axios.post(absolute, {
+              email: credentials.email.trim(),
+              password: credentials.password
+            }, { headers: { 'Content-Type': 'application/json' } });
+          } catch (fallbackErr) {
+            console.warn('Fallback absolute login attempt failed', fallbackErr);
+            throw fallbackErr;
+          }
+        } else {
+          // rethrow non-404 to outer catch
+          throw primaryErr;
+        }
       }
 
-      // Validate API response
-      if (!data.token) {
-        throw new Error('Authentication token missing in response');
-      }
+      const data = res.data;
 
-      if (!data.user || !data.user.email) {
-        throw new Error('User data incomplete in response');
+      // Handle a couple of response shapes
+      const token = data?.token || data?.data?.token;
+      const user = data?.user || data?.data?.user;
+
+      if (!token) {
+        const msg = data?.message || 'Authentication token missing in response';
+        throw new Error(msg);
       }
+      if (!user || !user.email) throw new Error('User data incomplete in response');
 
       // Store auth data
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
 
       // Update app state
-      window.dispatchEvent(new Event('storage')); // This will trigger useAuth hook if you're using it
-      
-      // Redirect to home or intended path
+      window.dispatchEvent(new Event('storage'));
       navigate('/', { replace: true });
-      
+
     } catch (err) {
       console.error('Login error:', err);
       
