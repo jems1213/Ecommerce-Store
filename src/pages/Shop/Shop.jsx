@@ -67,7 +67,8 @@ const Shop = () => {
           }));
         }
 
-        setShoes(fetched);
+        // dedupe before setting
+        setShoes(Array.from(new Map(fetched.map(s => [(s && (s._id || s.id)) || Math.random(), s])).values()));
       } catch (error) {
         console.error('Error fetching shoes:', error);
         setShoes([]);
