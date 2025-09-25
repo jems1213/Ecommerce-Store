@@ -363,7 +363,7 @@ const Home = () => {
                   <button onClick={() => setShowAddShoeModal(false)}>Cancel</button>
                   <button onClick={() => {
                     const id = `local-${Date.now()}`;
-                    const imgs = newShoe.images ? newShoe.images.split(',').map(s => s.trim()).filter(Boolean) : [defaultShoe];
+                    const imgs = newShoe.images ? newShoe.images.split(',').map(s => s.trim()).filter(Boolean) : [DEMO_IMAGES[0]];
                     const cols = newShoe.colors ? newShoe.colors.split(',').map(s => s.trim()).filter(Boolean) : ['#000'];
                     const sz = newShoe.sizes ? newShoe.sizes.split(',').map(s => parseFloat(s.trim())).filter(Boolean) : [];
                     const shoeObj = {
