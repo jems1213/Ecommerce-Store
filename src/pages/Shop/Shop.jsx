@@ -42,7 +42,15 @@ const Shop = () => {
         // If backend returns no shoes, populate with 10 dummy shoes for development/demo
         if (!Array.isArray(fetched) || fetched.length === 0) {
           const colors = ['#111827', '#ef4444', '#3b82f6', '#10b981', '#f59e0b'];
-          const demoImages = [shoe1, shoe2, shoe3, defaultShoe];
+          const demoImages = [
+            'https://tse1.mm.bing.net/th/id/OIP.nrNwU3ChW26n4PCm4J-qPwHaFG?pid=Api&P=0&h=180',
+            'https://tse4.mm.bing.net/th/id/OIP.d-7UFbAaPsT2y3dYpaKm1AHaFb?pid=Api&P=0&h=180',
+            'https://tse4.mm.bing.net/th/id/OIP.0TZK6up-zDy3BDDFEGWUGQHaE8?pid=Api&P=0&h=180',
+            shoe1,
+            shoe2,
+            shoe3,
+            defaultShoe
+          ];
           const randomHex24 = () => Array.from({length:24}).map(() => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
           fetched = Array.from({ length: 10 }).map((_, i) => ({
             _id: randomHex24(),
