@@ -373,7 +373,7 @@ const Order = () => {
                     mb: 1
                   }}
                 >
-                  {active ? <CheckCircleIcon sx={{ fontSize: 20 }} /> : <PendingIcon sx={{ fontSize: 20 }} />}
+                  {active ? <CompletedIcon sx={{ fontSize: 20 }} /> : <PendingIcon sx={{ fontSize: 20 }} />}
                 </Box>
                 <Typography variant="caption" align="center" color={active ? 'text.primary' : 'text.secondary'}>
                   {step.label}
