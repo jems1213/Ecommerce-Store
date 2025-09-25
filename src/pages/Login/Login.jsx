@@ -59,9 +59,13 @@ const Login = () => {
         const cfgUrl = primaryErr?.config?.url || '/api/auth/login';
         console.warn('Primary login attempt failed', { status, url: cfgUrl, err: primaryErr });
 
-        if (status === 404) {
+        const isNetworkError = !primaryErr.response;
+        const isServerError = primaryErr.response && primaryErr.response.status >= 500;
+
+        if (status === 404 || isNetworkError || isServerError) {
           try {
-            const absolute = `${window.location.origin}/api/auth/login`;
+            const base = API_BASE || window.location.origin;
+            const absolute = `${base.replace(/\/$/, '')}/api/auth/login`;
             res = await axios.post(absolute, {
               email: credentials.email.trim(),
               password: credentials.password
@@ -71,7 +75,7 @@ const Login = () => {
             throw fallbackErr;
           }
         } else {
-          // rethrow non-404 to outer catch
+          // rethrow other errors to outer catch
           throw primaryErr;
         }
       }
