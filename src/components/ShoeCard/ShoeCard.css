@@ -55,7 +55,18 @@
 .sizes{display:flex;gap:6px}
 .size-btn{background:transparent;border:1px solid rgba(2,6,23,0.06);padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
 .size-btn.selected{background:linear-gradient(90deg,var(--accent-color),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 10px 24px rgba(0,0,0,0.08);transform:translateY(-2px)}
-.size-btn:hover{background:rgba(0,0,0,0.04)}
+.size-btn:hover{background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 24px rgba(0,0,0,0.06);}
+
+/* Color swatch hover */
+.color-swatch:hover{transform:scale(1.08);box-shadow:0 8px 20px rgba(2,6,23,0.08);outline:2px solid rgba(255,255,255,0.06)}
+
+/* Add-to-cart icon movement */
+.btn.primary svg{transition: transform 260ms ease, opacity 200ms ease; margin-right:6px}
+.btn.primary:hover svg{transform: translateX(6px) rotate(6deg); opacity:0.98}
+
+/* Quickview inline Add to Cart (classic) */
+.quickview-inline{transition: transform 220ms ease, box-shadow 220ms ease}
+.quickview-inline:hover{transform: translateY(-4px); box-shadow:0 12px 30px rgba(2,6,23,0.08)}
 
 .price-row{display:flex;align-items:center;gap:10px}
 .price-original{text-decoration:line-through;color:var(--muted);font-size:14px}
