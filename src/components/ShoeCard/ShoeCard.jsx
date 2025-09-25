@@ -7,7 +7,7 @@ import './ShoeCard.css';
 
 // Fallback images provided by user (used when a product has no images)
 const FALLBACK_IMAGES = [
-  'https://cdn.builder.io/api/v1/image/assets%2F4ffd6ee49eb84027b72464d7216c8c4a%2Fea8bbcebbcb442f7989f4220c9d329bf?format=webp&width=800',
+  'https://tse3.mm.bing.net/th/id/OIP.DjoU8k7FcAlkiRDJWPMYrwHaD7?pid=Api&P=0&h=180',
   'https://tse1.mm.bing.net/th/id/OIP.nrNwU3ChW26n4PCm4J-qPwHaFG?pid=Api&P=0&h=180',
   'https://tse4.mm.bing.net/th/id/OIP.d-7UFbAaPsT2y3dYpaKm1AHaFb?pid=Api&P=0&h=180',
   'https://tse4.mm.bing.net/th/id/OIP.0TZK6up-zDy3BDDFEGWUGQHaE8?pid=Api&P=0&h=180',
