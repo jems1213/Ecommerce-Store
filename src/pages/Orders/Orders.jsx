@@ -172,19 +172,32 @@ const Order = () => {
           return;
         }
 
-        const response = await api.get('/api/orders', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        const fetchedOrders = response.data?.data?.orders || response.data?.orders || [];
-        const validOrders = fetchedOrders.filter(order => order._id && typeof order._id === 'string');
-
-        setOrders(validOrders);
-        if (validOrders.length > 0) {
-          setExpanded(validOrders[0]._id);
+        // Use relative fetch to ensure same-origin requests (works in preview/dev)
+      const res = await fetch('/api/orders', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
+      });
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          // Unauthorized - force logout
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          navigate('/login');
+          return;
+        }
+        const err = await res.json().catch(() => ({ message: 'Failed to fetch orders' }));
+        throw new Error(err.message || 'Failed to fetch orders');
+      }
+
+      const payload = await res.json();
+      const fetchedOrders = payload?.data?.orders || payload?.orders || payload || [];
+      const validOrders = Array.isArray(fetchedOrders) ? fetchedOrders.filter(order => order && order._id && typeof order._id === 'string') : [];
+
+      setOrders(validOrders);
+      if (validOrders.length > 0) setExpanded(validOrders[0]._id);
       } catch (err) {
         console.error('Orders fetch error:', err);
         setError(err.response?.data?.message || 'Failed to load orders');
