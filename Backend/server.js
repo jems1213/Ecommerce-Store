@@ -32,8 +32,10 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 // Middleware
+// Configure CORS to allow the frontend origin. If FRONTEND_URL is not set, allow any origin
+// (use a permissive fallback to support preview URLs and remote previews).
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL : function (origin, callback) { callback(null, true); },
   credentials: true
 }));
 app.use(express.json());
