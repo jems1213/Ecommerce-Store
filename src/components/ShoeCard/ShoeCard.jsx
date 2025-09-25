@@ -280,8 +280,24 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
   return (
     <article
       className={`shoe-card ${variant === 'classic' ? 'shoe-card--classic' : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        // immediately show second image on hover if available and start carousel
+        if (images.length > 1) setCurrentImageIndex(1);
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        // restore primary image when hover ends
+        setIsHovered(false);
+        setCurrentImageIndex(0);
+      }}
+      onFocus={() => {
+        if (images.length > 1) setCurrentImageIndex(1);
+        setIsHovered(true);
+      }}
+      onBlur={() => {
+        setIsHovered(false);
+        setCurrentImageIndex(0);
+      }}
       tabIndex={0}
       aria-labelledby={`shoe-${id}-name`}
       role="group"
