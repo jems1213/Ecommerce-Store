@@ -318,31 +318,127 @@ const Order = () => {
 
     const totalItems = order.items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
 
+    // Progress steps similar to Flipkart: Ordered -> Packed -> Shipped -> Out for Delivery -> Delivered
+    const steps = [
+      { key: 'ordered', label: 'Ordered' },
+      { key: 'packed', label: 'Packed' },
+      { key: 'shipped', label: 'Shipped' },
+      { key: 'out_for_delivery', label: 'Out for delivery' },
+      { key: 'delivered', label: 'Delivered' }
+    ];
+
+    const statusOrder = (status) => {
+      if (!status) return 0;
+      const s = status.toLowerCase();
+      if (s.includes('deliv')) return 5;
+      if (s.includes('ship')) return 3;
+      if (s.includes('process') || s.includes('pending')) return 2;
+      if (s.includes('cancel')) return -1;
+      return 1;
+    };
+
+    const currentProgress = statusOrder(order.status);
+
+    const renderProgress = () => (
+      <Box display="flex" alignItems="center" sx={{ overflowX: 'auto' }}>
+        {steps.map((step, i) => {
+          const active = currentProgress === -1 ? false : i < currentProgress;
+          const isCurrent = currentProgress === i + 1;
+          return (
+            <Box key={step.key} display="flex" alignItems="center">
+              <Box display="flex" flexDirection="column" alignItems="center" sx={{ minWidth: 90 }}>
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: active ? 'primary.main' : 'grey.200',
+                    color: active ? '#fff' : 'text.primary',
+                    mb: 1
+                  }}
+                >
+                  {active ? <CheckCircleIcon sx={{ fontSize: 20 }} /> : <PendingIcon sx={{ fontSize: 20 }} />}
+                </Box>
+                <Typography variant="caption" align="center" color={active ? 'text.primary' : 'text.secondary'}>
+                  {step.label}
+                </Typography>
+              </Box>
+              {i < steps.length - 1 && (
+                <Box sx={{ flex: '0 0 40px', height: 2, bgcolor: i < currentProgress - 1 ? 'primary.main' : 'grey.300', mx: 1 }} />
+              )}
+            </Box>
+          );
+        })}
+      </Box>
+    );
+
+    const thumbnails = order.items?.slice(0, 4).map((it, idx) => (
+      <Box key={idx} sx={{ mr: 1 }}>
+        <img
+          src={it.image || '/placeholder-shoe.jpg'}
+          alt={it.name}
+          style={{ width: 72, height: 72, objectFit: 'cover', borderRadius: 6, boxShadow: '0 2px 6px rgba(0,0,0,0.08)' }}
+          onError={(e) => { e.target.src = '/placeholder-shoe.jpg'; }}
+        />
+      </Box>
+    ));
+
+    const canCancel = ['pending', 'processing'].includes((order.status || '').toLowerCase());
+
     return (
       <AccordionDetails>
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
               <Paper elevation={0} sx={{ p: 3, mb: 3, borderRadius: 2, backgroundColor: 'background.paper' }}>
-                <Box display="flex" alignItems="center" mb={3}>
-                  <IconWrapper>
-                    <OrderIcon />
-                  </IconWrapper>
-                  <Box>
-                    <Typography variant="h6" fontWeight={600}>
-                      Order Details
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {orderDate}
-                    </Typography>
+                <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
+                  <Box display="flex" alignItems="center">
+                    <IconWrapper>
+                      <OrderIcon />
+                    </IconWrapper>
+                    <Box>
+                      <Typography variant="h6" fontWeight={600}>
+                        Order Details
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {orderDate}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {order.items?.length || 0} items • Total: ₹{(order.total || 0).toFixed(2)}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box display="flex" alignItems="center">
+                    {order.trackingNumber && (
+                      <Button variant="outlined" sx={{ mr: 1 }} onClick={() => window.open(`https://tracking.com/?tracking=${order.trackingNumber}`, '_blank')}>
+                        Track
+                      </Button>
+                    )}
+                    {canCancel && (
+                      <Button variant="outlined" color="error" sx={{ mr: 1 }} onClick={() => console.log('cancel', order._id)}>
+                        Cancel
+                      </Button>
+                    )}
+                    <Button variant="contained" color="primary" onClick={() => console.log('reorder', order._id)}>
+                      Buy Again
+                    </Button>
                   </Box>
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
+
+                <Box display="flex" alignItems="center" mb={2} sx={{ overflowX: 'auto' }}>
+                  <Box display="flex" mr={2}>
+                    {thumbnails}
+                  </Box>
+                  <Box flexGrow={1}>
+                    {renderProgress()}
+                  </Box>
+                </Box>
 
                 <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                   Items ({totalItems})
@@ -402,11 +498,7 @@ const Order = () => {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }}>
               <Paper elevation={0} sx={{ p: 3, mb: 3, borderRadius: 2, backgroundColor: 'background.paper' }}>
                 <Box display="flex" alignItems="center" mb={2}>
                   <IconWrapper>
@@ -441,11 +533,7 @@ const Order = () => {
               </Paper>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }}>
               <Paper elevation={0} sx={{ p: 3, mb: 3, borderRadius: 2, backgroundColor: 'background.paper' }}>
                 <Box display="flex" alignItems="center" mb={2}>
                   <IconWrapper>
@@ -485,11 +573,7 @@ const Order = () => {
               </Paper>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.3 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.3 }}>
               <Paper elevation={0} sx={{ p: 3, borderRadius: 2, backgroundColor: 'background.paper' }}>
                 <Box display="flex" alignItems="center" mb={2}>
                   <IconWrapper>
