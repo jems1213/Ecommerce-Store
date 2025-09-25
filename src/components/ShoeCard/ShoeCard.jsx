@@ -1,10 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { FaStar, FaShoppingCart, FaChevronLeft, FaChevronRight, FaHeart } from 'react-icons/fa';
+import { FaStar, FaShoppingCart, FaHeart } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import './ShoeCard.css';
 import defaultShoe from '../../assets/default-shoe.svg';
+
+const hexToRgba = (hex, alpha = 1) => {
+  if (!hex) return `rgba(17,24,39,${alpha})`;
+  const h = hex.replace('#', '');
+  const bigint = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+const makeGradient = (base) => {
+  const mid = hexToRgba(base, 0.06);
+  const light = hexToRgba('#ffffff', 0);
+  return `linear-gradient(135deg, ${hexToRgba(base, 0.18)} 0%, ${mid} 40%, ${light} 75%)`;
+};
 
 const ShoeCard = ({ shoe, variant = 'modern' }) => {
   const { addToCart } = useCart();
@@ -32,7 +48,6 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
   const hoverInterval = useRef(null);
 
   useEffect(() => {
-    // Rotate images while hovered (carousel preview)
     if (isHovered && images.length > 1) {
       hoverInterval.current = setInterval(() => {
         setCurrentImageIndex((i) => (i + 1) % images.length);
@@ -42,7 +57,6 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
   }, [isHovered, images.length]);
 
   useEffect(() => {
-    // load wishlist status from localStorage
     try {
       const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
       setIsWishlisted(wishlist.some((item) => item.id === id));
@@ -50,7 +64,6 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
       setIsWishlisted(false);
     }
   }, [id]);
-
 
   const finalPrice = discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : price.toFixed(2);
 
@@ -88,9 +101,12 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
 
   const tagText = (shoe?.tagline || shoe?.category || 'Unisex Low Top Shoe').toString().toUpperCase();
 
+  const cardGradient = makeGradient(selectedColor || colors[0]);
+
   const renderModern = () => (
     <>
       <div className="card-media">
+        <div className="card-gradient" aria-hidden />
         {isNew && <span className="badge badge-new">NEW</span>}
         {discount > 0 && <span className="badge badge-discount">-{discount}%</span>}
 
@@ -191,6 +207,7 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
   const renderClassic = () => (
     <>
       <div className="card-media classic-media">
+        <div className="card-gradient" aria-hidden />
         {isNew && <span className="badge badge-new">NEW</span>}
         {discount > 0 && <span className="badge badge-discount">-{discount}%</span>}
 
@@ -232,7 +249,7 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
       </div>
 
       <div className="classic-body">
-        <a className="product-link" href="#" aria-label={name} onClick={(e)=>e.preventDefault()}>
+        <a className="product-link" href="#" aria-label={name} onClick={(e) => e.preventDefault()}>
           <span className="product-title" id={`shoe-${id}-name`}>{name}</span>
         </a>
 
@@ -268,6 +285,7 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
       tabIndex={0}
       aria-labelledby={`shoe-${id}-name`}
       role="group"
+      style={{ '--card-gradient': cardGradient }}
     >
       {variant === 'classic' ? renderClassic() : renderModern()}
     </article>
