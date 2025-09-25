@@ -38,16 +38,16 @@ const FeaturedCollection = ({ title, shoes }) => {
           </motion.button>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="shoe-grid"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-50px" }}
         >
-          {shoes.map((shoe) => (
-            <motion.div 
-              key={shoe.id}
+          {Array.from(new Map((shoes || []).map(s => [s._id || s.id || Math.random(), s])).values()).map((shoe, idx) => (
+            <motion.div
+              key={shoe._id || shoe.id || `feat-${idx}`}
               variants={itemVariants}
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
