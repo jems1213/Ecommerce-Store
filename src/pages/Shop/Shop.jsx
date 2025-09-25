@@ -3,9 +3,6 @@ import { motion } from 'framer-motion';
 import ShoeCard from '../../components/ShoeCard/ShoeCard';
 import './Shop.css';
 import api, { API_BASE } from '../../utils/apiClient';
-import shoe1 from '../../assets/hero-shoe1.svg';
-import shoe2 from '../../assets/hero-shoe2.svg';
-import shoe3 from '../../assets/hero-shoe3.svg';
 
 const Shop = () => {
   const [filter, setFilter] = useState('all');
