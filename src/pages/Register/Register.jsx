@@ -74,7 +74,7 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE}/api/auth/register`, {
+      const response = await fetch(`/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -97,18 +97,23 @@ const Register = () => {
       const loginRes = await api.post('/api/auth/login', {
         email: formData.email,
         password: formData.password
+      }).catch(err => {
+        console.warn('Auto-login after register failed:', err);
+        return null;
       });
 
-      const loginData = loginRes.data;
+      const loginData = loginRes?.data;
 
-      if (!loginData || loginRes.status !== 200) {
+      const token = loginData?.token || loginData?.data?.token;
+      const user = loginData?.user || loginData?.data?.user;
+
+      if (!token || !user) {
+        // Registration succeeded but auto-login failed — redirect to login page with a success message
         navigate('/login');
         return;
       }
 
       // Store auth data and redirect
-      const token = loginData.token || loginData.data?.token;
-      const user = loginData.user || loginData.data?.user;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       window.dispatchEvent(new Event('storage'));
