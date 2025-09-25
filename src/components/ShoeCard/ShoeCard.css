@@ -54,7 +54,8 @@
 .color-swatch.selected{outline:3px solid rgba(14,165,233,0.12);transform:scale(1.05)}
 .sizes{display:flex;gap:6px}
 .size-btn{background:transparent;border:1px solid rgba(2,6,23,0.06);padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
-.size-btn.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+.size-btn.selected{background:linear-gradient(90deg,var(--accent-color),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 10px 24px rgba(0,0,0,0.08);transform:translateY(-2px)}
+.size-btn:hover{background:rgba(0,0,0,0.04)}
 
 .price-row{display:flex;align-items:center;gap:10px}
 .price-original{text-decoration:line-through;color:var(--muted);font-size:14px}
