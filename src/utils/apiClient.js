@@ -62,16 +62,20 @@ const MOCK_SHOES = [
   }
 ];
 
-// Interceptor: on network error, return mock shoes for GET /api/shoes
+// Interceptor: on network error or server 5xx, return mock shoes for GET /api/shoes
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const config = error.config || {};
     const isNetworkError = !error.response;
+    const isServerError = error.response && error.response.status >= 500;
 
     try {
       const requestUrl = (config.url || '').toString();
-      if (isNetworkError && config.method === 'get' && requestUrl.includes('/api/shoes')) {
+      const isGetShoes = config.method === 'get' && requestUrl.includes('/api/shoes');
+
+      if (isGetShoes && (isNetworkError || isServerError)) {
+        // return a successful-like response with mock data so UI can continue to function
         return Promise.resolve({
           data: {
             status: 'success',
