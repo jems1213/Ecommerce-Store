@@ -91,15 +91,25 @@
   font-weight: 600;
 }
 .filter-toggle {
-  background-color: var(--primary);
-  color: white;
+  /* Match hero CTA look */
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-2));
+  color: #fff;
   border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 25px;
+  padding: 0.9rem 1.6rem;
+  border-radius: 50px;
   margin-bottom: 1.5rem;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 12px 30px rgba(255,107,53,0.12);
+  transition: all 0.25s ease;
+}
+
+.filter-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(255,107,53,0.18);
 }
 
 .filter-buttons {
