@@ -94,27 +94,23 @@ const Register = () => {
       }
 
       // If registration is successful, automatically log the user in
-      const loginResponse = await fetch(`${API_BASE}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
+      const loginRes = await api.post('/api/auth/login', {
+        email: formData.email,
+        password: formData.password
       });
 
-      const loginData = await loginResponse.json();
+      const loginData = loginRes.data;
 
-      if (!loginResponse.ok) {
+      if (!loginData || loginRes.status !== 200) {
         navigate('/login');
         return;
       }
 
       // Store auth data and redirect
-      localStorage.setItem('token', loginData.token);
-      localStorage.setItem('user', JSON.stringify(loginData.user));
+      const token = loginData.token || loginData.data?.token;
+      const user = loginData.user || loginData.data?.user;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
       window.dispatchEvent(new Event('storage'));
       navigate('/', { replace: true });
 
