@@ -174,7 +174,7 @@ const CheckoutForm = ({ cart = [], total = 0, onSuccess }) => {
         throw new Error('Authentication token not found. Please log in.');
       }
 
-      const response = await fetch(`${API_BASE}/api/orders/${orderDetails._id}/verify-payment`, {
+      const response = await fetch(`/api/orders/${orderDetails._id}/verify-payment`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
