@@ -212,9 +212,9 @@ const Shop = () => {
         </div>
       ) : shoes.length > 0 ? (
         <motion.div className="shoe-grid" layout>
-          {shoes.map((shoe) => (
-            <ShoeCard 
-              key={shoe._id} 
+          {Array.from(new Map(shoes.map(s => [s._id, s])).values()).map((shoe) => (
+            <ShoeCard
+              key={shoe._id}
               shoe={shoe}
             />
           ))}
