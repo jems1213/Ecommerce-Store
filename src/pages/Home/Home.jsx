@@ -5,7 +5,6 @@ import Hero from '../../components/Hero/Hero';
 import Newsletter from '../../components/Newsletter/Newsletter';
 import './Home.css';
 import api, { API_BASE } from '../../utils/apiClient';
-import defaultShoe from '../../assets/default-shoe.svg';
 
 const Home = () => {
   const [filter, setFilter] = useState('all');
