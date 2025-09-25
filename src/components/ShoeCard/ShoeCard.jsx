@@ -133,10 +133,10 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
         </button>
 
         <img
-          src={images[currentImageIndex] ?? defaultShoe}
+          src={safeImages[currentImageIndex] ?? FALLBACK_IMAGES[0]}
           alt={`${brand} ${name}`}
           className="shoe-image"
-          onError={(e) => { e.target.src = defaultShoe; }}
+          onError={(e) => { e.target.src = FALLBACK_IMAGES[0]; }}
         />
 
         {images.length > 1 && (
