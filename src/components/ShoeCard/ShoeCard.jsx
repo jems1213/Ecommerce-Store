@@ -39,7 +39,7 @@ const ShoeCard = ({ shoe, variant = 'modern' }) => {
     name = 'Unknown Shoe',
     brand = 'Unknown Brand',
     price = 0,
-    images = [defaultShoe],
+    images = [],
     colors = ['#111827'],
     rating = 0,
     discount = 0,
