@@ -148,7 +148,7 @@ const Home = () => {
       const stored = JSON.parse(localStorage.getItem('localShoes') || '[]');
       if (stored && stored.length) {
         setLocalShoes(stored);
-        setShoes(prev => ([...stored, ...prev]));
+        setShoes(prev => mergeUnique([...stored, ...prev]));
       }
     } catch (e) {
       // ignore
