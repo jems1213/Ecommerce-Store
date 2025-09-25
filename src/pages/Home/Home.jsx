@@ -387,7 +387,7 @@ const Home = () => {
                     const updated = [shoeObj, ...localShoes];
                     setLocalShoes(updated);
                     localStorage.setItem('localShoes', JSON.stringify(updated));
-                    setShoes(prev => [shoeObj, ...prev]);
+                    setShoes(prev => mergeUnique([shoeObj, ...prev]));
                     setNewShoe({ name: '', brand: '', price: '', images: '', colors: '', sizes: '', discount: '', isNew: false, description: '' });
                     setShowAddShoeModal(false);
                   }}>Add Shoe</button>
