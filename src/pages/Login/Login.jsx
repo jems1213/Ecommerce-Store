@@ -46,23 +46,46 @@ const Login = () => {
     setError('');
 
     try {
-      const res = await api.post('/api/auth/login', {
-        email: credentials.email.trim(),
-        password: credentials.password
-      });
+      // Primary attempt: use configured api instance
+      let res = null;
+      try {
+        res = await api.post('/api/auth/login', {
+          email: credentials.email.trim(),
+          password: credentials.password
+        });
+      } catch (primaryErr) {
+        // If primary attempt returned 404, try absolute origin fallback
+        const status = primaryErr?.response?.status;
+        const cfgUrl = primaryErr?.config?.url || '/api/auth/login';
+        console.warn('Primary login attempt failed', { status, url: cfgUrl, err: primaryErr });
+
+        if (status === 404) {
+          try {
+            const absolute = `${window.location.origin}/api/auth/login`;
+            res = await axios.post(absolute, {
+              email: credentials.email.trim(),
+              password: credentials.password
+            }, { headers: { 'Content-Type': 'application/json' } });
+          } catch (fallbackErr) {
+            console.warn('Fallback absolute login attempt failed', fallbackErr);
+            throw fallbackErr;
+          }
+        } else {
+          // rethrow non-404 to outer catch
+          throw primaryErr;
+        }
+      }
 
       const data = res.data;
 
-      if (!data || (!data.token && !data?.data?.token)) {
-        // support both {token,user} and {data:{token,user}}
-        const msg = (data && data.message) || 'Authentication token missing in response';
+      // Handle a couple of response shapes
+      const token = data?.token || data?.data?.token;
+      const user = data?.user || data?.data?.user;
+
+      if (!token) {
+        const msg = data?.message || 'Authentication token missing in response';
         throw new Error(msg);
       }
-
-      // normalize
-      const token = data.token || data.data?.token;
-      const user = data.user || data.data?.user;
-
       if (!user || !user.email) throw new Error('User data incomplete in response');
 
       // Store auth data
