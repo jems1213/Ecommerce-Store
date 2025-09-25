@@ -33,6 +33,8 @@ const Home = () => {
 
   // Fetch shoes from backend; seed demo shoes when nothing available
   useEffect(() => {
+    const mergeUnique = (arr) => Array.from(new Map(arr.map(s => [(s && (s._id || s.id)) || Math.random(), s])).values());
+
     const fetchShoes = async () => {
       try {
         setIsLoading(true);
