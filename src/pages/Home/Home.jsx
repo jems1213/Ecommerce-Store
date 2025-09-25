@@ -116,10 +116,11 @@ const Home = () => {
 
           setLocalShoes(demoShoes);
           localStorage.setItem('localShoes', JSON.stringify(demoShoes));
-          setShoes(demoShoes);
+          setShoes(mergeUnique(demoShoes));
         } else {
           setLocalShoes(storedLocal);
-          setShoes([...(storedLocal || []), ...fetched]);
+          const combined = mergeUnique([...(storedLocal || []), ...fetched]);
+          setShoes(combined);
         }
       } catch (error) {
         console.error('Error fetching shoes:', error);
