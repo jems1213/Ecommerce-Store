@@ -17,8 +17,6 @@ const Home = () => {
 
   // Frontend-only local shoes (persisted in localStorage)
   const [localShoes, setLocalShoes] = useState([]);
-  const [showAddShoeModal, setShowAddShoeModal] = useState(false);
-  const [newShoe, setNewShoe] = useState({ name: '', brand: '', price: '', images: '', colors: '', sizes: '', discount: '', isNew: false, description: '' });
 
   // Demo images provided by user
   const DEMO_IMAGES = [
@@ -192,14 +190,6 @@ const Home = () => {
             </svg>
           </motion.div>
 
-          <motion.button
-            className="add-shoe-button add-shoe-button--ml"
-            onClick={() => setShowAddShoeModal(true)}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            + Add Shoe
-          </motion.button>
 
           <motion.button
             className="mobile-filter-toggle"
@@ -338,65 +328,6 @@ const Home = () => {
         )}
       </div>
 
-      {/* Add Shoe Modal (frontend-only) */}
-      <AnimatePresence>
-        {showAddShoeModal && (
-          <motion.div className="add-shoe-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowAddShoeModal(false)}>
-            <motion.div className="add-shoe-modal" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} onClick={(e) => e.stopPropagation()}>
-              <h3>Add Shoe (local only)</h3>
-              <div className="add-shoe-form">
-                <label>Name</label>
-                <input value={newShoe.name} onChange={(e) => setNewShoe(prev => ({ ...prev, name: e.target.value }))} />
-                <label>Brand</label>
-                <input value={newShoe.brand} onChange={(e) => setNewShoe(prev => ({ ...prev, brand: e.target.value }))} />
-                <label>Price</label>
-                <input type="number" value={newShoe.price} onChange={(e) => setNewShoe(prev => ({ ...prev, price: parseFloat(e.target.value) || '' }))} />
-                <label>Images (comma separated URLs)</label>
-                <input value={newShoe.images} onChange={(e) => setNewShoe(prev => ({ ...prev, images: e.target.value }))} placeholder="https://... , https://..." />
-                <label>Colors (comma, hex or names)</label>
-                <input value={newShoe.colors} onChange={(e) => setNewShoe(prev => ({ ...prev, colors: e.target.value }))} placeholder="#000, #fff" />
-                <label>Sizes (comma separated e.g. 6,7,8)</label>
-                <input value={newShoe.sizes} onChange={(e) => setNewShoe(prev => ({ ...prev, sizes: e.target.value }))} />
-                <label>Discount (%)</label>
-                <input type="number" value={newShoe.discount} onChange={(e) => setNewShoe(prev => ({ ...prev, discount: parseInt(e.target.value) || 0 }))} />
-                <label>Description</label>
-                <textarea value={newShoe.description} onChange={(e) => setNewShoe(prev => ({ ...prev, description: e.target.value }))} />
-                <label><input type="checkbox" checked={newShoe.isNew} onChange={(e) => setNewShoe(prev => ({ ...prev, isNew: e.target.checked }))} /> Mark as NEW</label>
-
-                <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                  <button onClick={() => setShowAddShoeModal(false)}>Cancel</button>
-                  <button onClick={() => {
-                    const id = `local-${Date.now()}`;
-                    const imgs = newShoe.images ? newShoe.images.split(',').map(s => s.trim()).filter(Boolean) : [DEMO_IMAGES[0]];
-                    const cols = newShoe.colors ? newShoe.colors.split(',').map(s => s.trim()).filter(Boolean) : ['#000'];
-                    const sz = newShoe.sizes ? newShoe.sizes.split(',').map(s => parseFloat(s.trim())).filter(Boolean) : [];
-                    const shoeObj = {
-                      _id: id,
-                      name: newShoe.name || 'New Shoe',
-                      brand: newShoe.brand || 'brand',
-                      price: Number(newShoe.price) || 0,
-                      images: imgs,
-                      colors: cols,
-                      sizes: sz,
-                      rating: 0,
-                      discount: Number(newShoe.discount) || 0,
-                      isNew: !!newShoe.isNew,
-                      stock: 50,
-                      description: newShoe.description || ''
-                    };
-                    const updated = [shoeObj, ...localShoes];
-                    setLocalShoes(updated);
-                    localStorage.setItem('localShoes', JSON.stringify(updated));
-                    setShoes(prev => mergeUnique([shoeObj, ...prev]));
-                    setNewShoe({ name: '', brand: '', price: '', images: '', colors: '', sizes: '', discount: '', isNew: false, description: '' });
-                    setShowAddShoeModal(false);
-                  }}>Add Shoe</button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <div className="new-arrivals-section">
         <motion.h2
