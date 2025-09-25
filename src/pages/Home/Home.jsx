@@ -25,7 +25,10 @@ const Home = () => {
   const DEMO_IMAGES = [
     'https://tse1.mm.bing.net/th/id/OIP.nrNwU3ChW26n4PCm4J-qPwHaFG?pid=Api&P=0&h=180',
     'https://tse4.mm.bing.net/th/id/OIP.d-7UFbAaPsT2y3dYpaKm1AHaFb?pid=Api&P=0&h=180',
-    'https://tse4.mm.bing.net/th/id/OIP.0TZK6up-zDy3BDDFEGWUGQHaE8?pid=Api&P=0&h=180'
+    'https://tse4.mm.bing.net/th/id/OIP.0TZK6up-zDy3BDDFEGWUGQHaE8?pid=Api&P=0&h=180',
+    'https://tse3.mm.bing.net/th/id/OIP.9PDaEcWYxhPbrNEoLd380QHaGR?pid=Api&P=0&h=180',
+    'https://tse1.mm.bing.net/th/id/OIP.ol8ONAu84a2wZE8gAyMnvwHaHa?pid=Api&P=0&h=180',
+    'https://tse2.mm.bing.net/th/id/OIP.hm02wr_Ih4mCog4P0_lsCwHaDx?pid=Api&P=0&h=180'
   ];
 
   // Fetch shoes from backend; seed demo shoes when nothing available
