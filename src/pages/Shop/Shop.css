@@ -92,6 +92,8 @@
 }
 .filter-toggle {
   /* Match hero CTA look */
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(90deg, var(--accent-color), var(--accent-2));
   color: #fff;
   border: none;
@@ -104,12 +106,32 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   box-shadow: 0 12px 30px rgba(255,107,53,0.12);
-  transition: all 0.25s ease;
+  transition: transform 250ms ease, box-shadow 250ms ease, background-position 350ms ease;
 }
 
-.filter-toggle:hover {
-  transform: translateY(-2px);
+/* Sheen */
+.filter-toggle::before{
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -40%;
+  width: 180%;
+  height: 220%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.06) 100%);
+  transform: rotate(25deg) translateX(-100%);
+  transition: transform 650ms cubic-bezier(.2,.9,.2,1), opacity 250ms;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.filter-toggle:hover{
+  transform: translateY(-6px) scale(1.02);
   box-shadow: 0 18px 40px rgba(255,107,53,0.18);
+}
+
+.filter-toggle:hover::before{
+  transform: rotate(25deg) translateX(0%);
+  opacity: 1;
 }
 
 .filter-buttons {
