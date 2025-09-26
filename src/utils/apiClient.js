@@ -112,6 +112,28 @@ api.interceptors.response.use(
         }
       }
 
+      // auth update fallback: simulate user update and persist to localStorage
+      if (method === 'put' && requestUrl.includes('/api/auth/update')) {
+        try {
+          const body = config.data ? JSON.parse(config.data) : {};
+          let cached = typeof window !== 'undefined' && localStorage.getItem('user');
+          let user = cached ? JSON.parse(cached) : {};
+
+          // Apply allowed fields
+          if (body.firstName !== undefined) user.firstName = body.firstName;
+          if (body.lastName !== undefined) user.lastName = body.lastName;
+          if (body.email !== undefined) user.email = body.email;
+          // Note: password changes won't be applied to local mock for security
+
+          // persist
+          try { localStorage.setItem('user', JSON.stringify(user)); } catch (e) {}
+
+          return Promise.resolve({ data: { status: 'success', user }, status: 200, config });
+        } catch (e) {
+          // ignore
+        }
+      }
+
       // Orders fallback
       if (method === 'get' && requestUrl.includes('/api/orders')) {
         return Promise.resolve({ data: { status: 'success', data: { orders: [] } }, status: 200, config });
