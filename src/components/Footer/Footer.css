@@ -28,6 +28,9 @@
 .sh-icon{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;width:40px;height:40px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .sh-icon:hover{transform:translateY(-3px)}
 
+/* emoji in brand */
+.sh-emoji{font-size:22px;margin-right:8px;display:inline-block;vertical-align:middle}
+
 /* Bottom row */
 .sh-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:28px;border-top:1px solid rgba(255,255,255,0.03);padding-top:18px}
 .sh-copy{color:#9fb3d1;font-size:14px}
