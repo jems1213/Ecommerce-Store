@@ -362,7 +362,7 @@ const Navbar = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Link to="/login" className="icon-link" aria-label="Sign in">
+                <Link to="/login" className="icon-link signin-link" aria-label="Sign in">
                   <FiUser />
                   <span>Sign In</span>
                 </Link>
