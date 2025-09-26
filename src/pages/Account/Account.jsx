@@ -118,27 +118,35 @@ const Account = () => {
     window.dispatchEvent(new Event('storage'));
   };
 
-  // Address handlers
-  const addAddress = async () => {
-    const street = prompt('Street');
-    if (!street) return;
-    const city = prompt('City') || '';
-    const state = prompt('State') || '';
-    const zip = prompt('ZIP') || '';
-    const phone = prompt('Phone') || '';
+  // Modal state for add/edit
+  const [addressModal, setAddressModal] = React.useState({ open: false, data: null });
+  const [paymentModal, setPaymentModal] = React.useState({ open: false, data: null });
 
+  // Address modal controls
+  const openAddAddress = () => setAddressModal({ open: true, data: null });
+  const openEditAddress = (addr) => setAddressModal({ open: true, data: addr });
+  const closeAddressModal = () => setAddressModal({ open: false, data: null });
+
+  const saveAddress = async (payload) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await api.post('/api/addresses', {
-        street, city, state, zip, phone, country: 'USA'
-      }, { headers: { Authorization: `Bearer ${token}` } });
-
-      if (res.data.status === 'success') {
-        setAddresses(prev => [...prev, res.data.data.address]);
+      if (addressModal.data && (addressModal.data._id || addressModal.data.id)) {
+        const id = addressModal.data._id || addressModal.data.id;
+        const res = await api.put(`/api/addresses/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.status === 'success') {
+          setAddresses(prev => prev.map(a => (a._id === id || a.id === id) ? res.data.data.address : a));
+        }
+      } else {
+        const res = await api.post('/api/addresses', payload, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.status === 'success') {
+          setAddresses(prev => [...prev, res.data.data.address]);
+        }
       }
     } catch (err) {
-      console.error('Add address failed', err);
-      alert('Failed to add address.');
+      console.error('Save address failed', err);
+      alert('Failed to save address');
+    } finally {
+      closeAddressModal();
     }
   };
 
@@ -156,20 +164,31 @@ const Account = () => {
     }
   };
 
-  // Payment handlers
-  const addPayment = async () => {
-    const last4 = prompt('Card last 4 digits (numbers only)');
-    if (!last4) return;
-    const expiry = prompt('Expiry (MM/YY)') || '';
+  // Payment modal controls
+  const openAddPayment = () => setPaymentModal({ open: true, data: null });
+  const openEditPayment = (pm) => setPaymentModal({ open: true, data: pm });
+  const closePaymentModal = () => setPaymentModal({ open: false, data: null });
+
+  const savePayment = async (payload) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await api.post('/api/payment-methods', { last4, expiry }, { headers: { Authorization: `Bearer ${token}` } });
-      if (res.data.status === 'success') {
-        setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
+      if (paymentModal.data && (paymentModal.data._id || paymentModal.data.id)) {
+        const id = paymentModal.data._id || paymentModal.data.id;
+        const res = await api.put(`/api/payment-methods/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.status === 'success') {
+          setPaymentMethods(prev => prev.map(p => (p._id === id || p.id === id) ? res.data.data.paymentMethod : p));
+        }
+      } else {
+        const res = await api.post('/api/payment-methods', payload, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.status === 'success') {
+          setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
+        }
       }
     } catch (err) {
-      console.error('Add payment failed', err);
-      alert('Failed to add payment method.');
+      console.error('Save payment failed', err);
+      alert('Failed to save card');
+    } finally {
+      closePaymentModal();
     }
   };
 
@@ -279,10 +298,27 @@ const Account = () => {
         {activeTab === 'profile' && <ProfileTab user={user} />}
         {activeTab === 'orders' && <OrdersTab orders={orders} />}
         {activeTab === 'wishlist' && <WishlistTab wishlist={wishlist} />}
-        {activeTab === 'addresses' && <AddressesTab addresses={addresses} onAdd={addAddress} onDelete={deleteAddress} />}
-        {activeTab === 'payments' && <PaymentsTab paymentMethods={paymentMethods} onAdd={addPayment} onDelete={deletePayment} />}
+        {activeTab === 'addresses' && <AddressesTab addresses={addresses} onAdd={openAddAddress} onEdit={openEditAddress} onDelete={deleteAddress} />}
+        {activeTab === 'payments' && <PaymentsTab paymentMethods={paymentMethods} onAdd={openAddPayment} onEdit={openEditPayment} onDelete={deletePayment} />}
         {activeTab === 'settings' && <SettingsTab user={user} onUpdateUser={setUser} />}
       </div>
+
+      {/* Modals */}
+      {addressModal.open && (
+        <AddressForm
+          initial={addressModal.data || {}}
+          onCancel={() => setAddressModal({ open: false, data: null })}
+          onSave={saveAddress}
+        />
+      )}
+
+      {paymentModal.open && (
+        <PaymentForm
+          initial={paymentModal.data || {}}
+          onCancel={() => setPaymentModal({ open: false, data: null })}
+          onSave={savePayment}
+        />
+      )}
     </div>
   );
 };
@@ -385,13 +421,13 @@ const WishlistTab = ({ wishlist }) => (
   </div>
 );
 
-const AddressesTab = ({ addresses, onAdd, onDelete }) => (
+const AddressesTab = ({ addresses, onAdd, onEdit, onDelete }) => (
   <div className="tab-content">
     <div className="section-header">
       <h2>Saved Addresses</h2>
       <button className="primary-btn" onClick={onAdd}>Add New Address</button>
     </div>
-    
+
     <div className="addresses-grid">
       {addresses.map(address => (
         <div key={address._id || address.id} className={`address-card ${address.isDefault ? 'default' : ''}`}>
@@ -402,7 +438,7 @@ const AddressesTab = ({ addresses, onAdd, onDelete }) => (
           <p>{address.street}</p>
           <p>{address.city}, {address.state} {address.zip}</p>
           <div className="address-actions">
-            <button className="edit-btn" onClick={() => alert('Use the Addresses section to edit address details')}>Edit</button>
+            <button className="edit-btn" onClick={() => onEdit(address)}>Edit</button>
             {!address.isDefault && <button className="delete-btn" onClick={() => onDelete(address._id || address.id)}>Delete</button>}
           </div>
         </div>
@@ -411,13 +447,13 @@ const AddressesTab = ({ addresses, onAdd, onDelete }) => (
   </div>
 );
 
-const PaymentsTab = ({ paymentMethods, onAdd, onDelete }) => (
+const PaymentsTab = ({ paymentMethods, onAdd, onEdit, onDelete }) => (
   <div className="tab-content">
     <div className="section-header">
       <h2>Payment Methods</h2>
       <button className="primary-btn" onClick={onAdd}>Add New Card</button>
     </div>
-    
+
     <div className="payments-list">
       {paymentMethods.map(payment => (
         <div key={payment._id || payment.id} className={`payment-card ${payment.isDefault ? 'default' : ''}`}>
@@ -428,7 +464,7 @@ const PaymentsTab = ({ paymentMethods, onAdd, onDelete }) => (
           <div className="card-number">•••• •••• •••• {payment.last4}</div>
           <div className="card-expiry">Expires {payment.expiry}</div>
           <div className="payment-actions">
-            <button className="edit-btn" onClick={() => alert('Use the Payment Methods section to edit card details')}>Edit</button>
+            <button className="edit-btn" onClick={() => onEdit(payment)}>Edit</button>
             {!payment.isDefault && <button className="delete-btn" onClick={() => onDelete(payment._id || payment.id)}>Delete</button>}
           </div>
         </div>
