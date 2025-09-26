@@ -154,7 +154,7 @@ const Account = () => {
     if (!window.confirm('Delete this address?')) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await api.delete(buildUrl(`/api/addresses/${id}`), { headers: { Authorization: `Bearer ${token}` } });
+      const res = await api.delete(`/api/addresses/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.data.status === 'success') {
         setAddresses(prev => prev.filter(a => a._id !== id && a.id !== id));
       }
