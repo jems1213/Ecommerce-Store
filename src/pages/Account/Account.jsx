@@ -16,44 +16,91 @@ const Account = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
 
-        if (!token || !storedUser) {
-          navigate('/login');
+      if (!token && !storedUser) {
+        navigate('/login');
+        setLoading(false);
+        return;
+      }
+
+      // Try to fetch the authoritative user info from backend. If it fails
+      // but we have a cached user, use the cached copy and continue.
+      let serverUser = null;
+      try {
+        const meRes = await api.get('/api/auth/me', { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+        if (meRes?.data?.status === 'success') {
+          serverUser = meRes.data.user;
+          setUser(serverUser);
+          localStorage.setItem('user', JSON.stringify(serverUser));
+        } else {
+          throw new Error('Invalid session response');
+        }
+      } catch (err) {
+        console.warn('Failed to fetch /api/auth/me:', err?.message || err);
+        // fallback to cached user if present
+        if (storedUser) {
+          try {
+            const parsed = JSON.parse(storedUser);
+            setUser(parsed);
+          } catch (e) {
+            console.error('Failed to parse cached user', e);
+            handleLogout();
+            setLoading(false);
+            return;
+          }
+        } else {
+          // no token and no cached user -> force login
+          handleLogout();
+          setLoading(false);
           return;
         }
+      }
 
-        // Fetch authenticated user from backend
-        const meRes = await api.get('/api/auth/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (meRes?.data?.status !== 'success') {
-          throw new Error('Session invalid');
-        }
-
-        const serverUser = meRes.data.user;
-        setUser(serverUser);
-        localStorage.setItem('user', JSON.stringify(serverUser));
-
-        // Fetch related account data in parallel
-        const [ordersRes, addressesRes, paymentsRes, wishlistRes] = await Promise.all([
-          api.get('/api/orders', { headers: { Authorization: `Bearer ${token}` } }),
-          api.get('/api/addresses', { headers: { Authorization: `Bearer ${token}` } }),
-          api.get('/api/payment-methods', { headers: { Authorization: `Bearer ${token}` } }),
-          api.get('/api/wishlist', { headers: { Authorization: `Bearer ${token}` } })
+      // Fetch related account data but tolerate partial failures
+      try {
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const results = await Promise.allSettled([
+          api.get('/api/orders', { headers }),
+          api.get('/api/addresses', { headers }),
+          api.get('/api/payment-methods', { headers }),
+          api.get('/api/wishlist', { headers })
         ]);
 
-        if (ordersRes?.data?.status === 'success') setOrders(ordersRes.data.data.orders || []);
-        if (addressesRes?.data?.status === 'success') setAddresses(addressesRes.data.data.addresses || []);
-        if (paymentsRes?.data?.status === 'success') setPaymentMethods(paymentsRes.data.data.paymentMethods || []);
-        if (wishlistRes?.data?.status === 'success') setWishlist(wishlistRes.data.data.wishlist || []);
+        // Orders
+        if (results[0].status === 'fulfilled') {
+          const r = results[0].value;
+          if (r?.data?.status === 'success') setOrders(r.data.data.orders || []);
+        } else {
+          console.warn('Orders fetch failed:', results[0].reason);
+        }
 
-      } catch (error) {
-        console.error('Authentication error:', error);
-        handleLogout();
+        // Addresses
+        if (results[1].status === 'fulfilled') {
+          const r = results[1].value;
+          if (r?.data?.status === 'success') setAddresses(r.data.data.addresses || []);
+        } else {
+          console.warn('Addresses fetch failed:', results[1].reason);
+        }
+
+        // Payments
+        if (results[2].status === 'fulfilled') {
+          const r = results[2].value;
+          if (r?.data?.status === 'success') setPaymentMethods(r.data.data.paymentMethods || []);
+        } else {
+          console.warn('Payment methods fetch failed:', results[2].reason);
+        }
+
+        // Wishlist
+        if (results[3].status === 'fulfilled') {
+          const r = results[3].value;
+          if (r?.data?.status === 'success') setWishlist(r.data.data.wishlist || []);
+        } else {
+          console.warn('Wishlist fetch failed:', results[3].reason);
+        }
+      } catch (err) {
+        console.error('Unexpected error fetching account sub-resources:', err);
       } finally {
         setLoading(false);
       }
