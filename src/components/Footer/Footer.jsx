@@ -74,10 +74,10 @@ const Footer = () => {
             </ul>
 
             <ul className="rw-socials" aria-label="Social links">
-              <li><a href="https://www.facebook.com/rewildwildernisreizen" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF /></a></li>
-              <li><a href="https://www.instagram.com/rewildnl/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a></li>
-              <li><a href="https://vimeo.com/user74250131" target="_blank" rel="noopener noreferrer" aria-label="Vimeo"><FaTwitter /></a></li>
-              <li><a href="https://www.youtube.com/@RewildWildernisreizen/" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a></li>
+              <li><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF /></a></li>
+              <li><a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a></li>
+              <li><a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><FaTwitter /></a></li>
+              <li><a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a></li>
             </ul>
           </section>
 
