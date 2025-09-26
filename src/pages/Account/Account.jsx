@@ -213,26 +213,27 @@ const Account = () => {
   const deleteAddress = async (id) => {
     if (!window.confirm('Delete this address?')) return;
 
-    if (backendAvailable === false) {
-      setAddresses(prev => {
-        const next = prev.filter(a => a._id !== id && a.id !== id);
-        try { localStorage.setItem('local_addresses', JSON.stringify(next)); } catch (e) {}
-        return next;
-      });
-      alert('Backend not reachable — address removed locally');
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const res = await api.delete(`/api/addresses/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.status === 'success') {
+          setAddresses(prev => prev.filter(a => a._id !== id && a.id !== id));
+        }
+      } catch (err) {
+        console.error('Delete address failed', err);
+        alert('Failed to delete address on server. Please try again.');
+      }
       return;
     }
 
-    try {
-      const token = localStorage.getItem('token');
-      const res = await api.delete(`/api/addresses/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      if (res.data.status === 'success') {
-        setAddresses(prev => prev.filter(a => a._id !== id && a.id !== id));
-      }
-    } catch (err) {
-      console.error('Delete address failed', err);
-      alert('Failed to delete address.');
-    }
+    // unauthenticated fallback
+    setAddresses(prev => {
+      const next = prev.filter(a => a._id !== id && a.id !== id);
+      try { localStorage.setItem('local_addresses', JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
+    alert('You are not logged in — address removed locally');
   };
 
   // Payment modal controls
