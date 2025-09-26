@@ -454,7 +454,7 @@ const ProfileTab = ({ user, onUpdateUser }) => {
 
     try {
       setUploading(true);
-      const res = await api.post('/api/auth/avatar', form, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } });
+      const res = await api.post('/api/auth/avatar', form, { headers: { Authorization: `Bearer ${token}` } });
       if (res.data?.status === 'success' && res.data.user) {
         const updated = res.data.user;
         try { localStorage.setItem('user', JSON.stringify(updated)); } catch (e) {}
