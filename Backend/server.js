@@ -225,6 +225,18 @@ const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
 
+// Global error handler to catch multer errors and unexpected issues
+app.use((err, req, res, next) => {
+  console.error('Unhandled server error:', err);
+  if (err && err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({ status: 'fail', message: 'File too large' });
+  }
+  if (err && err.name === 'MulterError') {
+    return res.status(400).json({ status: 'fail', message: err.message });
+  }
+  res.status(500).json({ status: 'error', message: 'Internal server error' });
+});
+
 // Routes
 app.post('/api/auth/register', async (req, res) => {
   try {
