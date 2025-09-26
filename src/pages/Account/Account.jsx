@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API_BASE } from '../../utils/apiClient';
+import api, { API_BASE } from '../../utils/apiClient';
 import { FiUser, FiShoppingBag, FiSettings, FiHeart, FiMapPin, FiCreditCard, FiLogOut } from 'react-icons/fi';
 import './Account.css';
 
@@ -11,6 +11,7 @@ const Account = () => {
   const [orders, setOrders] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,24 +25,31 @@ const Account = () => {
           return;
         }
 
-        // Verify token with backend
-        const response = await fetch(`/api/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+        // Fetch authenticated user from backend
+        const meRes = await api.get('/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` }
         });
 
-        if (!response.ok) {
-          throw new Error('Session expired');
+        if (meRes?.data?.status !== 'success') {
+          throw new Error('Session invalid');
         }
 
-        const data = await response.json();
-        setUser(data.user);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        const serverUser = meRes.data.user;
+        setUser(serverUser);
+        localStorage.setItem('user', JSON.stringify(serverUser));
 
-        // Load mock data (replace with actual API calls)
-        loadMockData();
+        // Fetch related account data in parallel
+        const [ordersRes, addressesRes, paymentsRes, wishlistRes] = await Promise.all([
+          api.get('/api/orders', { headers: { Authorization: `Bearer ${token}` } }),
+          api.get('/api/addresses', { headers: { Authorization: `Bearer ${token}` } }),
+          api.get('/api/payment-methods', { headers: { Authorization: `Bearer ${token}` } }),
+          api.get('/api/wishlist', { headers: { Authorization: `Bearer ${token}` } })
+        ]);
+
+        if (ordersRes?.data?.status === 'success') setOrders(ordersRes.data.data.orders || []);
+        if (addressesRes?.data?.status === 'success') setAddresses(addressesRes.data.data.addresses || []);
+        if (paymentsRes?.data?.status === 'success') setPaymentMethods(paymentsRes.data.data.paymentMethods || []);
+        if (wishlistRes?.data?.status === 'success') setWishlist(wishlistRes.data.data.wishlist || []);
 
       } catch (error) {
         console.error('Authentication error:', error);
@@ -51,24 +59,6 @@ const Account = () => {
       }
     };
 
-    const loadMockData = () => {
-      // Mock data - replace with real API calls
-      setOrders([
-        { id: 'ORD-12345', date: new Date().toISOString(), total: 129.99, status: 'Delivered', items: 2 },
-        { id: 'ORD-12344', date: new Date(Date.now() - 86400000).toISOString(), total: 89.99, status: 'Shipped', items: 1 }
-      ]);
-      
-      setAddresses([
-        { id: 1, type: 'Home', street: '123 Main St', city: 'New York', state: 'NY', zip: '10001', isDefault: true },
-        { id: 2, type: 'Work', street: '456 Business Ave', city: 'New York', state: 'NY', zip: '10002', isDefault: false }
-      ]);
-      
-      setPaymentMethods([
-        { id: 1, type: 'Visa', last4: '4242', expiry: '12/25', isDefault: true },
-        { id: 2, type: 'Mastercard', last4: '5555', expiry: '06/24', isDefault: false }
-      ]);
-    };
-
     fetchUserData();
   }, [navigate]);
 
@@ -76,7 +66,76 @@ const Account = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
-    window.dispatchEvent(new Event('storage')); // Notify other tabs/components
+    window.dispatchEvent(new Event('storage'));
+  };
+
+  // Address handlers
+  const addAddress = async () => {
+    const street = prompt('Street');
+    if (!street) return;
+    const city = prompt('City') || '';
+    const state = prompt('State') || '';
+    const zip = prompt('ZIP') || '';
+    const phone = prompt('Phone') || '';
+
+    try {
+      const token = localStorage.getItem('token');
+      const res = await api.post('/api/addresses', {
+        street, city, state, zip, phone, country: 'USA'
+      }, { headers: { Authorization: `Bearer ${token}` } });
+
+      if (res.data.status === 'success') {
+        setAddresses(prev => [...prev, res.data.data.address]);
+      }
+    } catch (err) {
+      console.error('Add address failed', err);
+      alert('Failed to add address.');
+    }
+  };
+
+  const deleteAddress = async (id) => {
+    if (!window.confirm('Delete this address?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      const res = await api.delete(`/api/addresses/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.data.status === 'success') {
+        setAddresses(prev => prev.filter(a => a._id !== id && a.id !== id));
+      }
+    } catch (err) {
+      console.error('Delete address failed', err);
+      alert('Failed to delete address.');
+    }
+  };
+
+  // Payment handlers
+  const addPayment = async () => {
+    const last4 = prompt('Card last 4 digits (numbers only)');
+    if (!last4) return;
+    const expiry = prompt('Expiry (MM/YY)') || '';
+    try {
+      const token = localStorage.getItem('token');
+      const res = await api.post('/api/payment-methods', { last4, expiry }, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.data.status === 'success') {
+        setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
+      }
+    } catch (err) {
+      console.error('Add payment failed', err);
+      alert('Failed to add payment method.');
+    }
+  };
+
+  const deletePayment = async (id) => {
+    if (!window.confirm('Remove this card?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      const res = await api.delete(`/api/payment-methods/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.data.status === 'success') {
+        setPaymentMethods(prev => prev.filter(p => p._id !== id && p.id !== id));
+      }
+    } catch (err) {
+      console.error('Delete payment failed', err);
+      alert('Failed to remove card.');
+    }
   };
 
   if (loading) {
@@ -170,10 +229,10 @@ const Account = () => {
       <div className="account-content">
         {activeTab === 'profile' && <ProfileTab user={user} />}
         {activeTab === 'orders' && <OrdersTab orders={orders} />}
-        {activeTab === 'wishlist' && <WishlistTab />}
-        {activeTab === 'addresses' && <AddressesTab addresses={addresses} />}
-        {activeTab === 'payments' && <PaymentsTab paymentMethods={paymentMethods} />}
-        {activeTab === 'settings' && <SettingsTab user={user} />}
+        {activeTab === 'wishlist' && <WishlistTab wishlist={wishlist} />}
+        {activeTab === 'addresses' && <AddressesTab addresses={addresses} onAdd={addAddress} onDelete={deleteAddress} />}
+        {activeTab === 'payments' && <PaymentsTab paymentMethods={paymentMethods} onAdd={addPayment} onDelete={deletePayment} />}
+        {activeTab === 'settings' && <SettingsTab user={user} onUpdateUser={setUser} />}
       </div>
     </div>
   );
@@ -221,28 +280,28 @@ const OrdersTab = ({ orders }) => (
     {orders.length === 0 ? (
       <div className="empty-state">
         <p>You haven't placed any orders yet.</p>
-        <button className="primary-btn">Start Shopping</button>
+        <button className="primary-btn" onClick={() => window.location.href = '/shop'}>Start Shopping</button>
       </div>
     ) : (
       <div className="orders-list">
         {orders.map(order => (
-          <div key={order.id} className="order-card">
+          <div key={order._id || order.id} className="order-card">
             <div className="order-header">
-              <span className="order-id">Order #{order.id}</span>
-              <span className={`status ${order.status.toLowerCase()}`}>{order.status}</span>
+              <span className="order-id">Order #{order._id || order.id}</span>
+              <span className={`status ${order.status?.toLowerCase()}`}>{order.status}</span>
             </div>
             <div className="order-details">
               <div>
                 <span className="detail-label">Date</span>
-                <span>{new Date(order.date).toLocaleDateString()}</span>
+                <span>{new Date(order.createdAt || order.date).toLocaleDateString()}</span>
               </div>
               <div>
                 <span className="detail-label">Items</span>
-                <span>{order.items}</span>
+                <span>{(order.items || []).length}</span>
               </div>
               <div>
                 <span className="detail-label">Total</span>
-                <span>${order.total.toFixed(2)}</span>
+                <span>${(order.total || 0).toFixed(2)}</span>
               </div>
             </div>
             <button className="view-order-btn">View Details</button>
@@ -253,26 +312,40 @@ const OrdersTab = ({ orders }) => (
   </div>
 );
 
-const WishlistTab = () => (
+const WishlistTab = ({ wishlist }) => (
   <div className="tab-content">
     <h2>Your Wishlist</h2>
-    <div className="empty-state">
-      <p>Your wishlist is currently empty.</p>
-      <button className="primary-btn">Browse Products</button>
-    </div>
+    {wishlist.length === 0 ? (
+      <div className="empty-state">
+        <p>Your wishlist is currently empty.</p>
+        <button className="primary-btn" onClick={() => window.location.href = '/shop'}>Browse Products</button>
+      </div>
+    ) : (
+      <div className="wishlist-grid">
+        {wishlist.map(item => (
+          <div key={item._id || item.id} className="wishlist-card">
+            <img src={item.images?.[0] || '/src/assets/default-shoe.svg'} alt={item.name} />
+            <div className="wishlist-info">
+              <h4>{item.name}</h4>
+              <p>${item.price?.toFixed(2)}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
   </div>
 );
 
-const AddressesTab = ({ addresses }) => (
+const AddressesTab = ({ addresses, onAdd, onDelete }) => (
   <div className="tab-content">
     <div className="section-header">
       <h2>Saved Addresses</h2>
-      <button className="primary-btn">Add New Address</button>
+      <button className="primary-btn" onClick={onAdd}>Add New Address</button>
     </div>
     
     <div className="addresses-grid">
       {addresses.map(address => (
-        <div key={address.id} className={`address-card ${address.isDefault ? 'default' : ''}`}>
+        <div key={address._id || address.id} className={`address-card ${address.isDefault ? 'default' : ''}`}>
           <div className="address-header">
             <h3>{address.type}</h3>
             {address.isDefault && <span className="default-badge">Default</span>}
@@ -280,8 +353,8 @@ const AddressesTab = ({ addresses }) => (
           <p>{address.street}</p>
           <p>{address.city}, {address.state} {address.zip}</p>
           <div className="address-actions">
-            <button className="edit-btn">Edit</button>
-            {!address.isDefault && <button className="delete-btn">Delete</button>}
+            <button className="edit-btn" onClick={() => alert('Use the Addresses section to edit address details')}>Edit</button>
+            {!address.isDefault && <button className="delete-btn" onClick={() => onDelete(address._id || address.id)}>Delete</button>}
           </div>
         </div>
       ))}
@@ -289,16 +362,16 @@ const AddressesTab = ({ addresses }) => (
   </div>
 );
 
-const PaymentsTab = ({ paymentMethods }) => (
+const PaymentsTab = ({ paymentMethods, onAdd, onDelete }) => (
   <div className="tab-content">
     <div className="section-header">
       <h2>Payment Methods</h2>
-      <button className="primary-btn">Add New Card</button>
+      <button className="primary-btn" onClick={onAdd}>Add New Card</button>
     </div>
     
     <div className="payments-list">
       {paymentMethods.map(payment => (
-        <div key={payment.id} className={`payment-card ${payment.isDefault ? 'default' : ''}`}>
+        <div key={payment._id || payment.id} className={`payment-card ${payment.isDefault ? 'default' : ''}`}>
           <div className="payment-header">
             <div className="card-type">{payment.type}</div>
             {payment.isDefault && <span className="default-badge">Default</span>}
@@ -306,8 +379,8 @@ const PaymentsTab = ({ paymentMethods }) => (
           <div className="card-number">•••• •••• •••• {payment.last4}</div>
           <div className="card-expiry">Expires {payment.expiry}</div>
           <div className="payment-actions">
-            <button className="edit-btn">Edit</button>
-            {!payment.isDefault && <button className="delete-btn">Delete</button>}
+            <button className="edit-btn" onClick={() => alert('Use the Payment Methods section to edit card details')}>Edit</button>
+            {!payment.isDefault && <button className="delete-btn" onClick={() => onDelete(payment._id || payment.id)}>Delete</button>}
           </div>
         </div>
       ))}
@@ -315,7 +388,7 @@ const PaymentsTab = ({ paymentMethods }) => (
   </div>
 );
 
-const SettingsTab = ({ user }) => {
+const SettingsTab = ({ user, onUpdateUser }) => {
   const [formData, setFormData] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
@@ -324,6 +397,17 @@ const SettingsTab = ({ user }) => {
     newPassword: '',
     confirmPassword: ''
   });
+
+  useEffect(() => {
+    setFormData({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({
@@ -335,23 +419,30 @@ const SettingsTab = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/auth/update', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Update failed');
+      if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
+        alert('New password and confirm password do not match');
+        return;
       }
 
-      const data = await response.json();
-      localStorage.setItem('user', JSON.stringify(data.user));
-      window.location.reload();
+      const token = localStorage.getItem('token');
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email
+      };
+
+      if (formData.currentPassword && formData.newPassword) {
+        payload.currentPassword = formData.currentPassword;
+        payload.newPassword = formData.newPassword;
+      }
+
+      const res = await api.put('/api/auth/update', payload, { headers: { Authorization: `Bearer ${token}` } });
+
+      if (res.data.status === 'success') {
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        onUpdateUser(res.data.user);
+        alert('Profile updated successfully');
+      }
     } catch (error) {
       console.error('Update error:', error);
       alert('Failed to update profile. Please try again.');
