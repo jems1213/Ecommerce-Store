@@ -70,6 +70,16 @@ const Footer = () => {
             </form>
             {status && <div className="sh-status">{status}</div>}
           </div>
+
+          <div className="sh-account">
+            <h4 className="sh-account-title">Account</h4>
+            <div className="sh-account-links">
+              <button type="button" className="sh-account-btn" onClick={() => handleNavigate('/account')}>My Account</button>
+              <button type="button" className="sh-account-btn" onClick={() => handleNavigate('/orders')}>My Orders</button>
+              <button type="button" className="sh-account-btn" onClick={() => handleNavigate('/wishlist')}>Wishlist</button>
+              <button type="button" className="sh-account-btn" onClick={() => handleNavigate('/cart')}>Cart</button>
+            </div>
+          </div>
         </div>
 
         <div className="sh-bottom">
