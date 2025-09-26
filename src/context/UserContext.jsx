@@ -15,23 +15,20 @@ export const UserProvider = ({ children }) => {
         return;
       }
 
-      const response = await fetch(`/api/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
+      try {
+        const res = await api.get('/api/auth/me', { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+        if (res?.data?.status === 'success') {
+          setUserData(res.data.user);
+          localStorage.setItem('user', JSON.stringify(res.data.user));
+        } else {
+          if (res?.status === 401 || res?.status === 404) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
           }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUserData(data.user);
-        localStorage.setItem('user', JSON.stringify(data.user));
-      } else {
-        // Clear invalid token
-        if (response.status === 401 || response.status === 404) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
+          setUserData(null);
         }
-        setUserData(null);
+      } catch (err) {
+        throw err; // let outer catch handle
       }
     } catch (error) {
       console.error('Auth verification error:', error);
