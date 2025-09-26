@@ -94,31 +94,30 @@
   .newsletter-form input,.newsletter-form .btn-subscribe{width:100%}
 }
 
-/* Rewild footer additional styles */
-.rewild-footer{background: #ededed; color:#333; position:relative; z-index:10}
-.rewild-footer__container{max-width:1170px;margin:0 auto;padding:30px 15px}
-.rewild-row{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.rw-col{padding:10px}
-.rw-heading{font-family: 'strt-sonder-sans', sans-serif; font-size:26px;font-weight:500;line-height:1.1;margin-bottom:12px}
-.rw-text{font-size:18px;margin-bottom:10px}
-.rw-newsletter-form{display:flex;gap:10px;align-items:center}
-.rw-input{flex:1;min-height:36px;padding:8px 12px;border:1px solid #ccc;border-radius:6px;font-size:16px}
-.rw-button{padding:10px 14px;background:#fff;border:1px solid #d9d9d9;border-radius:6px;cursor:pointer;font-weight:700}
-.rw-status{margin-top:8px;color:#333;font-weight:600}
-.rw-logos img{max-width:140px;display:inline-block;margin-right:12px;margin-bottom:12px}
-.rw-partner-logos img{max-width:120px}
-.rw-links{list-style:none;padding:0;margin:0}
-.rw-links li{margin-bottom:8px}
-.rw-links a{color:#333;text-decoration:none}
-.rw-socials{list-style:none;padding:0;margin-top:16px;display:flex;gap:10px}
-.rw-socials a{display:inline-flex;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;background:#fff;color:#333;text-decoration:none}
-.rw-divider{border-top:1px solid #eee;margin:18px 0}
-.rewild-footer__bottom{background:transparent;padding:12px 0}
-.rewild-footer__bottom-inner{max-width:1170px;margin:0 auto;padding:0 15px;display:flex;justify-content:space-between;align-items:center}
-.rw-bottom-links a{margin-left:12px;color:#666;text-decoration:none}
+/* SneakerHub footer styles */
+.sh-footer{background:#111827;color:#fff;padding:28px 0;font-family:Inter, system-ui, Arial, sans-serif}
+.sh-inner{max-width:1200px;margin:0 auto;padding:0 20px}
+.sh-top{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.sh-brand{display:flex;align-items:center;gap:12px}
+.sh-logo{width:56px;height:56px;object-fit:contain}
+.sh-title{margin:0;font-size:20px;font-weight:700}
+.sh-nav{display:flex;gap:10px;align-items:center}
+.sh-nav-btn{background:transparent;border:none;color:rgba(255,255,255,0.9);padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+.sh-nav-btn:hover{background:rgba(255,255,255,0.04)}
+.sh-newsletter{min-width:280px}
+.sh-news-form{display:flex;gap:8px}
+.sh-input{flex:1;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#fff}
+.sh-cta{background:#fff;color:#111827;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700}
+.sh-status{margin-top:8px;color:#9ca3af}
+.sh-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:18px;flex-wrap:wrap;gap:12px}
+.sh-copy{color:#9ca3af}
+.sh-socials{display:flex;gap:8px}
+.sh-icon{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;width:40px;height:40px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.sh-icon:hover{transform:translateY(-3px)}
 
 @media (max-width:900px){
-  .rewild-row{grid-template-columns:1fr}
-  .rewild-footer__bottom-inner{flex-direction:column;align-items:flex-start;gap:8px}
-  .rw-logos img{max-width:100px}
+  .sh-top{flex-direction:column;align-items:flex-start}
+  .sh-news-form{width:100%}
+  .sh-nav{flex-wrap:wrap}
+  .sh-bottom{flex-direction:column;align-items:flex-start}
 }
