@@ -257,6 +257,23 @@
   gap: 1rem;
 }
 
+/* Push the Sign In link to the far right of the desktop icons */
+.signin-link {
+  margin-left: auto;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+  color: var(--text-color);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.signin-link:hover {
+  background: rgba(255,255,255,0.04);
+}
+
 .icon-link { color: var(--text-color); padding: 0.45rem; border-radius: 8px; }
 .icon-link:hover { background: var(--hover-color); color: var(--accent-color); }
 
