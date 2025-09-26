@@ -31,7 +31,7 @@ const Account = () => {
       // but we have a cached user, use the cached copy and continue.
       let serverUser = null;
       try {
-        const meRes = await api.get('/api/auth/me', { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+        const meRes = await api.get(buildUrl('/api/auth/me'), { headers: token ? { Authorization: `Bearer ${token}` } : {} });
         if (meRes?.data?.status === 'success') {
           serverUser = meRes.data.user;
           setUser(serverUser);
