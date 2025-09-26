@@ -462,75 +462,13 @@ const Navbar = () => {
                       </Link>
                     ))}
 
-                    <div className="mobile-accordion">
-                      <motion.button
-                        className="mobile-accordion-button"
-                        onClick={() => toggleMobileSubmenu('collections')}
-                        aria-expanded={mobileSubmenuOpen === 'collections'}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        Collections
-                        {mobileSubmenuOpen === 'collections' ? <FiChevronUp /> : <FiChevronRight />}
-                      </motion.button>
-                      <AnimatePresence>
-                        {mobileSubmenuOpen === 'collections' && (
-                          <motion.div
-                            className="mobile-accordion-content"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                          >
-                            {collections.map((collection) => (
-                              <Link
-                                key={collection.name}
-                                to={collection.path}
-                                className="mobile-sub-link"
-                                onClick={() => setIsOpen(false)}
-                              >
-                                {collection.icon && <span className="menu-icon">{collection.icon}</span>}
-                                {collection.name}
-                                {collection.featured && <span className="featured-badge">Hot</span>}
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
+                    <Link to="/collections" className="mobile-nav-link" onClick={() => setIsOpen(false)}>
+                      Collections
+                    </Link>
 
-                    <div className="mobile-accordion">
-                      <motion.button
-                        className="mobile-accordion-button"
-                        onClick={() => toggleMobileSubmenu('help')}
-                        aria-expanded={mobileSubmenuOpen === 'help'}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        Help
-                        {mobileSubmenuOpen === 'help' ? <FiChevronUp /> : <FiChevronRight />}
-                      </motion.button>
-                      <AnimatePresence>
-                        {mobileSubmenuOpen === 'help' && (
-                          <motion.div
-                            className="mobile-accordion-content"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                          >
-                            {helpLinks.map((link) => (
-                              <Link
-                                key={link.name}
-                                to={link.path}
-                                className="mobile-sub-link"
-                                onClick={() => setIsOpen(false)}
-                              >
-                                {link.name}
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
+                    <Link to="/help" className="mobile-nav-link" onClick={() => setIsOpen(false)}>
+                      Help
+                    </Link>
                   </div>
 
                   {/* Mobile Auth Section */}
