@@ -87,7 +87,7 @@ const Footer = () => {
 
         <div className="rewild-footer__bottom">
           <div className="rewild-footer__bottom-inner">
-            <div className="rw-copy">© Rewild {new Date().getFullYear()}. All Rights Reserved.</div>
+            <div className="rw-copy">© SneakerHub {new Date().getFullYear()}. All Rights Reserved.</div>
             <div className="rw-bottom-links">
               <a href="/terms">Terms</a>
               <a href="/privacy">Privacy</a>
