@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
-import logoSrc from '../../assets/default-shoe.svg';
 import './Footer.css';
 
 const Footer = () => {
