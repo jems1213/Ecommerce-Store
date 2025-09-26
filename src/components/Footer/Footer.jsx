@@ -18,7 +18,6 @@ const Footer = () => {
   ];
 
   const handleNavigate = (to) => {
-    // use navigate for client-side routing
     navigate(to);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -37,58 +36,69 @@ const Footer = () => {
   return (
     <footer className="sh-footer" role="contentinfo">
       <div className="sh-inner">
-        <div className="sh-top">
-          <div className="sh-brand">
+        <div className="sh-grid">
+
+          <div className="sh-section sh-brand">
             <img src={logoSrc} alt="SneakerHub" className="sh-logo" />
-            <h3 className="sh-title">SneakerHub</h3>
+            <div>
+              <h3 className="sh-brand-title">SneakerHub</h3>
+              <p className="sh-brand-desc">Your destination for curated sneakers — new drops, classics and exclusive collabs.</p>
+            </div>
           </div>
 
-          <nav className="sh-nav" aria-label="Footer navigation">
-            {menu.map(item => (
-              <button
-                key={item.label}
-                className="sh-nav-btn"
-                onClick={() => handleNavigate(item.to)}
-                type="button"
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
+          <div className="sh-section sh-links">
+            <h4 className="sh-heading">Explore</h4>
+            <ul className="sh-list" aria-label="Explore links">
+              {menu.map(item => (
+                <li key={item.label}>
+                  <button className="sh-link-btn" type="button" onClick={() => handleNavigate(item.to)}>{item.label}</button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          <div className="sh-newsletter">
+          <div className="sh-section sh-account">
+            <h4 className="sh-heading">Account</h4>
+            <ul className="sh-list">
+              <li><button className="sh-link-btn" onClick={() => handleNavigate('/account')}>My Account</button></li>
+              <li><button className="sh-link-btn" onClick={() => handleNavigate('/orders')}>My Orders</button></li>
+              <li><button className="sh-link-btn" onClick={() => handleNavigate('/wishlist')}>Wishlist</button></li>
+              <li><button className="sh-link-btn" onClick={() => handleNavigate('/cart')}>Cart</button></li>
+            </ul>
+          </div>
+
+          <div className="sh-section sh-newsletter">
+            <h4 className="sh-heading">Stay in the loop</h4>
+            <p className="sh-news-desc">Sign up for release alerts, early access and special offers.</p>
             <form className="sh-news-form" onSubmit={handleSubscribe}>
               <input
+                className="sh-input"
+                aria-label="Email for newsletter"
+                placeholder="Enter your email"
                 type="email"
-                placeholder="Your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                aria-label="Email for newsletter"
-                className="sh-input"
               />
               <button type="submit" className="sh-cta">Subscribe</button>
             </form>
-            {status && <div className="sh-status">{status}</div>}
-          </div>
+            {status && <div className="sh-status" role="status">{status}</div>}
 
-          <div className="sh-account">
-            <h4 className="sh-account-title">Account</h4>
-            <div className="sh-account-links">
-              <button type="button" className="sh-account-btn" onClick={() => handleNavigate('/account')}>My Account</button>
-              <button type="button" className="sh-account-btn" onClick={() => handleNavigate('/orders')}>My Orders</button>
-              <button type="button" className="sh-account-btn" onClick={() => handleNavigate('/wishlist')}>Wishlist</button>
-              <button type="button" className="sh-account-btn" onClick={() => handleNavigate('/cart')}>Cart</button>
+            <div className="sh-socials">
+              <button className="sh-icon" onClick={() => window.open('https://facebook.com', '_blank')} aria-label="Facebook"><FaFacebookF /></button>
+              <button className="sh-icon" onClick={() => window.open('https://instagram.com', '_blank')} aria-label="Instagram"><FaInstagram /></button>
+              <button className="sh-icon" onClick={() => window.open('https://twitter.com', '_blank')} aria-label="Twitter"><FaTwitter /></button>
+              <button className="sh-icon" onClick={() => window.open('https://youtube.com', '_blank')} aria-label="YouTube"><FaYoutube /></button>
             </div>
           </div>
+
         </div>
 
-        <div className="sh-bottom">
-          <div className="sh-copy">© SneakerHub {new Date().getFullYear()}</div>
-          <div className="sh-socials">
-            <button className="sh-icon" onClick={() => window.open('https://facebook.com', '_blank')} aria-label="Facebook"><FaFacebookF /></button>
-            <button className="sh-icon" onClick={() => window.open('https://instagram.com', '_blank')} aria-label="Instagram"><FaInstagram /></button>
-            <button className="sh-icon" onClick={() => window.open('https://twitter.com', '_blank')} aria-label="Twitter"><FaTwitter /></button>
-            <button className="sh-icon" onClick={() => window.open('https://youtube.com', '_blank')} aria-label="YouTube"><FaYoutube /></button>
+        <div className="sh-bottom"> 
+          <div className="sh-copy">© SneakerHub {new Date().getFullYear()} — All rights reserved.</div>
+          <div className="sh-footer-links">
+            <button className="sh-small-link" onClick={() => handleNavigate('/terms')}>Terms</button>
+            <button className="sh-small-link" onClick={() => handleNavigate('/privacy')}>Privacy</button>
+            <button className="sh-small-link" onClick={() => handleNavigate('/sitemap')}>Sitemap</button>
           </div>
         </div>
       </div>
