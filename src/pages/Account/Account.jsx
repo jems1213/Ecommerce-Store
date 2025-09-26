@@ -137,7 +137,7 @@ const Account = () => {
           setAddresses(prev => prev.map(a => (a._id === id || a.id === id) ? res.data.data.address : a));
         }
       } else {
-        const res = await api.post(buildUrl('/api/addresses'), payload, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await api.post('/api/addresses', payload, { headers: { Authorization: `Bearer ${token}` } });
         if (res.data.status === 'success') {
           setAddresses(prev => [...prev, res.data.data.address]);
         }
