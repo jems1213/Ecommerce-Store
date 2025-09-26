@@ -575,12 +575,22 @@ app.put('/api/auth/update', protect, async (req, res) => {
 // Avatar upload endpoint
 app.post('/api/auth/avatar', protect, upload.single('avatar'), async (req, res) => {
   try {
-    if (!req.file || !req.file.path) {
+    if (!req.file) {
       return res.status(400).json({ status: 'fail', message: 'No file uploaded' });
     }
 
-    // multer-storage-cloudinary provides the uploaded file path in req.file.path
-    req.user.avatar = req.file.path;
+    // If Cloudinary used, multer-storage-cloudinary provides req.file.path
+    if (useCloudinary && req.file.path) {
+      req.user.avatar = req.file.path;
+    } else if (req.file.filename) {
+      // Disk storage: construct accessible URL
+      const host = req.get('host');
+      const proto = req.protocol;
+      req.user.avatar = `${proto}://${host}/uploads/${req.file.filename}`;
+    } else {
+      return res.status(500).json({ status: 'error', message: 'Upload returned unexpected response' });
+    }
+
     await req.user.save();
     const userObj = req.user.toObject();
     delete userObj.password;
