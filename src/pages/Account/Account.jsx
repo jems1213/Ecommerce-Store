@@ -392,7 +392,7 @@ const Account = () => {
       </div>
 
       <div className="account-content">
-        {activeTab === 'profile' && <ProfileTab user={user} />}
+        {activeTab === 'profile' && <ProfileTab user={user} onUpdateUser={setUser} />}
         {activeTab === 'orders' && <OrdersTab orders={orders} />}
         {activeTab === 'wishlist' && <WishlistTab wishlist={wishlist} />}
         {activeTab === 'addresses' && <AddressesTab addresses={addresses} onAdd={openAddAddress} onEdit={openEditAddress} onDelete={deleteAddress} />}
@@ -421,40 +421,96 @@ const Account = () => {
 };
 
 // Tab Components
-const ProfileTab = ({ user }) => (
-  <div className="tab-content">
-    <h2>Profile Information</h2>
-    <div className="profile-card">
-      <div className="avatar-container">
-        <img 
-          src={user.avatar || 'https://www.gravatar.com/avatar/?d=mp'} 
-          alt="User" 
-          className="profile-avatar"
-        />
-        <button className="edit-avatar">Change Photo</button>
-      </div>
-      
-      <div className="profile-details">
-        <div className="detail-row">
-          <label>First Name</label>
-          <p>{user.firstName}</p>
+const ProfileTab = ({ user, onUpdateUser }) => {
+  const [preview, setPreview] = useState(user.avatar || 'https://www.gravatar.com/avatar/?d=mp');
+  const [uploading, setUploading] = useState(false);
+  const fileRef = React.useRef(null);
+
+  useEffect(() => {
+    setPreview(user.avatar || 'https://www.gravatar.com/avatar/?d=mp');
+  }, [user.avatar]);
+
+  const handleChoose = () => {
+    if (fileRef.current) fileRef.current.click();
+  };
+
+  const handleFile = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    // Preview immediately
+    const objectUrl = URL.createObjectURL(file);
+    setPreview(objectUrl);
+
+    // Upload to server if authenticated
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('You must be signed in to change your photo');
+      return;
+    }
+
+    const form = new FormData();
+    form.append('avatar', file);
+
+    try {
+      setUploading(true);
+      const res = await api.post('/api/auth/avatar', form, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.data?.status === 'success' && res.data.user) {
+        const updated = res.data.user;
+        try { localStorage.setItem('user', JSON.stringify(updated)); } catch (e) {}
+        onUpdateUser(updated);
+        setPreview(updated.avatar || objectUrl);
+        alert('Profile photo updated');
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (err) {
+      console.error('Avatar upload failed', err);
+      const serverMsg = err?.response?.data?.message || err?.response?.data?.error || err?.message;
+      alert(`Failed to upload avatar: ${serverMsg}`);
+      // keep preview but revert to server avatar if available
+      const cached = localStorage.getItem('user');
+      if (cached) {
+        try { const parsed = JSON.parse(cached); setPreview(parsed.avatar || 'https://www.gravatar.com/avatar/?d=mp'); } catch (e) {}
+      }
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  return (
+    <div className="tab-content">
+      <h2>Profile Information</h2>
+      <div className="profile-card">
+        <div className="avatar-container">
+          <img src={preview} alt="User" className="profile-avatar" />
+          <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
+          <button className="edit-avatar" onClick={handleChoose} disabled={uploading}>{uploading ? 'Uploading...' : 'Change Photo'}</button>
         </div>
-        <div className="detail-row">
-          <label>Last Name</label>
-          <p>{user.lastName}</p>
-        </div>
-        <div className="detail-row">
-          <label>Email</label>
-          <p>{user.email}</p>
-        </div>
-        <div className="detail-row">
-          <label>Member Since</label>
-          <p>{new Date(user.createdAt).toLocaleDateString()}</p>
+
+        <div className="profile-details">
+          <div className="detail-row">
+            <label>First Name</label>
+            <p>{user.firstName}</p>
+          </div>
+          <div className="detail-row">
+            <label>Last Name</label>
+            <p>{user.lastName}</p>
+          </div>
+          <div className="detail-row">
+            <label>Email</label>
+            <p>{user.email}</p>
+          </div>
+          <div className="detail-row">
+            <label>Member Since</label>
+            <p>{new Date(user.createdAt).toLocaleDateString()}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const OrdersTab = ({ orders }) => (
   <div className="tab-content">

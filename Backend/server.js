@@ -12,24 +12,48 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
 
-// Cloudinary Configuration
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
+const fs = require('fs');
+const path = require('path');
 
-// Configure multer storage for Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'shoe-shop',
-    allowed_formats: ['jpg', 'jpeg', 'png'],
-    transformation: [{ width: 500, height: 500, crop: 'limit' }]
-  }
-});
+// Cloudinary Configuration (use if credentials provided)
+let useCloudinary = false;
+if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+  useCloudinary = true;
+}
 
-const upload = multer({ storage: storage });
+// Configure multer storage. Prefer Cloudinary when configured, otherwise fall back to local disk storage.
+let upload;
+if (useCloudinary) {
+  const { CloudinaryStorage } = require('multer-storage-cloudinary');
+  const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'shoe-shop',
+      allowed_formats: ['jpg', 'jpeg', 'png'],
+      transformation: [{ width: 500, height: 500, crop: 'limit' }]
+    }
+  });
+  upload = multer({ storage: storage });
+} else {
+  // ensure upload dir exists
+  const uploadDir = path.join(__dirname, 'public', 'uploads');
+  try { fs.mkdirSync(uploadDir, { recursive: true }); } catch (e) { /* ignore */ }
+  const diskStorage = multer.diskStorage({
+    destination: function (req, file, cb) { cb(null, uploadDir); },
+    filename: function (req, file, cb) {
+      const ext = path.extname(file.originalname) || '.jpg';
+      cb(null, `${Date.now()}-${Math.random().toString(36).slice(2,8)}${ext}`);
+    }
+  });
+  upload = multer({ storage: diskStorage, limits: { fileSize: 2 * 1024 * 1024 } }); // 2MB limit
+  // serve uploads statically
+  app.use('/uploads', express.static(uploadDir));
+}
 
 // Middleware
 // Configure CORS to allow the frontend origin. If FRONTEND_URL is not set, allow any origin
@@ -166,18 +190,29 @@ const signToken = (id) => {
 const protect = async (req, res, next) => {
   try {
     let token;
+    // log auth header for debugging
+    console.log('Protect middleware - authorization header present:', !!req.headers.authorization);
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     }
 
     if (!token) {
+      console.warn('Protect: no token provided');
       return res.status(401).json({ status: 'fail', message: 'You are not logged in' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    } catch (err) {
+      console.warn('Protect: token verification failed:', err.message);
+      return res.status(401).json({ status: 'fail', message: 'Invalid token' });
+    }
+
     const currentUser = await User.findById(decoded.id);
 
     if (!currentUser) {
+      console.warn('Protect: user not found for id', decoded.id);
       return res.status(401).json({ status: 'fail', message: 'User no longer exists' });
     }
 
@@ -200,6 +235,18 @@ const adminCheck = async (req, res, next) => {
 const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
+
+// Global error handler to catch multer errors and unexpected issues
+app.use((err, req, res, next) => {
+  console.error('Unhandled server error:', err);
+  if (err && err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({ status: 'fail', message: 'File too large' });
+  }
+  if (err && err.name === 'MulterError') {
+    return res.status(400).json({ status: 'fail', message: err.message });
+  }
+  res.status(500).json({ status: 'error', message: 'Internal server error' });
+});
 
 // Routes
 app.post('/api/auth/register', async (req, res) => {
@@ -546,6 +593,49 @@ app.put('/api/auth/update', protect, async (req, res) => {
     console.error('Auth update error:', err);
     res.status(500).json({ status: 'error', message: 'Failed to update user' });
   }
+});
+
+// Avatar upload endpoint
+app.post('/api/auth/avatar', protect, (req, res, next) => {
+  upload.single('avatar')(req, res, async function (err) {
+    if (err) {
+      console.error('Multer error during avatar upload:', err);
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ status: 'fail', message: 'File too large. Max size is 2MB.' });
+      }
+      return res.status(400).json({ status: 'fail', message: err.message || 'File upload failed' });
+    }
+
+    try {
+      console.log('Avatar upload request headers:', { host: req.get('host'), contentType: req.headers['content-type'] });
+      console.log('Received file:', req.file);
+
+      if (!req.file) {
+        return res.status(400).json({ status: 'fail', message: 'No file uploaded' });
+      }
+
+      // If Cloudinary used, multer-storage-cloudinary provides req.file.path
+      if (useCloudinary && req.file.path) {
+        req.user.avatar = req.file.path;
+      } else if (req.file.filename) {
+        // Disk storage: construct accessible URL
+        const host = req.get('host');
+        const proto = req.protocol;
+        req.user.avatar = `${proto}://${host}/uploads/${req.file.filename}`;
+      } else {
+        console.error('Unexpected upload response, req.file:', req.file);
+        return res.status(500).json({ status: 'error', message: 'Upload returned unexpected response' });
+      }
+
+      await req.user.save();
+      const userObj = req.user.toObject();
+      delete userObj.password;
+      res.status(200).json({ status: 'success', user: userObj });
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+      res.status(500).json({ status: 'error', message: 'Failed to upload avatar' });
+    }
+  });
 });
 
 // Addresses API (CRUD)
