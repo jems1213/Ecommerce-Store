@@ -127,17 +127,21 @@ const Account = () => {
   const openEditAddress = (addr) => setAddressModal({ open: true, data: addr });
   const closeAddressModal = () => setAddressModal({ open: false, data: null });
 
+  const buildUrl = (path) => {
+    try { return API_BASE ? API_BASE.replace(/\/$/, '') + path : path; } catch (e) { return path; }
+  };
+
   const saveAddress = async (payload) => {
     try {
       const token = localStorage.getItem('token');
       if (addressModal.data && (addressModal.data._id || addressModal.data.id)) {
         const id = addressModal.data._id || addressModal.data.id;
-        const res = await api.put(`/api/addresses/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await api.put(buildUrl(`/api/addresses/${id}`), payload, { headers: { Authorization: `Bearer ${token}` } });
         if (res.data.status === 'success') {
           setAddresses(prev => prev.map(a => (a._id === id || a.id === id) ? res.data.data.address : a));
         }
       } else {
-        const res = await api.post('/api/addresses', payload, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await api.post(buildUrl('/api/addresses'), payload, { headers: { Authorization: `Bearer ${token}` } });
         if (res.data.status === 'success') {
           setAddresses(prev => [...prev, res.data.data.address]);
         }
@@ -154,7 +158,7 @@ const Account = () => {
     if (!window.confirm('Delete this address?')) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await api.delete(`/api/addresses/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await api.delete(buildUrl(`/api/addresses/${id}`), { headers: { Authorization: `Bearer ${token}` } });
       if (res.data.status === 'success') {
         setAddresses(prev => prev.filter(a => a._id !== id && a.id !== id));
       }
@@ -174,12 +178,12 @@ const Account = () => {
       const token = localStorage.getItem('token');
       if (paymentModal.data && (paymentModal.data._id || paymentModal.data.id)) {
         const id = paymentModal.data._id || paymentModal.data.id;
-        const res = await api.put(`/api/payment-methods/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await api.put(buildUrl(`/api/payment-methods/${id}`), payload, { headers: { Authorization: `Bearer ${token}` } });
         if (res.data.status === 'success') {
           setPaymentMethods(prev => prev.map(p => (p._id === id || p.id === id) ? res.data.data.paymentMethod : p));
         }
       } else {
-        const res = await api.post('/api/payment-methods', payload, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await api.post(buildUrl('/api/payment-methods'), payload, { headers: { Authorization: `Bearer ${token}` } });
         if (res.data.status === 'success') {
           setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
         }
@@ -196,7 +200,7 @@ const Account = () => {
     if (!window.confirm('Remove this card?')) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await api.delete(`/api/payment-methods/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await api.delete(buildUrl(`/api/payment-methods/${id}`), { headers: { Authorization: `Bearer ${token}` } });
       if (res.data.status === 'success') {
         setPaymentMethods(prev => prev.filter(p => p._id !== id && p.id !== id));
       }
