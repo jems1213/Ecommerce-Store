@@ -471,57 +471,19 @@ const Navbar = () => {
                     </Link>
                   </div>
 
-                  {/* Mobile Auth Section */}
-                  <div className="mobile-auth-section">
-                    {user ? (
-                      <>
-                        <div className="mobile-user-card">
-                          <div className="mobile-user-left">
-                            {user.avatar ? (
-                              <img src={user.avatar} alt={user.name} className="mobile-user-avatar" />
-                            ) : (
-                              <div className="mobile-user-avatar-fallback">
-                                {user.name?.charAt(0).toUpperCase()}
-                              </div>
-                            )}
-                          </div>
-                          <div className="mobile-user-right">
-                            <p className="welcome small">Welcome back</p>
-                            <h4 className="mobile-user-name">{user.name?.split(' ')[0]}</h4>
-                            <p className="mobile-user-email">{user.email}</p>
-                          </div>
-                        </div>
-
-                        <div className="mobile-auth-links-group">
-                          <Link to="/account" className="mobile-auth-link" onClick={() => setIsOpen(false)}>
-                            <FiUser /> My Account
-                          </Link>
-                          <Link to="/orders" className="mobile-auth-link" onClick={() => setIsOpen(false)}>
-                            <FiClock /> My Orders
-                          </Link>
-                          <Link to="/wishlist" className="mobile-auth-link" onClick={() => setIsOpen(false)}>
-                            <FiHeart /> My Wishlist <span className="wishlist-badge">{wishlistCount}</span>
-                          </Link>
-                        </div>
-
-                        <button
-                          className="mobile-auth-link logout"
-                          onClick={() => setShowLogoutConfirm(true)}
-                        >
-                          <FiLogOut /> Sign Out
-                        </button>
-                      </>
-                    ) : (
-                      <div className="mobile-auth-links-group">
-                        <Link to="/login" className="mobile-auth-link primary" onClick={() => setIsOpen(false)}>
-                          Sign In
-                        </Link>
-                        <Link to="/register" className="mobile-auth-link secondary" onClick={() => setIsOpen(false)}>
-                          Create Account
-                        </Link>
-                      </div>
-                    )}
-                  </div>
+                  {/* Mobile Auth Section - hidden for logged in users per request */}
+                <div className="mobile-auth-section">
+                  {!user && (
+                    <div className="mobile-auth-links-group">
+                      <Link to="/login" className="mobile-auth-link primary" onClick={() => setIsOpen(false)}>
+                        Sign In
+                      </Link>
+                      <Link to="/register" className="mobile-auth-link secondary" onClick={() => setIsOpen(false)}>
+                        Create Account
+                      </Link>
+                    </div>
+                  )}
+                </div>
 
                   {/* Mobile Promo */}
                   <div className="mobile-promo">
