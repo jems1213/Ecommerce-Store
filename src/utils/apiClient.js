@@ -62,29 +62,126 @@ const MOCK_SHOES = [
   }
 ];
 
-// Interceptor: on network error, return mock shoes for GET /api/shoes
+// Interceptor: on network error or server 5xx, return mock data for key account endpoints so UI remains usable in previews
+const MOCK_ADDRESSES = [
+  { _id: 'addr-mock-1', type: 'Home', street: '123 Main St', city: 'Example', state: 'EX', zip: '00000', country: 'USA', phone: '555-0001', isDefault: true }
+];
+
+const MOCK_PAYMENTS = [
+  { _id: 'pm-mock-1', type: 'Visa', last4: '4242', expiry: '12/25', providerId: '', isDefault: true }
+];
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const config = error.config || {};
     const isNetworkError = !error.response;
+    const isServerError = error.response && error.response.status >= 500;
+    const isNotFound = error.response && error.response.status === 404;
 
     try {
       const requestUrl = (config.url || '').toString();
-      if (isNetworkError && config.method === 'get' && requestUrl.includes('/api/shoes')) {
+      const method = (config.method || '').toLowerCase();
+
+      // Treat network errors, server errors and 404s against API paths (e.g. in preview) as a signal
+      // to use fallback mock responses so the UI remains functional in remote previews.
+      const shouldFallback = isNetworkError || isServerError || (isNotFound && requestUrl.startsWith('/api'));
+
+      if (!shouldFallback) return Promise.reject(error);
+
+      // shoes fallback (existing)
+      if (method === 'get' && requestUrl.includes('/api/shoes')) {
         return Promise.resolve({
-          data: {
-            status: 'success',
-            data: { shoes: MOCK_SHOES }
-          },
+          data: { status: 'success', data: { shoes: MOCK_SHOES } },
           status: 200,
           statusText: 'OK',
           headers: {},
           config
         });
       }
+
+      // auth/me fallback: try to use cached user from localStorage if available
+      if (method === 'get' && requestUrl.includes('/api/auth/me')) {
+        try {
+          const cached = typeof window !== 'undefined' && localStorage.getItem('user');
+          if (cached) {
+            return Promise.resolve({ data: { status: 'success', user: JSON.parse(cached) }, status: 200, config });
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      // auth update fallback: simulate user update and persist to localStorage
+      if (method === 'put' && requestUrl.includes('/api/auth/update')) {
+        try {
+          const body = config.data ? JSON.parse(config.data) : {};
+          let cached = typeof window !== 'undefined' && localStorage.getItem('user');
+          let user = cached ? JSON.parse(cached) : {};
+
+          // Apply allowed fields
+          if (body.firstName !== undefined) user.firstName = body.firstName;
+          if (body.lastName !== undefined) user.lastName = body.lastName;
+          if (body.email !== undefined) user.email = body.email;
+          // Note: password changes won't be applied to local mock for security
+
+          // persist
+          try { localStorage.setItem('user', JSON.stringify(user)); } catch (e) {}
+
+          return Promise.resolve({ data: { status: 'success', user }, status: 200, config });
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      // Orders fallback
+      if (method === 'get' && requestUrl.includes('/api/orders')) {
+        return Promise.resolve({ data: { status: 'success', data: { orders: [] } }, status: 200, config });
+      }
+
+      // Addresses
+      if (requestUrl.includes('/api/addresses')) {
+        if (method === 'get') {
+          return Promise.resolve({ data: { status: 'success', data: { addresses: MOCK_ADDRESSES } }, status: 200, config });
+        }
+        if (method === 'post') {
+          const body = config.data ? JSON.parse(config.data) : {};
+          const created = { _id: `addr-local-${Date.now()}`, ...body };
+          return Promise.resolve({ data: { status: 'success', data: { address: created } }, status: 201, config });
+        }
+        if (method === 'put') {
+          const body = config.data ? JSON.parse(config.data) : {};
+          const id = requestUrl.split('/').pop();
+          const updated = { _id: id, ...body };
+          return Promise.resolve({ data: { status: 'success', data: { address: updated } }, status: 200, config });
+        }
+        if (method === 'delete') {
+          return Promise.resolve({ data: { status: 'success', message: 'Address removed' }, status: 200, config });
+        }
+      }
+
+      // Payment methods
+      if (requestUrl.includes('/api/payment-methods')) {
+        if (method === 'get') {
+          return Promise.resolve({ data: { status: 'success', data: { paymentMethods: MOCK_PAYMENTS } }, status: 200, config });
+        }
+        if (method === 'post') {
+          const body = config.data ? JSON.parse(config.data) : {};
+          const created = { _id: `pm-local-${Date.now()}`, ...body };
+          return Promise.resolve({ data: { status: 'success', data: { paymentMethod: created } }, status: 201, config });
+        }
+        if (method === 'put') {
+          const body = config.data ? JSON.parse(config.data) : {};
+          const id = requestUrl.split('/').pop();
+          const updated = { _id: id, ...body };
+          return Promise.resolve({ data: { status: 'success', data: { paymentMethod: updated } }, status: 200, config });
+        }
+        if (method === 'delete') {
+          return Promise.resolve({ data: { status: 'success', message: 'Payment removed' }, status: 200, config });
+        }
+      }
     } catch (e) {
-      // fall through to reject
+      // fall through
     }
 
     return Promise.reject(error);

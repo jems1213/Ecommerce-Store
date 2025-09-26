@@ -1,115 +1,105 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import './Footer.css';
 
 const Footer = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('');
+
+  const menu = [
+    { label: 'New Arrivals', to: '/new-arrivals' },
+    { label: 'New', to: '/new' },
+    { label: 'Shop', to: '/shop' },
+    { label: 'Collections', to: '/collections' },
+    { label: 'Help', to: '/help' }
+  ];
+
+  const handleNavigate = (to) => {
+    navigate(to);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (!email) {
-      setStatus('Please enter a valid email address');
+      setStatus('Please enter a valid email');
       return;
     }
-    setStatus('Thanks for subscribing!');
+    setStatus('Subscribed — check your inbox');
     setEmail('');
     setTimeout(() => setStatus(''), 4000);
   };
 
   return (
-    <footer className="site-footer">
-      <div className="footer-top">
-        <div className="footer-container footer-grid">
+    <footer className="sh-footer" role="contentinfo">
+      <div className="sh-inner">
+        <div className="sh-grid">
 
-          <div className="footer-col footer-brand">
-            <Link to="/" className="footer-logo brand-link">Puma-like Shop</Link>
-            <p className="brand-desc">Premium footwear and apparel — performance and style in every step.</p>
-
-            <div className="brand-contact" aria-label="Contact information">
-              <div className="contact-item"><FaMapMarkerAlt className="contact-icon" /> <span>123 Sneaker St, Footwear City</span></div>
-              <div className="contact-item"><FaPhoneAlt className="contact-icon" /> <span>+1 (555) 123-4567</span></div>
-              <div className="contact-item"><FaEnvelope className="contact-icon" /> <span>support@yourcompany.com</span></div>
+          <div className="sh-section sh-brand">
+            <div className="sh-emoji-wrap">
+              <span className="sh-emoji sh-emoji--large" aria-hidden>👟</span>
             </div>
-
-            <div className="socials" aria-label="Social links">
-              <a aria-label="Facebook" href="#"><FaFacebookF /></a>
-              <a aria-label="Instagram" href="#"><FaInstagram /></a>
-              <a aria-label="Twitter" href="#"><FaTwitter /></a>
-              <a aria-label="YouTube" href="#"><FaYoutube /></a>
+            <div>
+              <h3 className="sh-brand-title">SneakerHub</h3>
+              <p className="sh-brand-desc">Your destination for curated sneakers — new drops, classics and exclusive collabs.</p>
             </div>
           </div>
 
-          <nav className="footer-col footer-links" aria-label="Footer navigation">
-            <div className="footer-column">
-              <h4>Quick Links</h4>
-              <ul>
-                <li><Link to="/shop">Shop</Link></li>
-                <li><Link to="/new-arrivals">New Arrivals</Link></li>
-                <li><Link to="/collections">Collections</Link></li>
-              </ul>
-            </div>
+          <div className="sh-section sh-links">
+            <h4 className="sh-heading">Explore</h4>
+            <ul className="sh-list" aria-label="Explore links">
+              {menu.map(item => (
+                <li key={item.label}>
+                  <button className="sh-link-btn" type="button" onClick={() => handleNavigate(item.to)}>{item.label}</button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            <div className="footer-column">
-              <h4>Support</h4>
-              <ul>
-                <li><Link to="/help">Help Center</Link></li>
-                <li><Link to="/shipping">Shipping</Link></li>
-                <li><Link to="/returns">Returns</Link></li>
-                <li><Link to="/size-guide">Size Guide</Link></li>
-                <li><Link to="/contact">Contact Us</Link></li>
-              </ul>
-            </div>
+          <div className="sh-section sh-account">
+            <h4 className="sh-heading">Account</h4>
+            <ul className="sh-list">
+              <li><button className="sh-link-btn" onClick={() => handleNavigate('/account')}>My Account</button></li>
+              <li><button className="sh-link-btn" onClick={() => handleNavigate('/orders')}>My Orders</button></li>
+              <li><button className="sh-link-btn" onClick={() => handleNavigate('/wishlist')}>Wishlist</button></li>
+              <li><button className="sh-link-btn" onClick={() => handleNavigate('/cart')}>Cart</button></li>
+            </ul>
+          </div>
 
-            <div className="footer-column">
-              <h4>Account</h4>
-              <ul>
-                <li><Link to="/login">Login</Link></li>
-                <li><Link to="/register">Register</Link></li>
-                <li><Link to="/orders">Orders</Link></li>
-                <li><Link to="/wishlist">Wishlist</Link></li>
-              </ul>
-            </div>
-
-            <div className="footer-column">
-              <h4>Policies</h4>
-              <ul>
-                <li><Link to="/terms">Terms</Link></li>
-                <li><Link to="/privacy">Privacy</Link></li>
-                <li><Link to="/sitemap">Sitemap</Link></li>
-              </ul>
-            </div>
-          </nav>
-
-          <div className="footer-col footer-newsletter">
-            <h4>Newsletter</h4>
-            <p className="newsletter-desc">Get release alerts, early access and member-only deals.</p>
-            <form className="newsletter-form" onSubmit={handleSubscribe}>
-              <label htmlFor="footer-email" className="sr-only">Email address</label>
+          <div className="sh-section sh-newsletter">
+            <h4 className="sh-heading">Stay in the loop</h4>
+            <p className="sh-news-desc">Sign up for release alerts, early access and special offers.</p>
+            <form className="sh-news-form" onSubmit={handleSubscribe}>
               <input
-                id="footer-email"
-                type="email"
+                className="sh-input"
+                aria-label="Email for newsletter"
                 placeholder="Enter your email"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
-              <button type="submit" className="btn-subscribe">Subscribe</button>
+              <button type="submit" className="sh-cta">Subscribe</button>
             </form>
-            {status && <div className="newsletter-status" role="status">{status}</div>}
+            {status && <div className="sh-status" role="status">{status}</div>}
+
+            <div className="sh-socials">
+              <button className="sh-icon" onClick={() => window.open('https://facebook.com', '_blank')} aria-label="Facebook"><FaFacebookF /></button>
+              <button className="sh-icon" onClick={() => window.open('https://instagram.com', '_blank')} aria-label="Instagram"><FaInstagram /></button>
+              <button className="sh-icon" onClick={() => window.open('https://twitter.com', '_blank')} aria-label="Twitter"><FaTwitter /></button>
+              <button className="sh-icon" onClick={() => window.open('https://youtube.com', '_blank')} aria-label="YouTube"><FaYoutube /></button>
+            </div>
           </div>
 
         </div>
-      </div>
 
-      <div className="footer-bottom">
-        <div className="footer-container footer-bottom-row">
-          <div className="copyright">© {new Date().getFullYear()} Puma-like Shop. All rights reserved.</div>
-          <div className="footer-links-inline">
-            <Link to="/terms">Terms</Link>
-            <Link to="/privacy">Privacy</Link>
-            <Link to="/sitemap">Sitemap</Link>
+        <div className="sh-bottom"> 
+          <div className="sh-copy">© SneakerHub {new Date().getFullYear()} — All rights reserved.</div>
+          <div className="sh-footer-links">
+            <button className="sh-small-link" onClick={() => handleNavigate('/terms')}>Terms</button>
+            <button className="sh-small-link" onClick={() => handleNavigate('/privacy')}>Privacy</button>
+            <button className="sh-small-link" onClick={() => handleNavigate('/sitemap')}>Sitemap</button>
           </div>
         </div>
       </div>

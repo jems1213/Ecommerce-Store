@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API_BASE } from '../../utils/apiClient';
+import api, { API_BASE } from '../../utils/apiClient';
+import AddressForm from './AddressForm';
+import PaymentForm from './PaymentForm';
 import { FiUser, FiShoppingBag, FiSettings, FiHeart, FiMapPin, FiCreditCard, FiLogOut } from 'react-icons/fi';
 import './Account.css';
 
@@ -11,62 +13,143 @@ const Account = () => {
   const [orders, setOrders] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const [backendAvailable, setBackendAvailable] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    // Check backend health separately so we know whether to persist to DB or localStorage
+    const checkBackend = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
-
-        if (!token || !storedUser) {
-          navigate('/login');
-          return;
-        }
-
-        // Verify token with backend
-        const response = await fetch(`/api/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Session expired');
-        }
-
-        const data = await response.json();
-        setUser(data.user);
-        localStorage.setItem('user', JSON.stringify(data.user));
-
-        // Load mock data (replace with actual API calls)
-        loadMockData();
-
-      } catch (error) {
-        console.error('Authentication error:', error);
-        handleLogout();
-      } finally {
-        setLoading(false);
+        await api.get('/api/health');
+        setBackendAvailable(true);
+      } catch (e) {
+        setBackendAvailable(false);
       }
     };
 
-    const loadMockData = () => {
-      // Mock data - replace with real API calls
-      setOrders([
-        { id: 'ORD-12345', date: new Date().toISOString(), total: 129.99, status: 'Delivered', items: 2 },
-        { id: 'ORD-12344', date: new Date(Date.now() - 86400000).toISOString(), total: 89.99, status: 'Shipped', items: 1 }
-      ]);
-      
-      setAddresses([
-        { id: 1, type: 'Home', street: '123 Main St', city: 'New York', state: 'NY', zip: '10001', isDefault: true },
-        { id: 2, type: 'Work', street: '456 Business Ave', city: 'New York', state: 'NY', zip: '10002', isDefault: false }
-      ]);
-      
-      setPaymentMethods([
-        { id: 1, type: 'Visa', last4: '4242', expiry: '12/25', isDefault: true },
-        { id: 2, type: 'Mastercard', last4: '5555', expiry: '06/24', isDefault: false }
-      ]);
+    checkBackend();
+
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+
+      if (!token && !storedUser) {
+        navigate('/login');
+        setLoading(false);
+        return;
+      }
+
+      // Try to fetch the authoritative user info from backend. If it fails
+      // but we have a cached user, use the cached copy and continue.
+      let serverUser = null;
+      try {
+        const meRes = await api.get('/api/auth/me', { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+        if (meRes?.data?.status === 'success') {
+          serverUser = meRes.data.user;
+          setUser(serverUser);
+          localStorage.setItem('user', JSON.stringify(serverUser));
+        } else {
+          throw new Error('Invalid session response');
+        }
+      } catch (err) {
+        console.warn('Failed to fetch /api/auth/me:', err?.message || err);
+        // fallback to cached user if present
+        if (storedUser) {
+          try {
+            const parsed = JSON.parse(storedUser);
+            setUser(parsed);
+          } catch (e) {
+            console.error('Failed to parse cached user', e);
+            handleLogout();
+            setLoading(false);
+            return;
+          }
+        } else {
+          // no token and no cached user -> force login
+          handleLogout();
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Fetch related account data but tolerate partial failures
+      try {
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const results = await Promise.allSettled([
+          api.get('/api/orders', { headers }),
+          api.get('/api/addresses', { headers }),
+          api.get('/api/payment-methods', { headers }),
+          api.get('/api/wishlist', { headers })
+        ]);
+
+        // Orders
+        if (results[0].status === 'fulfilled') {
+          const r = results[0].value;
+          if (r?.data?.status === 'success') setOrders(r.data.data.orders || []);
+        } else {
+          console.warn('Orders fetch failed:', results[0].reason);
+        }
+
+        // Addresses
+        if (results[1].status === 'fulfilled') {
+          const r = results[1].value;
+          if (r?.data?.status === 'success') setAddresses(r.data.data.addresses || []);
+        } else {
+          console.warn('Addresses fetch failed:', results[1].reason);
+        }
+
+        // Payments
+        if (results[2].status === 'fulfilled') {
+          const r = results[2].value;
+          if (r?.data?.status === 'success') setPaymentMethods(r.data.data.paymentMethods || []);
+        } else {
+          console.warn('Payment methods fetch failed:', results[2].reason);
+        }
+
+        // Wishlist
+        if (results[3].status === 'fulfilled') {
+          const r = results[3].value;
+          if (r?.data?.status === 'success') setWishlist(r.data.data.wishlist || []);
+        } else {
+          console.warn('Wishlist fetch failed:', results[3].reason);
+        }
+
+        // Sync locally-saved addresses/payments if backend is reachable
+        try {
+          if (backendAvailable === true) {
+            const pendingAddresses = JSON.parse(localStorage.getItem('local_addresses') || '[]');
+            if (pendingAddresses.length) {
+              for (const pending of pendingAddresses) {
+                try {
+                  const res = await api.post('/api/addresses', pending, { headers });
+                  if (res.data?.status === 'success') {
+                    setAddresses(prev => [...prev, res.data.data.address]);
+                  }
+                } catch (e) { console.warn('Failed to sync address', e); }
+              }
+              localStorage.removeItem('local_addresses');
+            }
+
+            const pendingPayments = JSON.parse(localStorage.getItem('local_payments') || '[]');
+            if (pendingPayments.length) {
+              for (const pending of pendingPayments) {
+                try {
+                  const res = await api.post('/api/payment-methods', pending, { headers });
+                  if (res.data?.status === 'success') {
+                    setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
+                  }
+                } catch (e) { console.warn('Failed to sync payment', e); }
+              }
+              localStorage.removeItem('local_payments');
+            }
+          }
+        } catch (e) { console.warn('Local sync error', e); }
+      } catch (err) {
+        console.error('Unexpected error fetching account sub-resources:', err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchUserData();
@@ -76,7 +159,148 @@ const Account = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
-    window.dispatchEvent(new Event('storage')); // Notify other tabs/components
+    window.dispatchEvent(new Event('storage'));
+  };
+
+  // Modal state for add/edit
+  const [addressModal, setAddressModal] = React.useState({ open: false, data: null });
+  const [paymentModal, setPaymentModal] = React.useState({ open: false, data: null });
+
+  // Address modal controls
+  const openAddAddress = () => setAddressModal({ open: true, data: null });
+  const openEditAddress = (addr) => setAddressModal({ open: true, data: addr });
+  const closeAddressModal = () => setAddressModal({ open: false, data: null });
+
+  const saveAddress = async (payload) => {
+    const token = localStorage.getItem('token');
+
+    // If user is authenticated, always attempt to save to backend (permanent storage).
+    if (token) {
+      try {
+        if (addressModal.data && (addressModal.data._id || addressModal.data.id)) {
+          const id = addressModal.data._id || addressModal.data.id;
+          const res = await api.put(`/api/addresses/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+          if (res.data.status === 'success') {
+            setAddresses(prev => prev.map(a => (a._id === id || a.id === id) ? res.data.data.address : a));
+          }
+        } else {
+          const res = await api.post('/api/addresses', payload, { headers: { Authorization: `Bearer ${token}` } });
+          if (res.data.status === 'success') {
+            setAddresses(prev => [...prev, res.data.data.address]);
+          }
+        }
+      } catch (err) {
+        console.error('Save address failed', err);
+        // If backend not reachable, inform user — do NOT silently store locally for authenticated users
+        alert('Failed to save address to server. Please check your connection and try again.');
+      } finally {
+        closeAddressModal();
+      }
+      return;
+    }
+
+    // Unauthenticated users: fallback to local-only storage
+    const created = { _id: `local-${Date.now()}`, ...payload };
+    setAddresses(prev => {
+      const next = [...prev, created];
+      try { localStorage.setItem('local_addresses', JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
+    alert('You are not logged in — address saved locally only');
+    closeAddressModal();
+  };
+
+  const deleteAddress = async (id) => {
+    if (!window.confirm('Delete this address?')) return;
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const res = await api.delete(`/api/addresses/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.status === 'success') {
+          setAddresses(prev => prev.filter(a => a._id !== id && a.id !== id));
+        }
+      } catch (err) {
+        console.error('Delete address failed', err);
+        alert('Failed to delete address on server. Please try again.');
+      }
+      return;
+    }
+
+    // unauthenticated fallback
+    setAddresses(prev => {
+      const next = prev.filter(a => a._id !== id && a.id !== id);
+      try { localStorage.setItem('local_addresses', JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
+    alert('You are not logged in — address removed locally');
+  };
+
+  // Payment modal controls
+  const openAddPayment = () => setPaymentModal({ open: true, data: null });
+  const openEditPayment = (pm) => setPaymentModal({ open: true, data: pm });
+  const closePaymentModal = () => setPaymentModal({ open: false, data: null });
+
+  const savePayment = async (payload) => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      try {
+        if (paymentModal.data && (paymentModal.data._id || paymentModal.data.id)) {
+          const id = paymentModal.data._id || paymentModal.data.id;
+          const res = await api.put(`/api/payment-methods/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+          if (res.data.status === 'success') {
+            setPaymentMethods(prev => prev.map(p => (p._id === id || p.id === id) ? res.data.data.paymentMethod : p));
+          }
+        } else {
+          const res = await api.post('/api/payment-methods', payload, { headers: { Authorization: `Bearer ${token}` } });
+          if (res.data.status === 'success') {
+            setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
+          }
+        }
+      } catch (err) {
+        console.error('Save payment failed', err);
+        alert('Failed to save card to server. Please check your connection and try again.');
+      } finally {
+        closePaymentModal();
+      }
+      return;
+    }
+
+    // unauthenticated fallback
+    const created = { _id: `local-pm-${Date.now()}`, ...payload };
+    setPaymentMethods(prev => {
+      const next = [...prev, created];
+      try { localStorage.setItem('local_payments', JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
+    alert('You are not logged in — card saved locally only');
+    closePaymentModal();
+  };
+
+  const deletePayment = async (id) => {
+    if (!window.confirm('Remove this card?')) return;
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const res = await api.delete(`/api/payment-methods/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.status === 'success') {
+          setPaymentMethods(prev => prev.filter(p => p._id !== id && p.id !== id));
+        }
+      } catch (err) {
+        console.error('Delete payment failed', err);
+        alert('Failed to remove card on server. Please try again.');
+      }
+      return;
+    }
+
+    // unauthenticated fallback
+    setPaymentMethods(prev => {
+      const next = prev.filter(p => p._id !== id && p.id !== id);
+      try { localStorage.setItem('local_payments', JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
+    alert('You are not logged in — card removed locally');
   };
 
   if (loading) {
@@ -170,11 +394,28 @@ const Account = () => {
       <div className="account-content">
         {activeTab === 'profile' && <ProfileTab user={user} />}
         {activeTab === 'orders' && <OrdersTab orders={orders} />}
-        {activeTab === 'wishlist' && <WishlistTab />}
-        {activeTab === 'addresses' && <AddressesTab addresses={addresses} />}
-        {activeTab === 'payments' && <PaymentsTab paymentMethods={paymentMethods} />}
-        {activeTab === 'settings' && <SettingsTab user={user} />}
+        {activeTab === 'wishlist' && <WishlistTab wishlist={wishlist} />}
+        {activeTab === 'addresses' && <AddressesTab addresses={addresses} onAdd={openAddAddress} onEdit={openEditAddress} onDelete={deleteAddress} />}
+        {activeTab === 'payments' && <PaymentsTab paymentMethods={paymentMethods} onAdd={openAddPayment} onEdit={openEditPayment} onDelete={deletePayment} />}
+        {activeTab === 'settings' && <SettingsTab user={user} onUpdateUser={setUser} />}
       </div>
+
+      {/* Modals */}
+      {addressModal.open && (
+        <AddressForm
+          initial={addressModal.data || {}}
+          onCancel={() => setAddressModal({ open: false, data: null })}
+          onSave={saveAddress}
+        />
+      )}
+
+      {paymentModal.open && (
+        <PaymentForm
+          initial={paymentModal.data || {}}
+          onCancel={() => setPaymentModal({ open: false, data: null })}
+          onSave={savePayment}
+        />
+      )}
     </div>
   );
 };
@@ -221,28 +462,28 @@ const OrdersTab = ({ orders }) => (
     {orders.length === 0 ? (
       <div className="empty-state">
         <p>You haven't placed any orders yet.</p>
-        <button className="primary-btn">Start Shopping</button>
+        <button className="primary-btn" onClick={() => window.location.href = '/shop'}>Start Shopping</button>
       </div>
     ) : (
       <div className="orders-list">
         {orders.map(order => (
-          <div key={order.id} className="order-card">
+          <div key={order._id || order.id} className="order-card">
             <div className="order-header">
-              <span className="order-id">Order #{order.id}</span>
-              <span className={`status ${order.status.toLowerCase()}`}>{order.status}</span>
+              <span className="order-id">Order #{order._id || order.id}</span>
+              <span className={`status ${order.status?.toLowerCase()}`}>{order.status}</span>
             </div>
             <div className="order-details">
               <div>
                 <span className="detail-label">Date</span>
-                <span>{new Date(order.date).toLocaleDateString()}</span>
+                <span>{new Date(order.createdAt || order.date).toLocaleDateString()}</span>
               </div>
               <div>
                 <span className="detail-label">Items</span>
-                <span>{order.items}</span>
+                <span>{(order.items || []).length}</span>
               </div>
               <div>
                 <span className="detail-label">Total</span>
-                <span>${order.total.toFixed(2)}</span>
+                <span>${(order.total || 0).toFixed(2)}</span>
               </div>
             </div>
             <button className="view-order-btn">View Details</button>
@@ -253,26 +494,40 @@ const OrdersTab = ({ orders }) => (
   </div>
 );
 
-const WishlistTab = () => (
+const WishlistTab = ({ wishlist }) => (
   <div className="tab-content">
     <h2>Your Wishlist</h2>
-    <div className="empty-state">
-      <p>Your wishlist is currently empty.</p>
-      <button className="primary-btn">Browse Products</button>
-    </div>
+    {wishlist.length === 0 ? (
+      <div className="empty-state">
+        <p>Your wishlist is currently empty.</p>
+        <button className="primary-btn" onClick={() => window.location.href = '/shop'}>Browse Products</button>
+      </div>
+    ) : (
+      <div className="wishlist-grid">
+        {wishlist.map(item => (
+          <div key={item._id || item.id} className="wishlist-card">
+            <img src={item.images?.[0] || '/src/assets/default-shoe.svg'} alt={item.name} />
+            <div className="wishlist-info">
+              <h4>{item.name}</h4>
+              <p>${item.price?.toFixed(2)}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
   </div>
 );
 
-const AddressesTab = ({ addresses }) => (
+const AddressesTab = ({ addresses, onAdd, onEdit, onDelete }) => (
   <div className="tab-content">
     <div className="section-header">
       <h2>Saved Addresses</h2>
-      <button className="primary-btn">Add New Address</button>
+      <button className="primary-btn" onClick={onAdd}>Add New Address</button>
     </div>
-    
+
     <div className="addresses-grid">
       {addresses.map(address => (
-        <div key={address.id} className={`address-card ${address.isDefault ? 'default' : ''}`}>
+        <div key={address._id || address.id} className={`address-card ${address.isDefault ? 'default' : ''}`}>
           <div className="address-header">
             <h3>{address.type}</h3>
             {address.isDefault && <span className="default-badge">Default</span>}
@@ -280,8 +535,8 @@ const AddressesTab = ({ addresses }) => (
           <p>{address.street}</p>
           <p>{address.city}, {address.state} {address.zip}</p>
           <div className="address-actions">
-            <button className="edit-btn">Edit</button>
-            {!address.isDefault && <button className="delete-btn">Delete</button>}
+            <button className="edit-btn" onClick={() => onEdit(address)}>Edit</button>
+            {!address.isDefault && <button className="delete-btn" onClick={() => onDelete(address._id || address.id)}>Delete</button>}
           </div>
         </div>
       ))}
@@ -289,16 +544,16 @@ const AddressesTab = ({ addresses }) => (
   </div>
 );
 
-const PaymentsTab = ({ paymentMethods }) => (
+const PaymentsTab = ({ paymentMethods, onAdd, onEdit, onDelete }) => (
   <div className="tab-content">
     <div className="section-header">
       <h2>Payment Methods</h2>
-      <button className="primary-btn">Add New Card</button>
+      <button className="primary-btn" onClick={onAdd}>Add New Card</button>
     </div>
-    
+
     <div className="payments-list">
       {paymentMethods.map(payment => (
-        <div key={payment.id} className={`payment-card ${payment.isDefault ? 'default' : ''}`}>
+        <div key={payment._id || payment.id} className={`payment-card ${payment.isDefault ? 'default' : ''}`}>
           <div className="payment-header">
             <div className="card-type">{payment.type}</div>
             {payment.isDefault && <span className="default-badge">Default</span>}
@@ -306,8 +561,8 @@ const PaymentsTab = ({ paymentMethods }) => (
           <div className="card-number">•••• •••• •••• {payment.last4}</div>
           <div className="card-expiry">Expires {payment.expiry}</div>
           <div className="payment-actions">
-            <button className="edit-btn">Edit</button>
-            {!payment.isDefault && <button className="delete-btn">Delete</button>}
+            <button className="edit-btn" onClick={() => onEdit(payment)}>Edit</button>
+            {!payment.isDefault && <button className="delete-btn" onClick={() => onDelete(payment._id || payment.id)}>Delete</button>}
           </div>
         </div>
       ))}
@@ -315,7 +570,7 @@ const PaymentsTab = ({ paymentMethods }) => (
   </div>
 );
 
-const SettingsTab = ({ user }) => {
+const SettingsTab = ({ user, onUpdateUser }) => {
   const [formData, setFormData] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
@@ -324,6 +579,17 @@ const SettingsTab = ({ user }) => {
     newPassword: '',
     confirmPassword: ''
   });
+
+  useEffect(() => {
+    setFormData({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({
@@ -335,23 +601,30 @@ const SettingsTab = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/auth/update', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Update failed');
+      if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
+        alert('New password and confirm password do not match');
+        return;
       }
 
-      const data = await response.json();
-      localStorage.setItem('user', JSON.stringify(data.user));
-      window.location.reload();
+      const token = localStorage.getItem('token');
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email
+      };
+
+      if (formData.currentPassword && formData.newPassword) {
+        payload.currentPassword = formData.currentPassword;
+        payload.newPassword = formData.newPassword;
+      }
+
+      const res = await api.put('/api/auth/update', payload, { headers: { Authorization: `Bearer ${token}` } });
+
+      if (res.data.status === 'success') {
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        onUpdateUser(res.data.user);
+        alert('Profile updated successfully');
+      }
     } catch (error) {
       console.error('Update error:', error);
       alert('Failed to update profile. Please try again.');

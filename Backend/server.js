@@ -46,6 +46,26 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Models
+// Address and payment sub-schemas stored on the user document
+const addressSchema = new mongoose.Schema({
+  type: { type: String, enum: ['Home','Work','Other'], default: 'Home' },
+  street: { type: String, required: true },
+  city: { type: String, required: true },
+  state: { type: String, required: true },
+  zip: { type: String, required: true },
+  country: { type: String, required: true, default: 'USA' },
+  phone: { type: String, required: true },
+  isDefault: { type: Boolean, default: false }
+}, { _id: true });
+
+const paymentMethodSchema = new mongoose.Schema({
+  type: { type: String, enum: ['Visa','Mastercard','Amex','Other'], default: 'Visa' },
+  last4: { type: String, required: true },
+  expiry: { type: String, required: true },
+  providerId: { type: String, default: '' }, // token/id from payment provider if applicable
+  isDefault: { type: Boolean, default: false }
+}, { _id: true });
+
 const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true, trim: true, maxlength: 50 },
   lastName: { type: String, required: true, trim: true, maxlength: 50 },
@@ -64,7 +84,10 @@ const userSchema = new mongoose.Schema({
     select: false
   },
   avatar: { type: String, default: 'https://www.gravatar.com/avatar/?d=mp' },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  addresses: { type: [addressSchema], default: [] },
+  paymentMethods: { type: [paymentMethodSchema], default: [] },
+  wishlist: { type: [mongoose.Schema.Types.ObjectId], ref: 'Shoe', default: [] }
 });
 
 userSchema.pre('save', async function (next) {
@@ -492,6 +515,208 @@ app.patch('/api/orders/:id/verify-payment', protect, async (req, res) => {
       status: 'error',
       message: 'Failed to update payment status'
     });
+  }
+});
+
+// User update endpoint
+app.put('/api/auth/update', protect, async (req, res) => {
+  try {
+    const { firstName, lastName, email, currentPassword, newPassword } = req.body;
+
+    if (email && email !== req.user.email) {
+      const exists = await User.findOne({ email });
+      if (exists) return res.status(400).json({ status: 'fail', message: 'Email already in use' });
+    }
+
+    if (currentPassword && newPassword) {
+      const valid = await req.user.comparePassword(currentPassword);
+      if (!valid) return res.status(401).json({ status: 'fail', message: 'Current password is incorrect' });
+      req.user.password = newPassword;
+    }
+
+    if (firstName) req.user.firstName = firstName;
+    if (lastName) req.user.lastName = lastName;
+    if (email) req.user.email = email;
+
+    await req.user.save();
+    const userObj = req.user.toObject();
+    delete userObj.password;
+    res.status(200).json({ status: 'success', user: userObj });
+  } catch (err) {
+    console.error('Auth update error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to update user' });
+  }
+});
+
+// Addresses API (CRUD)
+app.get('/api/addresses', protect, (req, res) => {
+  res.status(200).json({ status: 'success', data: { addresses: req.user.addresses || [] } });
+});
+
+app.post('/api/addresses', protect, async (req, res) => {
+  try {
+    const { type, street, city, state, zip, country, phone, isDefault } = req.body;
+    if (!street || !city || !state || !zip || !phone) {
+      return res.status(400).json({ status: 'fail', message: 'Missing required address fields' });
+    }
+
+    if (isDefault) {
+      req.user.addresses.forEach(a => a.isDefault = false);
+    }
+
+    req.user.addresses.push({ type, street, city, state, zip, country, phone, isDefault: !!isDefault });
+    await req.user.save();
+
+    res.status(201).json({ status: 'success', data: { address: req.user.addresses[req.user.addresses.length - 1] } });
+  } catch (err) {
+    console.error('Add address error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to add address' });
+  }
+});
+
+app.put('/api/addresses/:id', protect, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const addr = req.user.addresses.id(id);
+    if (!addr) return res.status(404).json({ status: 'fail', message: 'Address not found' });
+
+    const { type, street, city, state, zip, country, phone, isDefault } = req.body;
+    if (isDefault) req.user.addresses.forEach(a => a.isDefault = false);
+
+    if (type !== undefined) addr.type = type;
+    if (street !== undefined) addr.street = street;
+    if (city !== undefined) addr.city = city;
+    if (state !== undefined) addr.state = state;
+    if (zip !== undefined) addr.zip = zip;
+    if (country !== undefined) addr.country = country;
+    if (phone !== undefined) addr.phone = phone;
+    if (isDefault !== undefined) addr.isDefault = isDefault;
+
+    await req.user.save();
+    res.status(200).json({ status: 'success', data: { address: addr } });
+  } catch (err) {
+    console.error('Update address error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to update address' });
+  }
+});
+
+app.delete('/api/addresses/:id', protect, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const addr = req.user.addresses.id(id);
+    if (!addr) return res.status(404).json({ status: 'fail', message: 'Address not found' });
+
+    addr.remove();
+    await req.user.save();
+    res.status(200).json({ status: 'success', message: 'Address removed' });
+  } catch (err) {
+    console.error('Delete address error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to delete address' });
+  }
+});
+
+// Payment methods API
+app.get('/api/payment-methods', protect, (req, res) => {
+  res.status(200).json({ status: 'success', data: { paymentMethods: req.user.paymentMethods || [] } });
+});
+
+app.post('/api/payment-methods', protect, async (req, res) => {
+  try {
+    const { type, last4, expiry, providerId, isDefault } = req.body;
+    if (!last4 || !expiry) return res.status(400).json({ status: 'fail', message: 'Missing card details' });
+
+    if (isDefault) req.user.paymentMethods.forEach(p => p.isDefault = false);
+
+    req.user.paymentMethods.push({ type, last4, expiry, providerId: providerId || '', isDefault: !!isDefault });
+    await req.user.save();
+
+    res.status(201).json({ status: 'success', data: { paymentMethod: req.user.paymentMethods[req.user.paymentMethods.length - 1] } });
+  } catch (err) {
+    console.error('Add payment error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to add payment method' });
+  }
+});
+
+app.put('/api/payment-methods/:id', protect, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pm = req.user.paymentMethods.id(id);
+    if (!pm) return res.status(404).json({ status: 'fail', message: 'Payment method not found' });
+
+    const { type, last4, expiry, providerId, isDefault } = req.body;
+    if (isDefault) req.user.paymentMethods.forEach(p => p.isDefault = false);
+
+    if (type !== undefined) pm.type = type;
+    if (last4 !== undefined) pm.last4 = last4;
+    if (expiry !== undefined) pm.expiry = expiry;
+    if (providerId !== undefined) pm.providerId = providerId;
+    if (isDefault !== undefined) pm.isDefault = isDefault;
+
+    await req.user.save();
+    res.status(200).json({ status: 'success', data: { paymentMethod: pm } });
+  } catch (err) {
+    console.error('Update payment error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to update payment method' });
+  }
+});
+
+app.delete('/api/payment-methods/:id', protect, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pm = req.user.paymentMethods.id(id);
+    if (!pm) return res.status(404).json({ status: 'fail', message: 'Payment method not found' });
+
+    pm.remove();
+    await req.user.save();
+    res.status(200).json({ status: 'success', message: 'Payment method removed' });
+  } catch (err) {
+    console.error('Delete payment error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to delete payment method' });
+  }
+});
+
+// Wishlist API
+app.get('/api/wishlist', protect, async (req, res) => {
+  try {
+    const wishlistIds = req.user.wishlist || [];
+    const shoes = await Shoe.find({ _id: { $in: wishlistIds } });
+    res.status(200).json({ status: 'success', data: { wishlist: shoes } });
+  } catch (err) {
+    console.error('Fetch wishlist error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to fetch wishlist' });
+  }
+});
+
+app.post('/api/wishlist', protect, async (req, res) => {
+  try {
+    const { shoeId } = req.body;
+    if (!isValidObjectId(shoeId)) return res.status(400).json({ status: 'fail', message: 'Invalid shoe id' });
+
+    const shoe = await Shoe.findById(shoeId);
+    if (!shoe) return res.status(404).json({ status: 'fail', message: 'Shoe not found' });
+
+    if (!req.user.wishlist) req.user.wishlist = [];
+    if (!req.user.wishlist.find(id => id.toString() === shoeId)) {
+      req.user.wishlist.push(shoeId);
+      await req.user.save();
+    }
+
+    res.status(200).json({ status: 'success', message: 'Added to wishlist' });
+  } catch (err) {
+    console.error('Add wishlist error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to add to wishlist' });
+  }
+});
+
+app.delete('/api/wishlist/:shoeId', protect, async (req, res) => {
+  try {
+    const { shoeId } = req.params;
+    req.user.wishlist = (req.user.wishlist || []).filter(id => id.toString() !== shoeId);
+    await req.user.save();
+    res.status(200).json({ status: 'success', message: 'Removed from wishlist' });
+  } catch (err) {
+    console.error('Remove wishlist error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to remove from wishlist' });
   }
 });
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../../utils/apiClient';
+import api, { API_BASE } from '../../utils/apiClient';
 import axios from 'axios';
 import { FiUser, FiLock, FiArrowRight, FiAlertCircle } from 'react-icons/fi';
 import './Login.css';
@@ -45,6 +45,22 @@ const Login = () => {
     setIsLoading(true);
     setError('');
 
+    // Quick backend health check to avoid raw Axios Network Error stack
+    try {
+      try {
+        await api.get('/api/health');
+      } catch (healthErr) {
+        // try absolute base if api instance failed
+        const base = API_BASE || window.location.origin;
+        await axios.get(`${base.replace(/\/$/, '')}/api/health`);
+      }
+    } catch (healthFail) {
+      console.error('Backend health check failed:', healthFail);
+      setError('Cannot reach backend. Start the Backend (cd Backend && npm start) or set VITE_API_URL to your deployed backend.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       // Primary attempt: use configured api instance
       let res = null;
@@ -59,9 +75,13 @@ const Login = () => {
         const cfgUrl = primaryErr?.config?.url || '/api/auth/login';
         console.warn('Primary login attempt failed', { status, url: cfgUrl, err: primaryErr });
 
-        if (status === 404) {
+        const isNetworkError = !primaryErr.response;
+        const isServerError = primaryErr.response && primaryErr.response.status >= 500;
+
+        if (status === 404 || isNetworkError || isServerError) {
           try {
-            const absolute = `${window.location.origin}/api/auth/login`;
+            const base = API_BASE || window.location.origin;
+            const absolute = `${base.replace(/\/$/, '')}/api/auth/login`;
             res = await axios.post(absolute, {
               email: credentials.email.trim(),
               password: credentials.password
@@ -71,7 +91,7 @@ const Login = () => {
             throw fallbackErr;
           }
         } else {
-          // rethrow non-404 to outer catch
+          // rethrow other errors to outer catch
           throw primaryErr;
         }
       }

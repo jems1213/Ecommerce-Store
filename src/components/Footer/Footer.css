@@ -1,95 +1,52 @@
-:root{
-  --footer-bg:#E15039; /* footer primary color */
-  --footer-contrast:#BF4430; /* darker footer contrast */
-  --muted:#f3dcd8; /* adjusted muted for readability */
-  --accent: #E15039; /* site accent overridden for footer */
-  --accent-2: #BF4430;
-  --white:#ffffff;
-  --radius:12px;
-  --footer-padding:2rem 3rem;
-}
+/* SneakerHub redesigned footer styles */
+.sh-footer{background:#0b1020;color:#e6eef8;padding:48px 0;font-family:Inter, system-ui, Arial, sans-serif}
+.sh-inner{max-width:1200px;margin:0 auto;padding:0 20px}
+.sh-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.4fr;gap:28px;align-items:start}
 
-.site-footer{
-  background: var(--footer-bg);
-  color: var(--muted);
-  font-size:15px;
-  line-height:1.7;
-}
+/* Brand */
+.sh-brand{display:flex;gap:14px;align-items:flex-start}
+.sh-logo{width:68px;height:68px;object-fit:contain}
+.sh-brand-title{margin:0;font-size:20px;font-weight:800}
+.sh-brand-desc{margin:6px 0 0;color:#9fb3d1;max-width:320px}
 
-.footer-top{
-  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
-  color: var(--white);
-  padding: 2.5rem 0;
-}
+/* Section headings and lists */
+.sh-section{padding:6px 0}
+.sh-heading{margin:0 0 10px 0;color:#cfe6ff;font-weight:700}
+.sh-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.sh-link-btn{background:transparent;border:none;color:#dbeeff;padding:6px 0;text-align:left;cursor:pointer;font-size:15px}
+.sh-link-btn:hover{color:#fff;text-decoration:underline}
 
-.footer-container{
-  max-width:1400px;
-  margin:0 auto;
-  padding:var(--footer-padding);
-  display:flex;
-  gap:2rem;
-  flex-wrap:wrap;
-  align-items:flex-start;
-}
+/* Newsletter */
+.sh-news-desc{color:#a9c3de;margin:0 0 10px}
+.sh-news-form{display:flex;gap:8px;align-items:center}
+.sh-input{flex:1;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#fff}
+.sh-cta{background:#fff;color:#0b1020;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700}
+.sh-status{margin-top:8px;color:#9fb3d1}
 
-/* Grid layout for footer */
-.footer-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:1.25rem;align-items:start}
-.footer-col{grid-column:span 3}
-.footer-brand{grid-column:span 4}
-.footer-newsletter{grid-column:span 3}
+/* Socials */
+.sh-socials{display:flex;gap:8px;margin-top:12px}
+.sh-icon{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;width:40px;height:40px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.sh-icon:hover{transform:translateY(-3px)}
 
-.brand-link{
-  color:var(--white);
-  font-weight:800;
-  font-size:1.5rem;
-  text-decoration:none;
-  display:inline-block;
-  margin-bottom:0.6rem;
-}
+/* emoji in brand */
+.sh-emoji{font-size:48px;margin-right:12px;display:inline-block;vertical-align:middle;line-height:1}
 
-.brand-desc{color:rgba(255,255,255,0.9);margin:0 0 1rem;font-size:1rem}
-
-.brand-contact{display:flex;flex-direction:column;gap:0.45rem;margin-bottom:1rem;color:rgba(255,255,255,0.9)}
-.contact-item{display:flex;align-items:center;gap:0.6rem}
-.contact-icon{min-width:18px}
-
-.socials a{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.08);color:var(--white);text-decoration:none;margin-right:0.5rem;transition:transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms ease, background 220ms ease, color 220ms ease}
-.socials a:hover{transform:translateY(-6px) scale(1.06);box-shadow:0 10px 22px rgba(0,0,0,0.18);background:var(--white);color:var(--accent)}
-
-.footer-links{display:flex;gap:1rem;grid-column:span 5}
-.footer-column h4{color:var(--white);margin-bottom:0.6rem;font-size:1.15rem;font-weight:700}
-.footer-column ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.45rem}
-.footer-column a{color:rgba(255,255,255,0.9);text-decoration:none;position:relative;display:inline-block;transition:color 220ms ease, transform 220ms ease}
-.footer-column a:hover{color:var(--white);transform:translateX(6px)}
-.footer-column a::after,.footer-links-inline a::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:var(--white);transition:width 220ms ease}
-.footer-column a:hover::after,.footer-links-inline a:hover::after{width:100%}
-
-.newsletter-desc{margin:0 0 0.7rem;color:rgba(255,255,255,0.9);font-size:1rem}
-.newsletter-form{display:flex;gap:0.5rem}
-.newsletter-form input{flex:1;padding:0.9rem 1rem;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--white);outline:none;font-size:1rem;min-width:180px}
-.newsletter-form input::placeholder{color:rgba(255,255,255,0.7)}
-.btn-subscribe{padding:0.9rem 1.1rem;border-radius:999px;border:none;background:var(--accent);color:var(--white);font-weight:700;cursor:pointer;transition:all 0.18s;font-size:1rem}
-.btn-subscribe:hover{background:var(--accent-2);transform:translateY(-4px);box-shadow:0 8px 18px rgba(0,0,0,0.18)}
-
-.newsletter-status{margin-top:0.6rem;color:var(--white);font-weight:600}
-
-.footer-bottom{background:var(--footer-contrast);padding:1rem 0}
-.footer-bottom-row{max-width:1400px;margin:0 auto;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
-.footer-links-inline{display:flex;gap:1rem}
-.footer-links-inline a{color:var(--muted);text-decoration:none;font-size:1rem;position:relative;display:inline-block;transition:color 220ms ease, transform 220ms ease}
-.footer-links-inline a:hover{color:var(--white)}
-
-/* Small helper for screen reader only labels */
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* Bottom row */
+.sh-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:28px;border-top:1px solid rgba(255,255,255,0.03);padding-top:18px}
+.sh-copy{color:#9fb3d1;font-size:14px}
+.sh-footer-links{display:flex;gap:12px}
+.sh-small-link{background:transparent;border:none;color:#9fb3d1;cursor:pointer}
+.sh-small-link:hover{color:#fff}
 
 /* Responsive */
-@media (max-width:900px){
-  .footer-container{padding:1.5rem}
-  .footer-bottom-row{flex-direction:column;align-items:flex-start;gap:0.5rem}
-  .footer-grid{grid-template-columns:repeat(6,1fr)}
-  .footer-col{grid-column:span 6}
-  .footer-brand{grid-column:span 6}
-  .footer-newsletter{grid-column:span 6}
-  .newsletter-form{flex-direction:column}
-  .newsletter-form input,.newsletter-form .btn-subscribe{width:100%}
+@media (max-width:980px){
+  .sh-grid{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
+  .sh-brand{align-items:center}
+}
+
+@media (max-width:600px){
+  .sh-grid{grid-template-columns:1fr}
+  .sh-news-form{flex-direction:column}
+  .sh-cta{width:100%}
+  .sh-bottom{flex-direction:column;align-items:flex-start;gap:8px}
 }
