@@ -115,9 +115,17 @@
 .sh-icon{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;width:40px;height:40px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .sh-icon:hover{transform:translateY(-3px)}
 
+/* Account section styles */
+.sh-account{margin-left:20px}
+.sh-account-title{margin:0 0 8px 0;color:rgba(255,255,255,0.9);font-weight:700}
+.sh-account-links{display:flex;flex-direction:column;gap:8px}
+.sh-account-btn{background:transparent;border:none;color:rgba(255,255,255,0.9);cursor:pointer;padding:6px 8px;text-align:left;border-radius:6px}
+.sh-account-btn:hover{background:rgba(255,255,255,0.03)}
+
 @media (max-width:900px){
   .sh-top{flex-direction:column;align-items:flex-start}
   .sh-news-form{width:100%}
   .sh-nav{flex-wrap:wrap}
   .sh-bottom{flex-direction:column;align-items:flex-start}
+  .sh-account{margin-left:0;margin-top:12px}
 }
