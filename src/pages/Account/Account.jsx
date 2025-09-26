@@ -242,38 +242,40 @@ const Account = () => {
   const closePaymentModal = () => setPaymentModal({ open: false, data: null });
 
   const savePayment = async (payload) => {
-    if (backendAvailable === false) {
-      const created = { _id: `local-pm-${Date.now()}`, ...payload };
-      setPaymentMethods(prev => {
-        const next = [...prev, created];
-        try { localStorage.setItem('local_payments', JSON.stringify(next)); } catch (e) {}
-        return next;
-      });
-      alert('Backend not reachable — card saved locally only');
-      closePaymentModal();
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      try {
+        if (paymentModal.data && (paymentModal.data._id || paymentModal.data.id)) {
+          const id = paymentModal.data._id || paymentModal.data.id;
+          const res = await api.put(`/api/payment-methods/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+          if (res.data.status === 'success') {
+            setPaymentMethods(prev => prev.map(p => (p._id === id || p.id === id) ? res.data.data.paymentMethod : p));
+          }
+        } else {
+          const res = await api.post('/api/payment-methods', payload, { headers: { Authorization: `Bearer ${token}` } });
+          if (res.data.status === 'success') {
+            setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
+          }
+        }
+      } catch (err) {
+        console.error('Save payment failed', err);
+        alert('Failed to save card to server. Please check your connection and try again.');
+      } finally {
+        closePaymentModal();
+      }
       return;
     }
 
-    try {
-      const token = localStorage.getItem('token');
-      if (paymentModal.data && (paymentModal.data._id || paymentModal.data.id)) {
-        const id = paymentModal.data._id || paymentModal.data.id;
-        const res = await api.put(`/api/payment-methods/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
-        if (res.data.status === 'success') {
-          setPaymentMethods(prev => prev.map(p => (p._id === id || p.id === id) ? res.data.data.paymentMethod : p));
-        }
-      } else {
-        const res = await api.post('/api/payment-methods', payload, { headers: { Authorization: `Bearer ${token}` } });
-        if (res.data.status === 'success') {
-          setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
-        }
-      }
-    } catch (err) {
-      console.error('Save payment failed', err);
-      alert('Failed to save card');
-    } finally {
-      closePaymentModal();
-    }
+    // unauthenticated fallback
+    const created = { _id: `local-pm-${Date.now()}`, ...payload };
+    setPaymentMethods(prev => {
+      const next = [...prev, created];
+      try { localStorage.setItem('local_payments', JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
+    alert('You are not logged in — card saved locally only');
+    closePaymentModal();
   };
 
   const deletePayment = async (id) => {
