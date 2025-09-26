@@ -548,6 +548,25 @@ app.put('/api/auth/update', protect, async (req, res) => {
   }
 });
 
+// Avatar upload endpoint
+app.post('/api/auth/avatar', protect, upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({ status: 'fail', message: 'No file uploaded' });
+    }
+
+    // multer-storage-cloudinary provides the uploaded file path in req.file.path
+    req.user.avatar = req.file.path;
+    await req.user.save();
+    const userObj = req.user.toObject();
+    delete userObj.password;
+    res.status(200).json({ status: 'success', user: userObj });
+  } catch (err) {
+    console.error('Avatar upload error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to upload avatar' });
+  }
+});
+
 // Addresses API (CRUD)
 app.get('/api/addresses', protect, (req, res) => {
   res.status(200).json({ status: 'success', data: { addresses: req.user.addresses || [] } });
