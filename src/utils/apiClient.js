@@ -77,12 +77,15 @@ api.interceptors.response.use(
     const config = error.config || {};
     const isNetworkError = !error.response;
     const isServerError = error.response && error.response.status >= 500;
+    const isNotFound = error.response && error.response.status === 404;
 
     try {
       const requestUrl = (config.url || '').toString();
       const method = (config.method || '').toLowerCase();
 
-      const shouldFallback = isNetworkError || isServerError;
+      // Treat network errors, server errors and 404s against API paths (e.g. in preview) as a signal
+      // to use fallback mock responses so the UI remains functional in remote previews.
+      const shouldFallback = isNetworkError || isServerError || (isNotFound && requestUrl.startsWith('/api'));
 
       if (!shouldFallback) return Promise.reject(error);
 
