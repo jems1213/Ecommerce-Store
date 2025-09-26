@@ -130,10 +130,6 @@ const Account = () => {
   const openEditAddress = (addr) => setAddressModal({ open: true, data: addr });
   const closeAddressModal = () => setAddressModal({ open: false, data: null });
 
-  const buildUrl = (path) => {
-    try { return API_BASE ? API_BASE.replace(/\/$/, '') + path : path; } catch (e) { return path; }
-  };
-
   const saveAddress = async (payload) => {
     try {
       const token = localStorage.getItem('token');
