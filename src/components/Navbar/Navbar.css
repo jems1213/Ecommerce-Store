@@ -472,6 +472,11 @@
   z-index: 1001;
 }
 
+/* When mobile menu is open, hide the toggle button to avoid duplicate close icons */
+.navbar.menu-open .mobile-menu-button {
+  display: none !important;
+}
+
 .mobile-cart-badge {
   position: absolute;
   top: -5px;
