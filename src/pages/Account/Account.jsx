@@ -114,6 +114,37 @@ const Account = () => {
         } else {
           console.warn('Wishlist fetch failed:', results[3].reason);
         }
+
+        // Sync locally-saved addresses/payments if backend is reachable
+        try {
+          if (backendAvailable === true) {
+            const pendingAddresses = JSON.parse(localStorage.getItem('local_addresses') || '[]');
+            if (pendingAddresses.length) {
+              for (const pending of pendingAddresses) {
+                try {
+                  const res = await api.post('/api/addresses', pending, { headers });
+                  if (res.data?.status === 'success') {
+                    setAddresses(prev => [...prev, res.data.data.address]);
+                  }
+                } catch (e) { console.warn('Failed to sync address', e); }
+              }
+              localStorage.removeItem('local_addresses');
+            }
+
+            const pendingPayments = JSON.parse(localStorage.getItem('local_payments') || '[]');
+            if (pendingPayments.length) {
+              for (const pending of pendingPayments) {
+                try {
+                  const res = await api.post('/api/payment-methods', pending, { headers });
+                  if (res.data?.status === 'success') {
+                    setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
+                  }
+                } catch (e) { console.warn('Failed to sync payment', e); }
+              }
+              localStorage.removeItem('local_payments');
+            }
+          }
+        } catch (e) { console.warn('Local sync error', e); }
       } catch (err) {
         console.error('Unexpected error fetching account sub-resources:', err);
       } finally {
