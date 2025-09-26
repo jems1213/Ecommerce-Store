@@ -207,6 +207,18 @@ const Account = () => {
   const closePaymentModal = () => setPaymentModal({ open: false, data: null });
 
   const savePayment = async (payload) => {
+    if (backendAvailable === false) {
+      const created = { _id: `local-pm-${Date.now()}`, ...payload };
+      setPaymentMethods(prev => {
+        const next = [...prev, created];
+        try { localStorage.setItem('local_payments', JSON.stringify(next)); } catch (e) {}
+        return next;
+      });
+      alert('Backend not reachable — card saved locally only');
+      closePaymentModal();
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       if (paymentModal.data && (paymentModal.data._id || paymentModal.data.id)) {
