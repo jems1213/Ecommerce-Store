@@ -418,17 +418,27 @@ const Navbar = () => {
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
-                {/* Mobile Search */}
+                <div className="mobile-menu-header">
+                  <button className="mobile-close" onClick={() => setIsOpen(false)} aria-label="Close menu">
+                    <FiX size={20} />
+                  </button>
+                  <Link to="/" className="mobile-logo" onClick={() => setIsOpen(false)}>
+                    <span className="logo-icon">👟</span>
+                    <span className="mobile-brand">SneakerHub</span>
+                  </Link>
+                </div>
+
+                {/* Larger Search */}
                 <motion.form
-                  className="mobile-search-form"
+                  className="mobile-search-form large"
                   onSubmit={handleSearch}
-                  initial={{ opacity: 0, y: -20 }}
+                  initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
+                  transition={{ delay: 0.05 }}
                 >
                   <input
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Search for shoes, brands, styles..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -437,143 +447,151 @@ const Navbar = () => {
                   </button>
                 </motion.form>
 
-                {/* Mobile Navigation Links */}
-                <div className="mobile-nav-links-section">
-                  {mainCategories.map((category) => (
-                    <Link
-                      key={category.name}
-                      to={category.path}
-                      className="mobile-nav-link"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {category.name}
-                      {category.featured && <span className="mobile-featured-badge">New</span>}
-                    </Link>
-                  ))}
-
-                  <div className="mobile-accordion">
-                    <motion.button
-                      className="mobile-accordion-button"
-                      onClick={() => toggleMobileSubmenu('collections')}
-                      aria-expanded={mobileSubmenuOpen === 'collections'}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Collections
-                      {mobileSubmenuOpen === 'collections' ? <FiChevronUp /> : <FiChevronRight />}
-                    </motion.button>
-                    <AnimatePresence>
-                      {mobileSubmenuOpen === 'collections' && (
-                        <motion.div
-                          className="mobile-accordion-content"
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                        >
-                          {collections.map((collection) => (
-                            <Link
-                              key={collection.name}
-                              to={collection.path}
-                              className="mobile-sub-link"
-                              onClick={() => setIsOpen(false)}
-                            >
-                              {collection.icon && <span className="menu-icon">{collection.icon}</span>}
-                              {collection.name}
-                              {collection.featured && <span className="featured-badge">Hot</span>}
-                            </Link>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  <div className="mobile-accordion">
-                    <motion.button
-                      className="mobile-accordion-button"
-                      onClick={() => toggleMobileSubmenu('help')}
-                      aria-expanded={mobileSubmenuOpen === 'help'}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Help
-                      {mobileSubmenuOpen === 'help' ? <FiChevronUp /> : <FiChevronRight />}
-                    </motion.button>
-                    <AnimatePresence>
-                      {mobileSubmenuOpen === 'help' && (
-                        <motion.div
-                          className="mobile-accordion-content"
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                        >
-                          {helpLinks.map((link) => (
-                            <Link
-                              key={link.name}
-                              to={link.path}
-                              className="mobile-sub-link"
-                              onClick={() => setIsOpen(false)}
-                            >
-                              {link.name}
-                            </Link>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-
-                {/* Mobile Auth Section */}
-                <div className="mobile-auth-section">
-                  {user ? (
-                    <>
-                      <div className="mobile-user-info">
-                        {user.avatar ? (
-                          <img src={user.avatar} alt={user.name} className="mobile-user-avatar" />
-                        ) : (
-                          <div className="mobile-user-avatar-fallback">
-                            {user.name?.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                        <p className="welcome">Welcome back,</p>
-                        <h4>{user.name?.split(' ')[0]}</h4>
-                        <p className="mobile-user-email">{user.email}</p>
-                      </div>
-                      <div className="mobile-auth-links-group">
-                        <Link to="/account" className="mobile-auth-link" onClick={() => setIsOpen(false)}>
-                          <FiUser /> My Account
-                        </Link>
-                        <Link to="/orders" className="mobile-auth-link" onClick={() => setIsOpen(false)}>
-                          <FiClock /> My Orders
-                        </Link>
-                        <Link to="/wishlist" className="mobile-auth-link" onClick={() => setIsOpen(false)}>
-                          <FiHeart /> My Wishlist ({wishlistCount})
-                        </Link>
-                      </div>
-                      <button
-                        className="mobile-auth-link logout"
-                        onClick={() => setShowLogoutConfirm(true)}
+                <div className="mobile-content">
+                  {/* Mobile Navigation Links */}
+                  <div className="mobile-nav-links-section">
+                    {mainCategories.map((category) => (
+                      <Link
+                        key={category.name}
+                        to={category.path}
+                        className="mobile-nav-link"
+                        onClick={() => setIsOpen(false)}
                       >
-                        <FiLogOut /> Sign Out
-                      </button>
-                    </>
-                  ) : (
-                    <div className="mobile-auth-links-group">
-                      <Link to="/login" className="mobile-auth-link primary" onClick={() => setIsOpen(false)}>
-                        Sign In
+                        {category.name}
+                        {category.featured && <span className="mobile-featured-badge">New</span>}
                       </Link>
-                      <Link to="/register" className="mobile-auth-link secondary" onClick={() => setIsOpen(false)}>
-                        Create Account
-                      </Link>
-                    </div>
-                  )}
-                </div>
+                    ))}
 
-                {/* Mobile Promo */}
-                <div className="mobile-promo">
-                  <FiGift className="promo-icon" />
-                  <div>
-                    <p className="promo-title">Member Exclusive</p>
-                    <p className="promo-text">Free shipping on all orders</p>
+                    <div className="mobile-accordion">
+                      <motion.button
+                        className="mobile-accordion-button"
+                        onClick={() => toggleMobileSubmenu('collections')}
+                        aria-expanded={mobileSubmenuOpen === 'collections'}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Collections
+                        {mobileSubmenuOpen === 'collections' ? <FiChevronUp /> : <FiChevronRight />}
+                      </motion.button>
+                      <AnimatePresence>
+                        {mobileSubmenuOpen === 'collections' && (
+                          <motion.div
+                            className="mobile-accordion-content"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                          >
+                            {collections.map((collection) => (
+                              <Link
+                                key={collection.name}
+                                to={collection.path}
+                                className="mobile-sub-link"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                {collection.icon && <span className="menu-icon">{collection.icon}</span>}
+                                {collection.name}
+                                {collection.featured && <span className="featured-badge">Hot</span>}
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    <div className="mobile-accordion">
+                      <motion.button
+                        className="mobile-accordion-button"
+                        onClick={() => toggleMobileSubmenu('help')}
+                        aria-expanded={mobileSubmenuOpen === 'help'}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Help
+                        {mobileSubmenuOpen === 'help' ? <FiChevronUp /> : <FiChevronRight />}
+                      </motion.button>
+                      <AnimatePresence>
+                        {mobileSubmenuOpen === 'help' && (
+                          <motion.div
+                            className="mobile-accordion-content"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                          >
+                            {helpLinks.map((link) => (
+                              <Link
+                                key={link.name}
+                                to={link.path}
+                                className="mobile-sub-link"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                {link.name}
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+
+                  {/* Mobile Auth Section */}
+                  <div className="mobile-auth-section">
+                    {user ? (
+                      <>
+                        <div className="mobile-user-card">
+                          <div className="mobile-user-left">
+                            {user.avatar ? (
+                              <img src={user.avatar} alt={user.name} className="mobile-user-avatar" />
+                            ) : (
+                              <div className="mobile-user-avatar-fallback">
+                                {user.name?.charAt(0).toUpperCase()}
+                              </div>
+                            )}
+                          </div>
+                          <div className="mobile-user-right">
+                            <p className="welcome small">Welcome back</p>
+                            <h4 className="mobile-user-name">{user.name?.split(' ')[0]}</h4>
+                            <p className="mobile-user-email">{user.email}</p>
+                          </div>
+                        </div>
+
+                        <div className="mobile-auth-links-group">
+                          <Link to="/account" className="mobile-auth-link" onClick={() => setIsOpen(false)}>
+                            <FiUser /> My Account
+                          </Link>
+                          <Link to="/orders" className="mobile-auth-link" onClick={() => setIsOpen(false)}>
+                            <FiClock /> My Orders
+                          </Link>
+                          <Link to="/wishlist" className="mobile-auth-link" onClick={() => setIsOpen(false)}>
+                            <FiHeart /> My Wishlist <span className="wishlist-badge">{wishlistCount}</span>
+                          </Link>
+                        </div>
+
+                        <button
+                          className="mobile-auth-link logout"
+                          onClick={() => setShowLogoutConfirm(true)}
+                        >
+                          <FiLogOut /> Sign Out
+                        </button>
+                      </>
+                    ) : (
+                      <div className="mobile-auth-links-group">
+                        <Link to="/login" className="mobile-auth-link primary" onClick={() => setIsOpen(false)}>
+                          Sign In
+                        </Link>
+                        <Link to="/register" className="mobile-auth-link secondary" onClick={() => setIsOpen(false)}>
+                          Create Account
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Mobile Promo */}
+                  <div className="mobile-promo">
+                    <FiGift className="promo-icon" />
+                    <div>
+                      <p className="promo-title">Member Exclusive</p>
+                      <p className="promo-text">Free shipping on all orders</p>
+                    </div>
                   </div>
                 </div>
               </motion.div>
