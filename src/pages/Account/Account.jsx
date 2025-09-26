@@ -280,16 +280,27 @@ const Account = () => {
 
   const deletePayment = async (id) => {
     if (!window.confirm('Remove this card?')) return;
-    try {
-      const token = localStorage.getItem('token');
-      const res = await api.delete(`/api/payment-methods/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      if (res.data.status === 'success') {
-        setPaymentMethods(prev => prev.filter(p => p._id !== id && p.id !== id));
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const res = await api.delete(`/api/payment-methods/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.status === 'success') {
+          setPaymentMethods(prev => prev.filter(p => p._id !== id && p.id !== id));
+        }
+      } catch (err) {
+        console.error('Delete payment failed', err);
+        alert('Failed to remove card on server. Please try again.');
       }
-    } catch (err) {
-      console.error('Delete payment failed', err);
-      alert('Failed to remove card.');
+      return;
     }
+
+    // unauthenticated fallback
+    setPaymentMethods(prev => {
+      const next = prev.filter(p => p._id !== id && p.id !== id);
+      try { localStorage.setItem('local_payments', JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
+    alert('You are not logged in — card removed locally');
   };
 
   if (loading) {
