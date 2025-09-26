@@ -466,7 +466,8 @@ const ProfileTab = ({ user, onUpdateUser }) => {
       }
     } catch (err) {
       console.error('Avatar upload failed', err);
-      alert('Failed to upload avatar. Please try again.');
+      const serverMsg = err?.response?.data?.message || err?.response?.data?.error || err?.message;
+      alert(`Failed to upload avatar: ${serverMsg}`);
       // keep preview but revert to server avatar if available
       const cached = localStorage.getItem('user');
       if (cached) {
