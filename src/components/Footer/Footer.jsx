@@ -68,9 +68,9 @@ const Footer = () => {
           <section className="rw-col rw-more" aria-labelledby="rw-more-title">
             <h2 id="rw-more-title" className="rw-heading">Explore SneakerHub</h2>
             <ul className="rw-links">
-              <li><a href="https://re-wild.nl/wp-content/uploads/2025/03/Rewild_Algemene_Reisvoorwaarden_Maart_2025.pdf" target="_blank" rel="noopener noreferrer">Reisvoorwaarden</a></li>
-              <li><a href="https://re-wild.nl/reisgarantie/" target="_blank" rel="noopener noreferrer">Reisgarantie</a></li>
-              <li><a href="https://re-wild.nl/wp-content/uploads/2023/10/Privacy-_en_cookieverklaring_Rewild_20102023.pdf" target="_blank" rel="noopener noreferrer">Privacy- en cookieverklaring</a></li>
+              <li><a href="/about">About SneakerHub</a></li>
+              <li><a href="/blog">Blog & Culture</a></li>
+              <li><a href="/contact">Contact Us</a></li>
             </ul>
 
             <ul className="rw-socials" aria-label="Social links">
