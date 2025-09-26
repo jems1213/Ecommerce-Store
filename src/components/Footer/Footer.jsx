@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import './Footer.css';
 
 const Footer = () => {
@@ -10,108 +10,93 @@ const Footer = () => {
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (!email) {
-      setStatus('Please enter a valid email address');
+      setStatus('Vul een geldig emailadres in');
       return;
     }
-    setStatus('Thanks for subscribing!');
+    setStatus('Bedankt voor je inschrijving!');
     setEmail('');
     setTimeout(() => setStatus(''), 4000);
   };
 
   return (
-    <footer className="site-footer">
-      <div className="footer-top">
-        <div className="footer-container footer-grid">
+    <footer className="rewild-footer" role="contentinfo">
+      <div className="rewild-footer__container">
+        <div className="rewild-row">
 
-          <div className="footer-col footer-brand">
-            <Link to="/" className="footer-logo brand-link">Puma-like Shop</Link>
-            <p className="brand-desc">Premium footwear and apparel — performance and style in every step.</p>
-
-            <div className="brand-contact" aria-label="Contact information">
-              <div className="contact-item"><FaMapMarkerAlt className="contact-icon" /> <span>123 Sneaker St, Footwear City</span></div>
-              <div className="contact-item"><FaPhoneAlt className="contact-icon" /> <span>+1 (555) 123-4567</span></div>
-              <div className="contact-item"><FaEnvelope className="contact-icon" /> <span>support@yourcompany.com</span></div>
-            </div>
-
-            <div className="socials" aria-label="Social links">
-              <a aria-label="Facebook" href="#"><FaFacebookF /></a>
-              <a aria-label="Instagram" href="#"><FaInstagram /></a>
-              <a aria-label="Twitter" href="#"><FaTwitter /></a>
-              <a aria-label="YouTube" href="#"><FaYoutube /></a>
-            </div>
-          </div>
-
-          <nav className="footer-col footer-links" aria-label="Footer navigation">
-            <div className="footer-column">
-              <h4>Quick Links</h4>
-              <ul>
-                <li><Link to="/shop">Shop</Link></li>
-                <li><Link to="/new-arrivals">New Arrivals</Link></li>
-                <li><Link to="/collections">Collections</Link></li>
-              </ul>
-            </div>
-
-            <div className="footer-column">
-              <h4>Support</h4>
-              <ul>
-                <li><Link to="/help">Help Center</Link></li>
-                <li><Link to="/shipping">Shipping</Link></li>
-                <li><Link to="/returns">Returns</Link></li>
-                <li><Link to="/size-guide">Size Guide</Link></li>
-                <li><Link to="/contact">Contact Us</Link></li>
-              </ul>
-            </div>
-
-            <div className="footer-column">
-              <h4>Account</h4>
-              <ul>
-                <li><Link to="/login">Login</Link></li>
-                <li><Link to="/register">Register</Link></li>
-                <li><Link to="/orders">Orders</Link></li>
-                <li><Link to="/wishlist">Wishlist</Link></li>
-              </ul>
-            </div>
-
-            <div className="footer-column">
-              <h4>Policies</h4>
-              <ul>
-                <li><Link to="/terms">Terms</Link></li>
-                <li><Link to="/privacy">Privacy</Link></li>
-                <li><Link to="/sitemap">Sitemap</Link></li>
-              </ul>
-            </div>
-          </nav>
-
-          <div className="footer-col footer-newsletter">
-            <h4>Newsletter</h4>
-            <p className="newsletter-desc">Get release alerts, early access and member-only deals.</p>
-            <form className="newsletter-form" onSubmit={handleSubscribe}>
-              <label htmlFor="footer-email" className="sr-only">Email address</label>
+          <section className="rw-col rw-newsletter" aria-labelledby="rw-newsletter-title">
+            <h2 id="rw-newsletter-title" className="rw-heading">Rewild Nieuwsbrief</h2>
+            <form className="rw-newsletter-form" onSubmit={handleSubscribe}>
+              <label htmlFor="rw-email" className="sr-only">Emailadres</label>
               <input
-                id="footer-email"
+                id="rw-email"
                 type="email"
-                placeholder="Enter your email"
+                name="EMAIL"
+                placeholder="Typ hier je emailadres."
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="rw-input"
               />
-              <button type="submit" className="btn-subscribe">Subscribe</button>
+              <button type="submit" className="rw-button">Inschrijven</button>
+
+              <label className="sr-only" style={{display:'none'}}>
+                Leave this field empty if you're human:
+                <input type="text" name="_mc4wp_honeypot" tabIndex="-1" autoComplete="off" />
+              </label>
+              <input type="hidden" name="_mc4wp_timestamp" value={String(Math.floor(Date.now()/1000))} />
+              <input type="hidden" name="_mc4wp_form_id" value="4293" />
+              <input type="hidden" name="_mc4wp_form_element_id" value="mc4wp-form-1" />
             </form>
-            {status && <div className="newsletter-status" role="status">{status}</div>}
-          </div>
+            {status && <div className="rw-status" role="status">{status}</div>}
+          </section>
+
+          <section className="rw-col rw-affiliations" aria-labelledby="rw-affiliations-title">
+            <h2 id="rw-affiliations-title" className="rw-heading">Aangesloten bij</h2>
+            <div className="rw-logos">
+              <a href="https://www.vvkr.nl/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2018/09/2-copy.png" alt="VVKR" /></a>
+              <a href="https://www.vzr-garant.nl/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2025/03/VZR-garant_RGB-e1741811185770.png" alt="VZR Garant" /></a>
+            </div>
+          </section>
+
+          <section className="rw-col rw-partners" aria-labelledby="rw-partners-title">
+            <h2 id="rw-partners-title" className="rw-heading">Partners</h2>
+            <div className="rw-logos rw-partner-logos">
+              <a href="https://rab.equipment/eu/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2019/02/rabcc.png" alt="Rab" /></a>
+              <a href="https://lowealpine.com/eu/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2019/02/loew.png" alt="Lowe Alpine" /></a>
+            </div>
+          </section>
+
+          <section className="rw-col rw-more" aria-labelledby="rw-more-title">
+            <h2 id="rw-more-title" className="rw-heading">Meer Rewild</h2>
+            <ul className="rw-links">
+              <li><a href="https://re-wild.nl/wp-content/uploads/2025/03/Rewild_Algemene_Reisvoorwaarden_Maart_2025.pdf" target="_blank" rel="noopener noreferrer">Reisvoorwaarden</a></li>
+              <li><a href="https://re-wild.nl/reisgarantie/" target="_blank" rel="noopener noreferrer">Reisgarantie</a></li>
+              <li><a href="https://re-wild.nl/wp-content/uploads/2023/10/Privacy-_en_cookieverklaring_Rewild_20102023.pdf" target="_blank" rel="noopener noreferrer">Privacy- en cookieverklaring</a></li>
+            </ul>
+
+            <ul className="rw-socials" aria-label="Social links">
+              <li><a href="https://www.facebook.com/rewildwildernisreizen" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF /></a></li>
+              <li><a href="https://www.instagram.com/rewildnl/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a></li>
+              <li><a href="https://vimeo.com/user74250131" target="_blank" rel="noopener noreferrer" aria-label="Vimeo"><FaTwitter /></a></li>
+              <li><a href="https://www.youtube.com/@RewildWildernisreizen/" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a></li>
+            </ul>
+          </section>
 
         </div>
-      </div>
 
-      <div className="footer-bottom">
-        <div className="footer-container footer-bottom-row">
-          <div className="copyright">© {new Date().getFullYear()} Puma-like Shop. All rights reserved.</div>
-          <div className="footer-links-inline">
-            <Link to="/terms">Terms</Link>
-            <Link to="/privacy">Privacy</Link>
-            <Link to="/sitemap">Sitemap</Link>
+        <hr className="rw-divider" />
+
+        <div className="rewild-footer__bottom">
+          <div className="rewild-footer__bottom-inner">
+            <div className="rw-copy">© Rewild {new Date().getFullYear()}. All Rights Reserved.</div>
+            <div className="rw-bottom-links">
+              <a href="/terms">Terms</a>
+              <a href="/privacy">Privacy</a>
+              <a href="/sitemap">Sitemap</a>
+            </div>
           </div>
         </div>
+
       </div>
     </footer>
   );
