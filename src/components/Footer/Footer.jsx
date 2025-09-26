@@ -41,7 +41,7 @@ const Footer = () => {
           <div className="sh-section sh-brand">
             <img src={logoSrc} alt="SneakerHub" className="sh-logo" />
             <div>
-              <h3 className="sh-brand-title">SneakerHub</h3>
+              <h3 className="sh-brand-title"><span className="sh-emoji" aria-hidden>👟</span> SneakerHub</h3>
               <p className="sh-brand-desc">Your destination for curated sneakers — new drops, classics and exclusive collabs.</p>
             </div>
           </div>
