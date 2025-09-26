@@ -1,101 +1,86 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
+import logoSrc from '../../assets/default-shoe.svg';
 import './Footer.css';
 
 const Footer = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('');
+
+  const menu = [
+    { label: 'New Arrivals', to: '/new-arrivals' },
+    { label: 'New', to: '/new' },
+    { label: 'Shop', to: '/shop' },
+    { label: 'Collections', to: '/collections' },
+    { label: 'Help', to: '/help' }
+  ];
+
+  const handleNavigate = (to) => {
+    // use navigate for client-side routing
+    navigate(to);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (!email) {
-      setStatus('Vul een geldig emailadres in');
+      setStatus('Please enter a valid email');
       return;
     }
-    setStatus('Bedankt voor je inschrijving!');
+    setStatus('Subscribed — check your inbox');
     setEmail('');
     setTimeout(() => setStatus(''), 4000);
   };
 
   return (
-    <footer className="rewild-footer" role="contentinfo">
-      <div className="rewild-footer__container">
-        <div className="rewild-row">
+    <footer className="sh-footer" role="contentinfo">
+      <div className="sh-inner">
+        <div className="sh-top">
+          <div className="sh-brand">
+            <img src={logoSrc} alt="SneakerHub" className="sh-logo" />
+            <h3 className="sh-title">SneakerHub</h3>
+          </div>
 
-          <section className="rw-col rw-newsletter" aria-labelledby="rw-newsletter-title">
-            <h2 id="rw-newsletter-title" className="rw-heading">SneakerHub Nieuwsbrief</h2>
-            <form className="rw-newsletter-form" onSubmit={handleSubscribe}>
-              <label htmlFor="rw-email" className="sr-only">Emailadres</label>
+          <nav className="sh-nav" aria-label="Footer navigation">
+            {menu.map(item => (
+              <button
+                key={item.label}
+                className="sh-nav-btn"
+                onClick={() => handleNavigate(item.to)}
+                type="button"
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="sh-newsletter">
+            <form className="sh-news-form" onSubmit={handleSubscribe}>
               <input
-                id="rw-email"
                 type="email"
-                name="EMAIL"
-                placeholder="Typ hier je emailadres."
+                placeholder="Your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
-                className="rw-input"
+                aria-label="Email for newsletter"
+                className="sh-input"
               />
-              <button type="submit" className="rw-button">Inschrijven</button>
-
-              <label className="sr-only" style={{display:'none'}}>
-                Leave this field empty if you're human:
-                <input type="text" name="_mc4wp_honeypot" tabIndex="-1" autoComplete="off" />
-              </label>
-              <input type="hidden" name="_mc4wp_timestamp" value={String(Math.floor(Date.now()/1000))} />
-              <input type="hidden" name="_mc4wp_form_id" value="4293" />
-              <input type="hidden" name="_mc4wp_form_element_id" value="mc4wp-form-1" />
+              <button type="submit" className="sh-cta">Subscribe</button>
             </form>
-            {status && <div className="rw-status" role="status">{status}</div>}
-          </section>
-
-          <section className="rw-col rw-affiliations" aria-labelledby="rw-affiliations-title">
-            <h2 id="rw-affiliations-title" className="rw-heading">Affiliaties</h2>
-            <div className="rw-logos">
-              <a href="https://www.vvkr.nl/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2018/09/2-copy.png" alt="VVKR" /></a>
-              <a href="https://www.vzr-garant.nl/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2025/03/VZR-garant_RGB-e1741811185770.png" alt="VZR Garant" /></a>
-            </div>
-          </section>
-
-          <section className="rw-col rw-partners" aria-labelledby="rw-partners-title">
-            <h2 id="rw-partners-title" className="rw-heading">Partners & Merken</h2>
-            <div className="rw-logos rw-partner-logos">
-              <a href="https://rab.equipment/eu/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2019/02/rabcc.png" alt="Rab" /></a>
-              <a href="https://lowealpine.com/eu/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2019/02/loew.png" alt="Lowe Alpine" /></a>
-            </div>
-          </section>
-
-          <section className="rw-col rw-more" aria-labelledby="rw-more-title">
-            <h2 id="rw-more-title" className="rw-heading">Explore SneakerHub</h2>
-            <ul className="rw-links">
-              <li><a href="/about">About SneakerHub</a></li>
-              <li><a href="/blog">Blog & Culture</a></li>
-              <li><a href="/contact">Contact Us</a></li>
-            </ul>
-
-            <ul className="rw-socials" aria-label="Social links">
-              <li><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF /></a></li>
-              <li><a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a></li>
-              <li><a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><FaTwitter /></a></li>
-              <li><a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a></li>
-            </ul>
-          </section>
-
-        </div>
-
-        <hr className="rw-divider" />
-
-        <div className="rewild-footer__bottom">
-          <div className="rewild-footer__bottom-inner">
-            <div className="rw-copy">© SneakerHub {new Date().getFullYear()}. All Rights Reserved.</div>
-            <div className="rw-bottom-links">
-              <a href="/terms">Terms</a>
-              <a href="/privacy">Privacy</a>
-              <a href="/sitemap">Sitemap</a>
-            </div>
+            {status && <div className="sh-status">{status}</div>}
           </div>
         </div>
 
+        <div className="sh-bottom">
+          <div className="sh-copy">© SneakerHub {new Date().getFullYear()}</div>
+          <div className="sh-socials">
+            <button className="sh-icon" onClick={() => window.open('https://facebook.com', '_blank')} aria-label="Facebook"><FaFacebookF /></button>
+            <button className="sh-icon" onClick={() => window.open('https://instagram.com', '_blank')} aria-label="Instagram"><FaInstagram /></button>
+            <button className="sh-icon" onClick={() => window.open('https://twitter.com', '_blank')} aria-label="Twitter"><FaTwitter /></button>
+            <button className="sh-icon" onClick={() => window.open('https://youtube.com', '_blank')} aria-label="YouTube"><FaYoutube /></button>
+          </div>
+        </div>
       </div>
     </footer>
   );
