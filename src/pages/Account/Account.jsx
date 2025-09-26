@@ -196,7 +196,7 @@ const Account = () => {
     if (!window.confirm('Remove this card?')) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await api.delete(buildUrl(`/api/payment-methods/${id}`), { headers: { Authorization: `Bearer ${token}` } });
+      const res = await api.delete(`/api/payment-methods/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.data.status === 'success') {
         setPaymentMethods(prev => prev.filter(p => p._id !== id && p.id !== id));
       }
