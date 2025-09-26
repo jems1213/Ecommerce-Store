@@ -14,9 +14,22 @@ const Account = () => {
   const [addresses, setAddresses] = useState([]);
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [backendAvailable, setBackendAvailable] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check backend health separately so we know whether to persist to DB or localStorage
+    const checkBackend = async () => {
+      try {
+        await api.get('/api/health');
+        setBackendAvailable(true);
+      } catch (e) {
+        setBackendAvailable(false);
+      }
+    };
+
+    checkBackend();
+
     const fetchUserData = async () => {
       const token = localStorage.getItem('token');
       const storedUser = localStorage.getItem('user');
