@@ -64,10 +64,10 @@ const Account = () => {
       try {
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
         const results = await Promise.allSettled([
-          api.get(buildUrl('/api/orders'), { headers }),
-          api.get(buildUrl('/api/addresses'), { headers }),
-          api.get(buildUrl('/api/payment-methods'), { headers }),
-          api.get(buildUrl('/api/wishlist'), { headers })
+          api.get('/api/orders', { headers }),
+          api.get('/api/addresses', { headers }),
+          api.get('/api/payment-methods', { headers }),
+          api.get('/api/wishlist', { headers })
         ]);
 
         // Orders
