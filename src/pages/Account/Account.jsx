@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, { API_BASE } from '../../utils/apiClient';
+import AddressForm from './AddressForm';
+import PaymentForm from './PaymentForm';
 import { FiUser, FiShoppingBag, FiSettings, FiHeart, FiMapPin, FiCreditCard, FiLogOut } from 'react-icons/fi';
 import './Account.css';
 
