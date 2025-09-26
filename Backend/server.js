@@ -12,24 +12,48 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
 
-// Cloudinary Configuration
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
+const fs = require('fs');
+const path = require('path');
 
-// Configure multer storage for Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'shoe-shop',
-    allowed_formats: ['jpg', 'jpeg', 'png'],
-    transformation: [{ width: 500, height: 500, crop: 'limit' }]
-  }
-});
+// Cloudinary Configuration (use if credentials provided)
+let useCloudinary = false;
+if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+  useCloudinary = true;
+}
 
-const upload = multer({ storage: storage });
+// Configure multer storage. Prefer Cloudinary when configured, otherwise fall back to local disk storage.
+let upload;
+if (useCloudinary) {
+  const { CloudinaryStorage } = require('multer-storage-cloudinary');
+  const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'shoe-shop',
+      allowed_formats: ['jpg', 'jpeg', 'png'],
+      transformation: [{ width: 500, height: 500, crop: 'limit' }]
+    }
+  });
+  upload = multer({ storage: storage });
+} else {
+  // ensure upload dir exists
+  const uploadDir = path.join(__dirname, 'public', 'uploads');
+  try { fs.mkdirSync(uploadDir, { recursive: true }); } catch (e) { /* ignore */ }
+  const diskStorage = multer.diskStorage({
+    destination: function (req, file, cb) { cb(null, uploadDir); },
+    filename: function (req, file, cb) {
+      const ext = path.extname(file.originalname) || '.jpg';
+      cb(null, `${Date.now()}-${Math.random().toString(36).slice(2,8)}${ext}`);
+    }
+  });
+  upload = multer({ storage: diskStorage, limits: { fileSize: 2 * 1024 * 1024 } }); // 2MB limit
+  // serve uploads statically
+  app.use('/uploads', express.static(uploadDir));
+}
 
 // Middleware
 // Configure CORS to allow the frontend origin. If FRONTEND_URL is not set, allow any origin
