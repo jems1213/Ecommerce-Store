@@ -573,32 +573,46 @@ app.put('/api/auth/update', protect, async (req, res) => {
 });
 
 // Avatar upload endpoint
-app.post('/api/auth/avatar', protect, upload.single('avatar'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ status: 'fail', message: 'No file uploaded' });
+app.post('/api/auth/avatar', protect, (req, res, next) => {
+  upload.single('avatar')(req, res, async function (err) {
+    if (err) {
+      console.error('Multer error during avatar upload:', err);
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ status: 'fail', message: 'File too large. Max size is 2MB.' });
+      }
+      return res.status(400).json({ status: 'fail', message: err.message || 'File upload failed' });
     }
 
-    // If Cloudinary used, multer-storage-cloudinary provides req.file.path
-    if (useCloudinary && req.file.path) {
-      req.user.avatar = req.file.path;
-    } else if (req.file.filename) {
-      // Disk storage: construct accessible URL
-      const host = req.get('host');
-      const proto = req.protocol;
-      req.user.avatar = `${proto}://${host}/uploads/${req.file.filename}`;
-    } else {
-      return res.status(500).json({ status: 'error', message: 'Upload returned unexpected response' });
-    }
+    try {
+      console.log('Avatar upload request headers:', { host: req.get('host'), contentType: req.headers['content-type'] });
+      console.log('Received file:', req.file);
 
-    await req.user.save();
-    const userObj = req.user.toObject();
-    delete userObj.password;
-    res.status(200).json({ status: 'success', user: userObj });
-  } catch (err) {
-    console.error('Avatar upload error:', err);
-    res.status(500).json({ status: 'error', message: 'Failed to upload avatar' });
-  }
+      if (!req.file) {
+        return res.status(400).json({ status: 'fail', message: 'No file uploaded' });
+      }
+
+      // If Cloudinary used, multer-storage-cloudinary provides req.file.path
+      if (useCloudinary && req.file.path) {
+        req.user.avatar = req.file.path;
+      } else if (req.file.filename) {
+        // Disk storage: construct accessible URL
+        const host = req.get('host');
+        const proto = req.protocol;
+        req.user.avatar = `${proto}://${host}/uploads/${req.file.filename}`;
+      } else {
+        console.error('Unexpected upload response, req.file:', req.file);
+        return res.status(500).json({ status: 'error', message: 'Upload returned unexpected response' });
+      }
+
+      await req.user.save();
+      const userObj = req.user.toObject();
+      delete userObj.password;
+      res.status(200).json({ status: 'success', user: userObj });
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+      res.status(500).json({ status: 'error', message: 'Failed to upload avatar' });
+    }
+  });
 });
 
 // Addresses API (CRUD)
