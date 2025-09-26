@@ -179,7 +179,7 @@ const Account = () => {
           setPaymentMethods(prev => prev.map(p => (p._id === id || p.id === id) ? res.data.data.paymentMethod : p));
         }
       } else {
-        const res = await api.post(buildUrl('/api/payment-methods'), payload, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await api.post('/api/payment-methods', payload, { headers: { Authorization: `Bearer ${token}` } });
         if (res.data.status === 'success') {
           setPaymentMethods(prev => [...prev, res.data.data.paymentMethod]);
         }
