@@ -58,7 +58,7 @@ const Footer = () => {
           </section>
 
           <section className="rw-col rw-partners" aria-labelledby="rw-partners-title">
-            <h2 id="rw-partners-title" className="rw-heading">Partners</h2>
+            <h2 id="rw-partners-title" className="rw-heading">Partners & Merken</h2>
             <div className="rw-logos rw-partner-logos">
               <a href="https://rab.equipment/eu/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2019/02/rabcc.png" alt="Rab" /></a>
               <a href="https://lowealpine.com/eu/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2019/02/loew.png" alt="Lowe Alpine" /></a>
