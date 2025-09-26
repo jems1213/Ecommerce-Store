@@ -392,7 +392,7 @@ const Account = () => {
       </div>
 
       <div className="account-content">
-        {activeTab === 'profile' && <ProfileTab user={user} />}
+        {activeTab === 'profile' && <ProfileTab user={user} onUpdateUser={setUser} />}
         {activeTab === 'orders' && <OrdersTab orders={orders} />}
         {activeTab === 'wishlist' && <WishlistTab wishlist={wishlist} />}
         {activeTab === 'addresses' && <AddressesTab addresses={addresses} onAdd={openAddAddress} onEdit={openEditAddress} onDelete={deleteAddress} />}
