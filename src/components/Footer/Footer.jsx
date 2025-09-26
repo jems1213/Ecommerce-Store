@@ -23,7 +23,7 @@ const Footer = () => {
         <div className="rewild-row">
 
           <section className="rw-col rw-newsletter" aria-labelledby="rw-newsletter-title">
-            <h2 id="rw-newsletter-title" className="rw-heading">Rewild Nieuwsbrief</h2>
+            <h2 id="rw-newsletter-title" className="rw-heading">SneakerHub Nieuwsbrief</h2>
             <form className="rw-newsletter-form" onSubmit={handleSubscribe}>
               <label htmlFor="rw-email" className="sr-only">Emailadres</label>
               <input
