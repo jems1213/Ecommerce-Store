@@ -518,6 +518,36 @@ app.patch('/api/orders/:id/verify-payment', protect, async (req, res) => {
   }
 });
 
+// User update endpoint
+app.put('/api/auth/update', protect, async (req, res) => {
+  try {
+    const { firstName, lastName, email, currentPassword, newPassword } = req.body;
+
+    if (email && email !== req.user.email) {
+      const exists = await User.findOne({ email });
+      if (exists) return res.status(400).json({ status: 'fail', message: 'Email already in use' });
+    }
+
+    if (currentPassword && newPassword) {
+      const valid = await req.user.comparePassword(currentPassword);
+      if (!valid) return res.status(401).json({ status: 'fail', message: 'Current password is incorrect' });
+      req.user.password = newPassword;
+    }
+
+    if (firstName) req.user.firstName = firstName;
+    if (lastName) req.user.lastName = lastName;
+    if (email) req.user.email = email;
+
+    await req.user.save();
+    const userObj = req.user.toObject();
+    delete userObj.password;
+    res.status(200).json({ status: 'success', user: userObj });
+  } catch (err) {
+    console.error('Auth update error:', err);
+    res.status(500).json({ status: 'error', message: 'Failed to update user' });
+  }
+});
+
 // Addresses API (CRUD)
 app.get('/api/addresses', protect, (req, res) => {
   res.status(200).json({ status: 'success', data: { addresses: req.user.addresses || [] } });
