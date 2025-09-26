@@ -174,7 +174,7 @@ const Account = () => {
       const token = localStorage.getItem('token');
       if (paymentModal.data && (paymentModal.data._id || paymentModal.data.id)) {
         const id = paymentModal.data._id || paymentModal.data.id;
-        const res = await api.put(buildUrl(`/api/payment-methods/${id}`), payload, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await api.put(`/api/payment-methods/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
         if (res.data.status === 'success') {
           setPaymentMethods(prev => prev.map(p => (p._id === id || p.id === id) ? res.data.data.paymentMethod : p));
         }
