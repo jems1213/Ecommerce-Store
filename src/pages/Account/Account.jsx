@@ -15,6 +15,9 @@ const Account = () => {
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const navigate = useNavigate();
+  const buildUrl = (path) => {
+    try { return API_BASE ? API_BASE.replace(/\/$/, '') + path : path; } catch (e) { return path; }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
