@@ -50,7 +50,7 @@ const Footer = () => {
           </section>
 
           <section className="rw-col rw-affiliations" aria-labelledby="rw-affiliations-title">
-            <h2 id="rw-affiliations-title" className="rw-heading">Aangesloten bij</h2>
+            <h2 id="rw-affiliations-title" className="rw-heading">Affiliaties</h2>
             <div className="rw-logos">
               <a href="https://www.vvkr.nl/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2018/09/2-copy.png" alt="VVKR" /></a>
               <a href="https://www.vzr-garant.nl/" target="_blank" rel="noopener noreferrer"><img src="https://re-wild.nl/wp-content/uploads/2025/03/VZR-garant_RGB-e1741811185770.png" alt="VZR Garant" /></a>
