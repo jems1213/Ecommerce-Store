@@ -29,7 +29,7 @@
 .sh-icon:hover{transform:translateY(-3px)}
 
 /* emoji in brand */
-.sh-emoji{font-size:22px;margin-right:8px;display:inline-block;vertical-align:middle}
+.sh-emoji{font-size:48px;margin-right:12px;display:inline-block;vertical-align:middle;line-height:1}
 
 /* Bottom row */
 .sh-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:28px;border-top:1px solid rgba(255,255,255,0.03);padding-top:18px}
