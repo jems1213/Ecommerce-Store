@@ -190,18 +190,29 @@ const signToken = (id) => {
 const protect = async (req, res, next) => {
   try {
     let token;
+    // log auth header for debugging
+    console.log('Protect middleware - authorization header present:', !!req.headers.authorization);
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     }
 
     if (!token) {
+      console.warn('Protect: no token provided');
       return res.status(401).json({ status: 'fail', message: 'You are not logged in' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    } catch (err) {
+      console.warn('Protect: token verification failed:', err.message);
+      return res.status(401).json({ status: 'fail', message: 'Invalid token' });
+    }
+
     const currentUser = await User.findById(decoded.id);
 
     if (!currentUser) {
+      console.warn('Protect: user not found for id', decoded.id);
       return res.status(401).json({ status: 'fail', message: 'User no longer exists' });
     }
 
