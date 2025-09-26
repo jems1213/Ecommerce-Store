@@ -141,6 +141,19 @@ const Account = () => {
   const closeAddressModal = () => setAddressModal({ open: false, data: null });
 
   const saveAddress = async (payload) => {
+    // If backend is not reachable, persist locally so user can continue
+    if (backendAvailable === false) {
+      const created = { _id: `local-${Date.now()}`, ...payload };
+      setAddresses(prev => {
+        const next = [...prev, created];
+        try { localStorage.setItem('local_addresses', JSON.stringify(next)); } catch (e) {}
+        return next;
+      });
+      alert('Backend not reachable — address saved locally only');
+      closeAddressModal();
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       if (addressModal.data && (addressModal.data._id || addressModal.data.id)) {
