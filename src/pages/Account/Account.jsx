@@ -132,7 +132,7 @@ const Account = () => {
       const token = localStorage.getItem('token');
       if (addressModal.data && (addressModal.data._id || addressModal.data.id)) {
         const id = addressModal.data._id || addressModal.data.id;
-        const res = await api.put(buildUrl(`/api/addresses/${id}`), payload, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await api.put(`/api/addresses/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
         if (res.data.status === 'success') {
           setAddresses(prev => prev.map(a => (a._id === id || a.id === id) ? res.data.data.address : a));
         }
