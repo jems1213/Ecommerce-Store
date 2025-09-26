@@ -66,7 +66,7 @@ const Footer = () => {
           </section>
 
           <section className="rw-col rw-more" aria-labelledby="rw-more-title">
-            <h2 id="rw-more-title" className="rw-heading">Meer Rewild</h2>
+            <h2 id="rw-more-title" className="rw-heading">Explore SneakerHub</h2>
             <ul className="rw-links">
               <li><a href="https://re-wild.nl/wp-content/uploads/2025/03/Rewild_Algemene_Reisvoorwaarden_Maart_2025.pdf" target="_blank" rel="noopener noreferrer">Reisvoorwaarden</a></li>
               <li><a href="https://re-wild.nl/reisgarantie/" target="_blank" rel="noopener noreferrer">Reisgarantie</a></li>
