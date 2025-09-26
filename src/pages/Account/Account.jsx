@@ -178,6 +178,17 @@ const Account = () => {
 
   const deleteAddress = async (id) => {
     if (!window.confirm('Delete this address?')) return;
+
+    if (backendAvailable === false) {
+      setAddresses(prev => {
+        const next = prev.filter(a => a._id !== id && a.id !== id);
+        try { localStorage.setItem('local_addresses', JSON.stringify(next)); } catch (e) {}
+        return next;
+      });
+      alert('Backend not reachable — address removed locally');
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       const res = await api.delete(`/api/addresses/${id}`, { headers: { Authorization: `Bearer ${token}` } });
